@@ -1,9 +1,15 @@
 
+import { SayHello } from '..//module.js'
+
+
+
 const chessboard = document.querySelector(".board-container")
 
 var turncount = 0
 var active = 0
 var enpassant = {"available": false, "j": 0}
+
+SayHello();
 
 // make two 8x8 threat grids to determine check
 
@@ -56,11 +62,31 @@ function findStartCell(){
                 currentmove["start"] = [i, j]
                 activateStart(i, j)
                 tile.classList.add("highlighted")
-                active += 1
+                active = 1
             }
         }
     }
 }
+
+function findEndCell(){
+
+    for(i=0; i<8; i++){
+        for(j=0; j<8; j++){
+            const tile = grid[i][j]
+            if(tile.classList.contains("clicked")){
+                tile.classList.remove("clicked")
+                if(validEnd(i, j)===false){
+                    return;
+                }
+                currentmove["end"] = [i, j]
+                active = 0
+                submitMove()
+            }
+        }
+    }
+}
+
+
 
 function validStart(i, j){
 
@@ -158,23 +184,7 @@ function clearHighlights(){
     updateThreatGrids()
 }
 
-function findEndCell(){
 
-    for(i=0; i<8; i++){
-        for(j=0; j<8; j++){
-            const tile = grid[i][j]
-            if(tile.classList.contains("clicked")){
-                tile.classList.remove("clicked")
-                if(validEnd(i, j)===false){
-                    return;
-                }
-                currentmove["end"] = [i, j]
-                active -= 1
-                submitMove()
-            }
-        }
-    }
-}
 
 function validEnd(i, j){
 
