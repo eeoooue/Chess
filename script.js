@@ -1,18 +1,13 @@
 
-import { fullboardPiecePaint, addDot, addCircle, paintPosition } from './painter.js';
-import { pawnOptions, rookOptions, knightOptions, bishopOptions, kingOptions } from './pieces.js';
-import { pawnThreaten, rookThreaten, knightThreaten, bishopThreaten, kingThreaten } from './pieces.js';
-
-
 const chessboard = document.querySelector(".board-container")
 
 var turncount = 0
 var active = 0
-export var enpassant = {"available": false, "j": 0}
+var enpassant = {"available": false, "j": 0}
 
 // make two 8x8 threat grids to determine check
 
-export const piecelook = {
+const piecelook = {
     "P": "pawn",
     "R": "rook",
     "N": "knight",
@@ -21,8 +16,8 @@ export const piecelook = {
     "K": "king"
 }
 
-export var boardstate = []
-export var grid = []
+var boardstate = []
+var grid = []
 const threat = {"w": [], "b": []}
 
 const currentmove = {"start": null, "end": null}
@@ -50,8 +45,8 @@ function checkClickEvent(){
 
 function findStartCell(){
 
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
+    for(i=0; i<8; i++){
+        for(j=0; j<8; j++){
             const tile = grid[i][j]
             if(tile.classList.contains("clicked")){
                 tile.classList.remove("clicked")
@@ -99,9 +94,23 @@ function activateStart(i, j){
 
 }
 
+function addDot(i, j){
+    
+    const dot = document.createElement("div")
+    dot.classList.add("markerdot")
+    grid[i][j].classList.add("validmove")
+    grid[i][j].appendChild(dot)
+}
 
+function addCircle(i, j){
 
-export function legalPosition(i, j, colour){
+    const circle = document.createElement("div")
+    circle.classList.add("markercircle")
+    grid[i][j].classList.add("validmove")
+    grid[i][j].appendChild(circle)
+}
+
+function legalPosition(i, j, colour){
 
     if(invalidCoordinates(i, j)===false){
         if(boardstate[i][j]==="."){
@@ -117,12 +126,12 @@ export function legalPosition(i, j, colour){
 
 function submitMove(){
 
-    let a = currentmove["start"][0]
-    let b = currentmove["start"][1]
+    a = currentmove["start"][0]
+    b = currentmove["start"][1]
     console.log(`move starts @ (${a}, ${b})`)
 
-    let x = currentmove["end"][0]
-    let y = currentmove["end"][1]
+    x = currentmove["end"][0]
+    y = currentmove["end"][1]
     console.log(`move ends @ (${x}, ${y})`)
 
     boardstate[x][y] = boardstate[a][b]
@@ -151,8 +160,8 @@ function clearHighlights(){
 
 function findEndCell(){
 
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
+    for(i=0; i<8; i++){
+        for(j=0; j<8; j++){
             const tile = grid[i][j]
             if(tile.classList.contains("clicked")){
                 tile.classList.remove("clicked")
@@ -197,15 +206,44 @@ function initializeBoardstate(){
 
 
 
+function paintPosition(i, j){
+
+    const tile = grid[i][j]
+    tile.innerHTML = ""
+
+    if(boardstate[i][j]=="."){
+        return;
+    }
+
+    const piece = boardstate[i][j][0]
+    const colour = boardstate[i][j][1]
+    const imgpath = `assets\\${piecelook[piece]}_${colour}.png`
+
+    const img = document.createElement("img")
+    img.src = imgpath
+    img.style.margin = "5px 5px"
+
+    tile.appendChild(img)
+}
+
+function fullboardPiecePaint(){
+
+    for(i=0; i<8; i++){
+        for(j=0; j<8; j++){
+            paintPosition(i, j)
+        }
+    }
+}
+
 
 function paintTiles(){
 
     const painting = ["whitebg", "blackbg"]
 
     var paint = 0
-    for(let i=0; i<8; i++){
+    for(i=0; i<8; i++){
         grid.push([])
-        for(let j=0; j<8; j++){
+        for(j=0; j<8; j++){
             const tile = document.createElement("div")
             tile.classList.add("boardtile")
             tile.classList.add(painting[paint])
@@ -221,6 +259,7 @@ function paintTiles(){
     }
 
     console.log(grid)
+
 }
 
 function invalidCoordinates(i, j){
@@ -234,7 +273,7 @@ function invalidCoordinates(i, j){
 
 // generating options for moving pieces
 
-export function pawnMove(i, j){
+function pawnMove(i, j){
 
     if(invalidCoordinates(i, j)===true){
         return false
@@ -246,7 +285,7 @@ export function pawnMove(i, j){
     return false
 }
 
-export function pawnCapture(i, j, colour){
+function pawnCapture(i, j, colour){
 
     if(invalidCoordinates(i, j)===true){
         return
@@ -258,15 +297,130 @@ export function pawnCapture(i, j, colour){
     
 }
 
+function pawnOptions(i, j, colour){
+
+    if(colour==="w"){
+        if(pawnMove(i-1, j)===true){
+            // starting bonus
+            if(i===6){
+                pawnMove(i-2, j)
+            }
+        }
+        // capture diagonals
+        pawnCapture(i-1, j-1)
+        pawnCapture(i-1, j+1)
+        // en passant
+        if(enpassant["available"]===true){
+            console.log("Google en passant")
+        }
+    }
+
+    if(colour==="b"){
+        if(pawnMove(i+1, j)===true){
+            // starting bonus
+            if(i===1){
+                pawnMove(i+2, j)
+            }
+        }
+        // capture diagonals
+        pawnCapture(i+1, j-1)
+        pawnCapture(i+1, j+1)
+        // en passant
+        if(enpassant["available"]===true){
+            console.log("Google en passant")
+        }
+    }
+}
+
+function rookOptions(i, j, colour){
+
+    // up
+    var x = i-1
+    while(legalPosition(x, j, colour)===true){
+        x -= 1
+    }
+    // down
+    var x = i+1
+    while(legalPosition(x, j, colour)===true){
+        x += 1
+    }
+    // left
+    var x = j-1
+    while(legalPosition(i, x, colour)===true){
+        x -= 1
+    }
+    // right
+    var x = j+1
+    while(legalPosition(i, x, colour)===true){
+        x += 1
+    }
+}
+
+
+function knightOptions(i, j, colour){
+    
+    legalPosition(i+2, j-1, colour)
+    legalPosition(i+1, j-2, colour)
+    legalPosition(i-1, j-2, colour)
+    legalPosition(i-2, j-1, colour)
+    legalPosition(i-2, j+1, colour)
+    legalPosition(i-1, j+2, colour)
+    legalPosition(i+1, j+2, colour)
+    legalPosition(i+2, j+1, colour)
+}
+
+function bishopOptions(i, j, colour){
+
+    // NE
+    var a = i-1
+    var b = j+1
+    while(legalPosition(a, b, colour)===true){
+        a -= 1
+        b += 1
+    }
+    // SE
+    var a = i+1
+    var b = j+1
+    while(legalPosition(a, b, colour)===true){
+        a += 1
+        b += 1
+    }
+    // SW
+    var a = i+1
+    var b = j-1
+    while(legalPosition(a, b, colour)===true){
+        a += 1
+        b -= 1
+    }
+    // NW
+    var a = i-1
+    var b = j-1
+    while(legalPosition(a, b, colour)===true){
+        a -= 1
+        b -= 1
+    }
+}
+
+function kingOptions(i, j, colour){
+    
+    legalPosition(i-1, j, colour)
+    legalPosition(i-1, j+1, colour)
+    legalPosition(i, j+1, colour)
+    legalPosition(i+1, j+1, colour)
+    legalPosition(i+1, j, colour)
+    legalPosition(i+1, j-1, colour)
+    legalPosition(i, j-1, colour)
+    legalPosition(i-1, j-1, colour)
+}
 
 // threat check (8x8 boolean grids[i][j]===true)
 
 function initializeThreatGrids(){
 
-    for(let i=0; i<8; i++){
+    for(i=0; i<8; i++){
         threat["b"].push([])
         threat["w"].push([])
-        for(let j=0; j<8; j++){
+        for(j=0; j<8; j++){
             threat["b"][i].push(false)
             threat["w"][i].push(false)
         }
@@ -276,14 +430,14 @@ function initializeThreatGrids(){
 
 function updateThreatGrids(){
 
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
+    for(i=0; i<8; i++){
+        for(j=0; j<8; j++){
             threat["b"][i][j] = false
             threat["w"][i][j] = false
         }
     }
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
+    for(i=0; i<8; i++){
+        for(j=0; j<8; j++){
             evaluateThreatFrom(i, j)
         }
     }
@@ -314,7 +468,7 @@ function evaluateThreatFrom(i, j){
     }
 }
 
-export function tryThreaten(i, j, colour){
+function tryThreaten(i, j, colour){
 
     if(invalidCoordinates(i, j)===false){
         if(boardstate[i][j]==="." || boardstate[i][j][1] != colour){
@@ -322,4 +476,110 @@ export function tryThreaten(i, j, colour){
             //grid[i][j].classList.add(colour)
         }
     }
+}
+
+
+
+function pawnThreaten(i, j, colour){
+
+    if(colour==="w"){
+        // capture diagonals
+        tryThreaten(i-1, j-1, colour)
+        tryThreaten(i-1, j+1, colour)
+        // en passant
+        if(enpassant["available"]===true){
+            console.log("Google en passant")
+        }
+    }
+
+    if(colour==="b"){
+        // capture diagonals
+        tryThreaten(i+1, j-1, colour)
+        tryThreaten(i+1, j+1, colour)
+        // en passant
+        if(enpassant["available"]===true){
+            console.log("Google en passant")
+        }
+    }
+}
+
+function rookThreaten(i, j, colour){
+
+    // up
+    var x = i-1
+    while(tryThreaten(x, j, colour)===true){
+        x -= 1
+    }
+    // down
+    var x = i+1
+    while(tryThreaten(x, j, colour)===true){
+        x += 1
+    }
+    // left
+    var x = j-1
+    while(tryThreaten(i, x, colour)===true){
+        x -= 1
+    }
+    // right
+    var x = j+1
+    while(tryThreaten(i, x, colour)===true){
+        x += 1
+    }
+}
+
+
+function knightThreaten(i, j, colour){
+    
+    tryThreaten(i+2, j-1, colour)
+    tryThreaten(i+1, j-2, colour)
+    tryThreaten(i-1, j-2, colour)
+    tryThreaten(i-2, j-1, colour)
+    tryThreaten(i-2, j+1, colour)
+    tryThreaten(i-1, j+2, colour)
+    tryThreaten(i+1, j+2, colour)
+    tryThreaten(i+2, j+1, colour)
+}
+
+function bishopThreaten(i, j, colour){
+
+    // NE
+    var a = i-1
+    var b = j+1
+    while(tryThreaten(a, b, colour)===true){
+        a -= 1
+        b += 1
+    }
+    // SE
+    var a = i+1
+    var b = j+1
+    while(tryThreaten(a, b, colour)===true){
+        a += 1
+        b += 1
+    }
+    // SW
+    var a = i+1
+    var b = j-1
+    while(tryThreaten(a, b, colour)===true){
+        a += 1
+        b -= 1
+    }
+    // NW
+    var a = i-1
+    var b = j-1
+    while(tryThreaten(a, b, colour)===true){
+        a -= 1
+        b -= 1
+    }
+}
+
+function kingThreaten(i, j, colour){
+    
+    tryThreaten(i-1, j, colour)
+    tryThreaten(i-1, j+1, colour)
+    tryThreaten(i, j+1, colour)
+    tryThreaten(i+1, j+1, colour)
+    tryThreaten(i+1, j, colour)
+    tryThreaten(i+1, j-1, colour)
+    tryThreaten(i, j-1, colour)
+    tryThreaten(i-1, j-1, colour)
 }
