@@ -22,7 +22,6 @@ body {
 .boardtile{
     height: 100px;
     width: 100px;
-    background-color: pink;
     display: flex;
     cursor: pointer;
 }
