@@ -1,4 +1,4 @@
-# chessboard
+# [chessboard](https://eeoooue.github.io/chessboard/)
 
 moveable chess pieces on a chess board
 
