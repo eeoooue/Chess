@@ -311,7 +311,7 @@ function pawnOptions(i, j, colour){
         pawnCapture(i-1, j+1)
         // en passant
         if(enpassant["available"]===true){
-            console.log("HOLY HECK")
+            console.log("Google en passant")
         }
     }
 
@@ -327,7 +327,7 @@ function pawnOptions(i, j, colour){
         pawnCapture(i+1, j+1)
         // en passant
         if(enpassant["available"]===true){
-            console.log("HOLY HECK")
+            console.log("Google en passant")
         }
     }
 }
@@ -471,20 +471,11 @@ function evaluateThreatFrom(i, j){
 function tryThreaten(i, j, colour){
 
     if(invalidCoordinates(i, j)===false){
-        if(boardstate[i][j]==="."){
+        if(boardstate[i][j]==="." || boardstate[i][j][1] != colour){
             threat[colour][i][j] = true
-            // threatmarkings
-            grid[i][j].classList.add(colour)
-            console.log("hey I tried")
-            return true
-        }
-        if(boardstate[i][j][1] != colour){
-            threat[colour][i][j] = true
-            // threatmarkings
-            grid[i][j].classList.add(colour)
+            //grid[i][j].classList.add(colour)
         }
     }
-    return false
 }
 
 
