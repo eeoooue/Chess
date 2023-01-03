@@ -1,7 +1,7 @@
 
 import { fullboardPiecePaint, addDot, addCircle, paintPosition } from './painter.js';
 import { pawnOptions, rookOptions, knightOptions, bishopOptions, kingOptions } from './pieces.js';
-import { pawnThreaten, rookThreaten, knightThreaten, bishopThreaten, kingThreaten } from './pieces.js';
+import { initializeBoardstate } from './boardbuilder.js';
 
 
 const chessboard = document.querySelector(".board-container")
@@ -9,8 +9,6 @@ const chessboard = document.querySelector(".board-container")
 var turncount = 0
 var active = 0
 export var enpassant = {"available": false, "j": 0}
-
-// make two 8x8 threat grids to determine check
 
 export const piecelook = {
     "P": "pawn",
@@ -23,12 +21,9 @@ export const piecelook = {
 
 export var boardstate = []
 export var grid = []
-const threat = {"w": [], "b": []}
 
 const currentmove = {"start": null, "end": null}
 const turnplayer = ["w", "b"]
-const in_check = {"w": false, "b": false}
-const king_pos = {"w": [7, 4], "b": [0, 4]}
 
 
 paintTiles()
@@ -141,12 +136,6 @@ function clearHighlights(){
     document.querySelectorAll(".validmove").forEach(el => el.classList.remove("validmove"))
     document.querySelectorAll(".markerdot").forEach(el => el.remove())
     document.querySelectorAll(".markercircle").forEach(el => el.remove())
-
-    // removing threat markings
-    document.querySelectorAll(".b").forEach(el => el.classList.remove("b"))
-    document.querySelectorAll(".w").forEach(el => el.classList.remove("w"))
-
-    updateThreatGrids()
 }
 
 function findEndCell(){
@@ -175,27 +164,6 @@ function validEnd(i, j){
     }
     return false
 }
-
-function initializeBoardstate(){
-
-    boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"])
-    boardstate.push(["Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb"])
-
-    boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-    boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-
-    boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-    boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-
-    boardstate.push(["Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw"])
-    boardstate.push(["Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"])
-
-    initializeThreatGrids()
-
-}
-
-
-
 
 
 function paintTiles(){
@@ -256,70 +224,4 @@ export function pawnCapture(i, j, colour){
     }
     addCircle(i, j)
     
-}
-
-
-// threat check (8x8 boolean grids[i][j]===true)
-
-function initializeThreatGrids(){
-
-    for(let i=0; i<8; i++){
-        threat["b"].push([])
-        threat["w"].push([])
-        for(let j=0; j<8; j++){
-            threat["b"][i].push(false)
-            threat["w"][i].push(false)
-        }
-    }
-    updateThreatGrids()
-}
-
-function updateThreatGrids(){
-
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
-            threat["b"][i][j] = false
-            threat["w"][i][j] = false
-        }
-    }
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
-            evaluateThreatFrom(i, j)
-        }
-    }
-}
-
-function evaluateThreatFrom(i, j){
-
-    if(boardstate[i][j]=="."){
-        return
-    }
-    const piece = piecelook[boardstate[i][j][0]]
-    const colour = boardstate[i][j][1]
-
-    if(piece==="pawn"){
-        pawnThreaten(i, j, colour)
-    }
-    if(piece==="knight"){
-        knightThreaten(i, j, colour)
-    }
-    if(piece==="rook" || piece==="queen"){
-        rookThreaten(i, j, colour)
-    }
-    if(piece==="bishop" || piece==="queen"){
-        bishopThreaten(i, j, colour)
-    }
-    if(piece==="king"){
-        kingThreaten(i, j, colour)
-    }
-}
-
-export function tryThreaten(i, j, colour){
-
-    if(invalidCoordinates(i, j)===false){
-        if(boardstate[i][j]==="." || boardstate[i][j][1] != colour){
-            threat[colour][i][j] = true
-            //grid[i][j].classList.add(colour)
-        }
-    }
 }
