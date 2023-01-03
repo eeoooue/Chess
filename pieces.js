@@ -1,5 +1,5 @@
 
-import { enpassant, pawnMove, pawnCapture, legalPosition, tryThreaten } from './chessboard/main.js';
+import { enpassant, pawnMove, pawnCapture, legalPosition, tryThreaten } from './main.js';
 
 // movement options
 
