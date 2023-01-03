@@ -1,7 +1,7 @@
 
-import { fullboardPiecePaint, addDot, addCircle, paintPosition } from '/painter.js';
-import { pawnOptions, rookOptions, knightOptions, bishopOptions, kingOptions } from '/pieces.js';
-import { pawnThreaten, rookThreaten, knightThreaten, bishopThreaten, kingThreaten } from '/pieces.js';
+import { fullboardPiecePaint, addDot, addCircle, paintPosition } from './painter.js';
+import { pawnOptions, rookOptions, knightOptions, bishopOptions, kingOptions } from './pieces.js';
+import { pawnThreaten, rookThreaten, knightThreaten, bishopThreaten, kingThreaten } from './pieces.js';
 
 
 const chessboard = document.querySelector(".board-container")

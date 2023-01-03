@@ -1,7 +1,7 @@
 
 
 
-import { boardstate } from '/main.js';
+import { boardstate } from './main.js';
 
 
 export function legalPosition(i, j, colour){
