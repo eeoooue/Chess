@@ -1,0 +1,60 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,700;1,400&display=swap');
+
+body {
+    font-family: "Roboto", sans-serif;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    overflow: hidden;
+    margin: 0;
+    background-color: #312E2B;
+}
+
+.board-container{
+    height: 800px;
+    width: 800px;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.boardtile{
+    height: 100px;
+    width: 100px;
+    background-color: pink;
+    display: flex;
+    cursor: pointer;
+}
+
+.whitebg{
+    background-color: #EBECD0;
+}
+
+.blackbg{
+    background-color: #4682B4;
+}
+
+.whitebg.highlighted{
+    background-color: #87CEEB;
+}
+
+.blackbg.highlighted{
+    background-color: #6A5ACD;
+}
+
+.markerdot{
+    height: 25%;
+    width: 25%;
+    background-color: rgba(0,0,0,0.25);
+    border-radius: 50%;
+    margin: auto;
+}
+
+.markercircle{
+    height: 100px;
+    width: 100px;
+    background-color: rgba(0,0,0,0.25);
+    border-radius: 50%;
+    position: absolute;
+}
