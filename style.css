@@ -13,15 +13,15 @@ body {
 }
 
 .board-container{
-    height: 800px;
-    width: 800px;
+    height: min(80vh, 100vw);
+    width: min(80vh, 100vw);
     display: flex;
     flex-wrap: wrap;
 }
 
 .boardtile{
-    height: 100px;
-    width: 100px;
+    height: 12.5%;
+    width: 12.5%;
     display: flex;
     cursor: pointer;
 }
