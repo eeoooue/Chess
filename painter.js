@@ -1,5 +1,5 @@
 
-import { grid, boardstate, piecelook } from './chessboard/main.js';
+import { grid, boardstate, piecelook } from '/main.js';
 
 export function fullboardPiecePaint(){
 
