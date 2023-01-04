@@ -1,10 +1,10 @@
 
-import { fullboardPiecePaint, addDot, addCircle, paintPosition } from './painter.js';
+import { fullboardPiecePaint, addDot, addCircle, paintPosition, paintTiles } from './painter.js';
 import { pawnOptions, rookOptions, knightOptions, bishopOptions, kingOptions } from './pieces.js';
 import { initializeBoardstate } from './boardbuilder.js';
 
 
-const chessboard = document.querySelector(".board-container")
+export const chessboard = document.querySelector(".board-container")
 
 var turncount = 0
 var active = 0
@@ -30,15 +30,22 @@ paintTiles()
 initializeBoardstate()
 fullboardPiecePaint()
 
-function checkClickEvent(){
+export function checkClickEvent(){
 
     // prefer we just find the clicked coordinates & check for .validmove
 
+    const [i, j] = findClickedCell();
+
     if(active===0){
-        findStartCell()
+        processStartCell(i, j);
     }
     if(active===1){
-        findEndCell()
+        processEndCell(i, j)
+        if(active===1){
+            clearHighlights();
+            active = 0;
+            processStartCell(i, j);
+        }
     }
 }
 
@@ -64,13 +71,9 @@ function findClickedCell(){
     }
 }
 
+function processStartCell(i, j){
 
-
-function findStartCell(){
-
-    const [i, j] = findClickedCell();
     const tile = grid[i][j]
-
     if(validStart(i, j)===false){
         return;
     }
@@ -80,24 +83,23 @@ function findStartCell(){
     active += 1
 }
 
+function processEndCell(i, j){
+
+    const tile = grid[i][j]
+    if(validEnd(i, j)===false){
+        return;
+    }
+    currentmove["end"] = [i, j]
+    active = 0
+    submitMove()
+}
+
 function validStart(i, j){
 
     if(boardstate[i][j]==="." || boardstate[i][j][1] != turnplayer[turncount%2]){
         return false
     }
     return true
-}
-
-function findEndCell(){
-
-    const [i, j] = findClickedCell();
-    const tile = grid[i][j]
-    if(validEnd(i, j)===false){
-        return;
-    }
-    currentmove["end"] = [i, j]
-    active -= 1
-    submitMove()
 }
 
 function validEnd(i, j){
@@ -154,7 +156,6 @@ function submitMove(){
     paintPosition(a, b)
     clearHighlights()
     turncount += 1
-
 }
 
 function clearHighlights(){
@@ -167,30 +168,7 @@ function clearHighlights(){
 
 
 
-function paintTiles(){
 
-    const painting = ["whitebg", "blackbg"]
-
-    var paint = 0
-    for(let i=0; i<8; i++){
-        grid.push([])
-        for(let j=0; j<8; j++){
-            const tile = document.createElement("div")
-            tile.classList.add("boardtile")
-            tile.classList.add(painting[paint])
-            tile.addEventListener("click", () => {
-                tile.classList.toggle("clicked")
-                checkClickEvent()
-            })
-            grid[i].push(tile)
-            chessboard.appendChild(tile)
-            paint = (paint + 1) % 2
-        }
-        paint = (paint + 1) % 2
-    }
-
-    console.log(grid)
-}
 
 function invalidCoordinates(i, j){
 

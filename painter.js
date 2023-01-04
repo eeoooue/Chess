@@ -1,5 +1,5 @@
 
-import { grid, boardstate, piecelook, setValidMove } from './main.js';
+import { grid, chessboard, boardstate, piecelook, setValidMove, checkClickEvent } from './main.js';
 
 export function fullboardPiecePaint(){
 
@@ -47,5 +47,28 @@ export function paintPosition(i, j){
     tile.appendChild(img)
 }
 
+export function paintTiles(){
 
+    const painting = ["whitebg", "blackbg"]
+
+    var paint = 0
+    for(let i=0; i<8; i++){
+        grid.push([])
+        for(let j=0; j<8; j++){
+            const tile = document.createElement("div")
+            tile.classList.add("boardtile")
+            tile.classList.add(painting[paint])
+            tile.addEventListener("click", () => {
+                tile.classList.toggle("clicked")
+                checkClickEvent()
+            })
+            grid[i].push(tile)
+            chessboard.appendChild(tile)
+            paint = (paint + 1) % 2
+        }
+        paint = (paint + 1) % 2
+    }
+
+    console.log(grid)
+}
 
