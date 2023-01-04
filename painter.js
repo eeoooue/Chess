@@ -1,5 +1,5 @@
 
-import { grid, boardstate, piecelook } from './main.js';
+import { grid, boardstate, piecelook, setValidMove } from './main.js';
 
 export function fullboardPiecePaint(){
 
@@ -14,7 +14,7 @@ export function addDot(i, j){
     
     const dot = document.createElement("div")
     dot.classList.add("markerdot")
-    grid[i][j].classList.add("validmove")
+    setValidMove(i, j)
     grid[i][j].appendChild(dot)
 }
 
@@ -22,7 +22,7 @@ export function addCircle(i, j){
 
     const circle = document.createElement("div")
     circle.classList.add("markercircle")
-    grid[i][j].classList.add("validmove")
+    setValidMove(i, j)
     grid[i][j].appendChild(circle)
 }
 

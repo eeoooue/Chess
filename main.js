@@ -40,26 +40,44 @@ function checkClickEvent(){
     if(active===1){
         findEndCell()
     }
-    
 }
 
-function findStartCell(){
+export function setValidMove(i, j){
+
+    const tile = grid[i][j];
+    if(!tile.classList.contains("validmove")){
+        grid[i][j].classList.add("validmove")
+    }
+}
+
+
+function findClickedCell(){
 
     for(let i=0; i<8; i++){
         for(let j=0; j<8; j++){
             const tile = grid[i][j]
             if(tile.classList.contains("clicked")){
                 tile.classList.remove("clicked")
-                if(validStart(i, j)===false){
-                    return;
-                }
-                currentmove["start"] = [i, j]
-                activateStart(i, j)
-                tile.classList.add("highlighted")
-                active += 1
+                return [i, j];
             }
         }
     }
+}
+
+
+
+function findStartCell(){
+
+    const [i, j] = findClickedCell();
+    const tile = grid[i][j]
+
+    if(validStart(i, j)===false){
+        return;
+    }
+    currentmove["start"] = [i, j]
+    activateStart(i, j)
+    tile.classList.add("highlighted")
+    active += 1
 }
 
 function validStart(i, j){
@@ -69,6 +87,28 @@ function validStart(i, j){
     }
     return true
 }
+
+function findEndCell(){
+
+    const [i, j] = findClickedCell();
+    const tile = grid[i][j]
+    if(validEnd(i, j)===false){
+        return;
+    }
+    currentmove["end"] = [i, j]
+    active -= 1
+    submitMove()
+}
+
+function validEnd(i, j){
+
+    const tile = grid[i][j]
+    if(tile.classList.contains("validmove")){
+        return true
+    }
+    return false
+}
+
 
 
 function activateStart(i, j){
@@ -91,24 +131,11 @@ function activateStart(i, j){
     if(piece==="king"){
         kingOptions(i, j, colour)
     }
-
 }
 
 
 
-export function legalPosition(i, j, colour){
 
-    if(invalidCoordinates(i, j)===false){
-        if(boardstate[i][j]==="."){
-            addDot(i, j)
-            return true
-        }
-        if(boardstate[i][j][1] != colour){
-            addCircle(i, j)
-        }
-    }
-    return false
-}
 
 function submitMove(){
 
@@ -138,32 +165,6 @@ function clearHighlights(){
     document.querySelectorAll(".markercircle").forEach(el => el.remove())
 }
 
-function findEndCell(){
-
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
-            const tile = grid[i][j]
-            if(tile.classList.contains("clicked")){
-                tile.classList.remove("clicked")
-                if(validEnd(i, j)===false){
-                    return;
-                }
-                currentmove["end"] = [i, j]
-                active -= 1
-                submitMove()
-            }
-        }
-    }
-}
-
-function validEnd(i, j){
-
-    const tile = grid[i][j]
-    if(tile.classList.contains("validmove")){
-        return true
-    }
-    return false
-}
 
 
 function paintTiles(){
@@ -223,5 +224,19 @@ export function pawnCapture(i, j, colour){
         return
     }
     addCircle(i, j)
-    
+}
+
+export function legalPosition(i, j, colour){
+
+    if(invalidCoordinates(i, j)===true){
+        return false;
+    }
+    if(boardstate[i][j]==="."){
+        addDot(i, j)
+        return true
+    }
+    if(boardstate[i][j][1] != colour){
+        addCircle(i, j)
+    }
+    return false
 }

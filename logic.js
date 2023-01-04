@@ -18,3 +18,12 @@ export function legalPosition(i, j, colour){
     return false
 }
 
+
+export function setValidMove(i, j){
+
+    const tile = grid[i][j];
+
+    grid[i][j].classList.add("validmove")
+}
+
+
