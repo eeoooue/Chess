@@ -1,7 +1,7 @@
 
 import { boardstate } from './main.js';
 
-export function initializeBoardstate(){
+export function initializeBoardstate() {
 
     boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"])
     boardstate.push(["Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb"])

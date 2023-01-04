@@ -1,24 +1,24 @@
 
 import { grid, chessboard, boardstate, piecelook, setValidMove, checkClickEvent } from './main.js';
 
-export function fullboardPiecePaint(){
+export function fullboardPiecePaint() {
 
-    for(let i=0; i<8; i++){
-        for(let j=0; j<8; j++){
+    for (let i = 0; i < 8; i++) {
+        for (let j = 0; j < 8; j++) {
             paintPosition(i, j)
         }
     }
 }
 
-export function addDot(i, j){
-    
+export function addDot(i, j) {
+
     const dot = document.createElement("div")
     dot.classList.add("markerdot")
     setValidMove(i, j)
     grid[i][j].appendChild(dot)
 }
 
-export function addCircle(i, j){
+export function addCircle(i, j) {
 
     const circle = document.createElement("div")
     circle.classList.add("markercircle")
@@ -26,13 +26,12 @@ export function addCircle(i, j){
     grid[i][j].appendChild(circle)
 }
 
-
-export function paintPosition(i, j){
+export function paintPosition(i, j) {
 
     const tile = grid[i][j]
     tile.innerHTML = ""
 
-    if(boardstate[i][j]=="."){
+    if (boardstate[i][j] == ".") {
         return;
     }
 
@@ -47,14 +46,14 @@ export function paintPosition(i, j){
     tile.appendChild(img)
 }
 
-export function paintTiles(){
+export function paintTiles() {
 
     const painting = ["whitebg", "blackbg"]
 
     var paint = 0
-    for(let i=0; i<8; i++){
+    for (let i = 0; i < 8; i++) {
         grid.push([])
-        for(let j=0; j<8; j++){
+        for (let j = 0; j < 8; j++) {
             const tile = document.createElement("div")
             tile.classList.add("boardtile")
             tile.classList.add(painting[paint])
@@ -68,7 +67,4 @@ export function paintTiles(){
         }
         paint = (paint + 1) % 2
     }
-
-    console.log(grid)
 }
-
