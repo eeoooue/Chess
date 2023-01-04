@@ -3,7 +3,6 @@ import { fullboardPiecePaint, addDot, addCircle, paintPosition, paintTiles } fro
 import { pawnOptions, rookOptions, knightOptions, bishopOptions, kingOptions } from './pieces.js';
 import { initializeBoardstate } from './boardbuilder.js';
 
-
 export const chessboard = document.querySelector(".board-container")
 
 var turncount = 0
@@ -168,17 +167,6 @@ function clearHighlights(){
 
 
 
-
-
-function invalidCoordinates(i, j){
-
-    if(0 <= i && i < 8 && 0 <= j && j < 8){
-        return false
-    }
-    return true
-
-}
-
 // generating options for moving pieces
 
 export function pawnMove(i, j){
@@ -217,4 +205,12 @@ export function legalPosition(i, j, colour){
         addCircle(i, j)
     }
     return false
+}
+
+function invalidCoordinates(i, j){
+
+    if(0 <= i && i < 8 && 0 <= j && j < 8){
+        return false
+    }
+    return true
 }
