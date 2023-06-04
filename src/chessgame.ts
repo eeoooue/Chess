@@ -3,17 +3,14 @@ import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 
-
 export class ChessGame {
 
     public boardContainer: HTMLElement;
-
-    public turncount: number = 0
+    public turncount: number = 0;
     public active: boolean = false;
 
     public boardstate: string[][] = [];
     public grid: HTMLElement[][] = [];
-
     public moveTracker = new MoveTracker();
 
     constructor(boardContainer: HTMLElement) {
@@ -76,16 +73,10 @@ export class ChessGame {
 
     processStartCell(i: number, j: number) {
 
-        const tile = this.grid[i][j]
         if (this.validStart(i, j) === false) {
             return;
         }
-
-        this.moveTracker.setStartMove(i, j);
-
-        this.activateStart(i, j)
-        tile.classList.add("highlighted")
-        this.active = true;
+        this.activateStart(i, j);
     }
 
     processEndCell(i: number, j: number) {
@@ -124,6 +115,15 @@ export class ChessGame {
     }
 
     activateStart(i: number, j: number) {
+
+        const tile = this.grid[i][j]
+        this.moveTracker.setStartMove(i, j);
+        tile.classList.add("highlighted")
+        this.active = true;
+        this.populateOptions(i, j);
+    }
+
+    populateOptions(i: number, j: number){
 
         const pieceChar: string = this.boardstate[i][j][0];
         const pieceName = this.lookupPiece(pieceChar);
@@ -182,27 +182,23 @@ export class ChessGame {
         document.querySelectorAll(".markercircle").forEach(el => el.remove())
     }
 
-    legalPosition(i: number, j: number, colour: string) {
+    legalPosition(i: number, j: number, colour: string): boolean {
 
-        if (this.invalidCoordinates(i, j)) {
-            return false;
-        }
-        if (this.boardstate[i][j] === ".") {
-            this.addDot(i, j)
-            return true
-        }
-        if (this.boardstate[i][j][1] != colour) {
-            this.addCircle(i, j)
+        if (this.validCoordinates(i, j)){
+            if (this.boardstate[i][j] === ".") {
+                this.addDot(i, j)
+                return true
+            }
+            if (this.boardstate[i][j][1] != colour) {
+                this.addCircle(i, j)
+            }
         }
         return false
     }
 
-    invalidCoordinates(i: number, j: number) {
+    validCoordinates(i: number, j: number){
 
-        if (0 <= i && i < 8 && 0 <= j && j < 8) {
-            return false
-        }
-        return true
+        return (0 <= i && i < 8 && 0 <= j && j < 8);
     }
 
     initializeBoardstate() {
@@ -271,9 +267,10 @@ export class ChessGame {
             return;
         }
 
-        const piece = this.boardstate[i][j][0]
-        const colour = this.boardstate[i][j][1]
-        const imgpath = `assets\\${this.lookupPiece(piece)}_${colour}.png`
+        const piece = this.boardstate[i][j][0];
+        const pieceName = this.lookupPiece(piece);
+        const colour = this.boardstate[i][j][1];
+        const imgpath = `assets\\${pieceName}_${colour}.png`;
 
         const img = document.createElement("img")
         img.src = imgpath
@@ -286,7 +283,7 @@ export class ChessGame {
 
         const painting = ["whitebg", "blackbg"]
 
-        var paint = 0
+        var paint: number = 0;
         for (let i = 0; i < 8; i++) {
             this.grid.push([])
             for (let j = 0; j < 8; j++) {

@@ -16,7 +16,7 @@ export class Piece {
 
     invalidCoordinates(i: number, j: number){
 
-        return this.game.invalidCoordinates(i, j);
+        return !this.game.validCoordinates(i, j);
     }
 
     legalPosition(i: number, j: number, colour: string){

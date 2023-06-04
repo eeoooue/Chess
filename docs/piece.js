@@ -5,7 +5,7 @@ export class Piece {
         this.boardstate = game.boardstate;
     }
     invalidCoordinates(i, j) {
-        return this.game.invalidCoordinates(i, j);
+        return !this.game.validCoordinates(i, j);
     }
     legalPosition(i, j, colour) {
         return this.game.legalPosition(i, j, colour);

@@ -54,14 +54,10 @@ export class ChessGame {
         return null;
     }
     processStartCell(i, j) {
-        const tile = this.grid[i][j];
         if (this.validStart(i, j) === false) {
             return;
         }
-        this.moveTracker.setStartMove(i, j);
         this.activateStart(i, j);
-        tile.classList.add("highlighted");
-        this.active = true;
     }
     processEndCell(i, j) {
         if (this.validEnd(i, j) === false) {
@@ -91,6 +87,13 @@ export class ChessGame {
         return false;
     }
     activateStart(i, j) {
+        const tile = this.grid[i][j];
+        this.moveTracker.setStartMove(i, j);
+        tile.classList.add("highlighted");
+        this.active = true;
+        this.populateOptions(i, j);
+    }
+    populateOptions(i, j) {
         const pieceChar = this.boardstate[i][j][0];
         const pieceName = this.lookupPiece(pieceChar);
         const colour = this.boardstate[i][j][1];
@@ -138,23 +141,19 @@ export class ChessGame {
         document.querySelectorAll(".markercircle").forEach(el => el.remove());
     }
     legalPosition(i, j, colour) {
-        if (this.invalidCoordinates(i, j)) {
-            return false;
-        }
-        if (this.boardstate[i][j] === ".") {
-            this.addDot(i, j);
-            return true;
-        }
-        if (this.boardstate[i][j][1] != colour) {
-            this.addCircle(i, j);
+        if (this.validCoordinates(i, j)) {
+            if (this.boardstate[i][j] === ".") {
+                this.addDot(i, j);
+                return true;
+            }
+            if (this.boardstate[i][j][1] != colour) {
+                this.addCircle(i, j);
+            }
         }
         return false;
     }
-    invalidCoordinates(i, j) {
-        if (0 <= i && i < 8 && 0 <= j && j < 8) {
-            return false;
-        }
-        return true;
+    validCoordinates(i, j) {
+        return (0 <= i && i < 8 && 0 <= j && j < 8);
     }
     initializeBoardstate() {
         this.boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"]);
@@ -209,8 +208,9 @@ export class ChessGame {
             return;
         }
         const piece = this.boardstate[i][j][0];
+        const pieceName = this.lookupPiece(piece);
         const colour = this.boardstate[i][j][1];
-        const imgpath = `assets\\${this.lookupPiece(piece)}_${colour}.png`;
+        const imgpath = `assets\\${pieceName}_${colour}.png`;
         const img = document.createElement("img");
         img.src = imgpath;
         img.style.margin = "5px 5px";
