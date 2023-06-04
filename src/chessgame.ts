@@ -279,6 +279,11 @@ export class ChessGame {
 
         const painting = ["whitebg", "blackbg"]
 
+        if (this.chessboard == null) {
+
+            return;
+        }
+
         var paint = 0
         for (let i = 0; i < 8; i++) {
             this.grid.push([])
@@ -291,12 +296,7 @@ export class ChessGame {
                     this.checkClickEvent()
                 })
                 this.grid[i].push(tile)
-
-                if (this.chessboard != null) {
-
-                    this.chessboard.appendChild(tile)
-                }
-
+                this.chessboard.appendChild(tile)
                 paint = (paint + 1) % 2
             }
             paint = (paint + 1) % 2
