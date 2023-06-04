@@ -2,7 +2,7 @@ import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 export class ChessGame {
     constructor() {
-        this.chessboard = document.querySelector(".board-container");
+        this.boardContainer = document.querySelector(".board-container");
         this.turncount = 0;
         this.active = 0;
         this.boardstate = [];
@@ -211,7 +211,7 @@ export class ChessGame {
     }
     paintTiles() {
         const painting = ["whitebg", "blackbg"];
-        if (this.chessboard == null) {
+        if (this.boardContainer == null) {
             return;
         }
         var paint = 0;
@@ -226,7 +226,7 @@ export class ChessGame {
                     this.checkClickEvent();
                 });
                 this.grid[i].push(tile);
-                this.chessboard.appendChild(tile);
+                this.boardContainer.appendChild(tile);
                 paint = (paint + 1) % 2;
             }
             paint = (paint + 1) % 2;
