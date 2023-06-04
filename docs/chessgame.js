@@ -1,9 +1,10 @@
+import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 export class ChessGame {
     constructor(boardContainer) {
         this.turncount = 0;
-        this.active = 0;
+        this.active = false;
         this.boardstate = [];
         this.grid = [];
         this.moveTracker = new MoveTracker();
@@ -13,15 +14,21 @@ export class ChessGame {
         this.fullboardPiecePaint();
     }
     checkClickEvent() {
-        const [i, j] = this.findClickedCell();
-        if (this.active === 0) {
+        const move = this.findClickedCell();
+        if (!move) {
+            return;
+        }
+        const i = move.i;
+        const j = move.j;
+        if (!this.active) {
             this.processStartCell(i, j);
         }
-        if (this.active === 1) {
+        // else if goes here???
+        if (this.active) {
             this.processEndCell(i, j);
-            if (this.active === 1) {
+            if (this.active) {
                 this.clearHighlights();
-                this.active = 0;
+                this.active = false;
                 this.processStartCell(i, j);
             }
         }
@@ -39,12 +46,12 @@ export class ChessGame {
                 if (tile instanceof HTMLElement) {
                     if (tile.classList.contains("clicked")) {
                         tile.classList.remove("clicked");
-                        return [i, j];
+                        return new ChessMove(i, j);
                     }
                 }
             }
         }
-        return [-1, -1];
+        return null;
     }
     processStartCell(i, j) {
         const tile = this.grid[i][j];
@@ -54,14 +61,14 @@ export class ChessGame {
         this.moveTracker.setStartMove(i, j);
         this.activateStart(i, j);
         tile.classList.add("highlighted");
-        this.active += 1;
+        this.active = true;
     }
     processEndCell(i, j) {
         if (this.validEnd(i, j) === false) {
             return;
         }
         this.moveTracker.setEndMove(i, j);
-        this.active = 0;
+        this.active = false;
         this.submitMove();
     }
     getTurnPlayer() {

@@ -1,4 +1,5 @@
 
+import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 
@@ -8,7 +9,7 @@ export class ChessGame {
     public boardContainer: HTMLElement;
 
     public turncount: number = 0
-    public active: number = 0
+    public active: boolean = false;
 
     public boardstate: string[][] = [];
     public grid: HTMLElement[][] = [];
@@ -25,16 +26,24 @@ export class ChessGame {
 
     public checkClickEvent(): void {
 
-        const [i, j] = this.findClickedCell();
+        const move: ChessMove | null = this.findClickedCell();
 
-        if (this.active === 0) {
+        if (!move) {
+            return;
+        }
+
+        const i: number = move.i;
+        const j: number = move.j;
+
+        if (!this.active) {
             this.processStartCell(i, j);
         }
-        if (this.active === 1) {
+        // else if goes here???
+        if (this.active) {
             this.processEndCell(i, j)
-            if (this.active === 1) {
+            if (this.active) {
                 this.clearHighlights();
-                this.active = 0;
+                this.active = false;
                 this.processStartCell(i, j);
             }
         }
@@ -48,23 +57,21 @@ export class ChessGame {
         }
     }
 
-    findClickedCell(): number[] {
+    findClickedCell(): ChessMove | null {
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 const tile = this.grid[i][j]
-
                 if (tile instanceof HTMLElement) {
-
                     if (tile.classList.contains("clicked")) {
                         tile.classList.remove("clicked")
-                        return [i, j];
+                        return new ChessMove(i, j);
                     }
                 }
             }
         }
 
-        return [-1, -1];
+        return null;
     }
 
     processStartCell(i: number, j: number) {
@@ -78,7 +85,7 @@ export class ChessGame {
 
         this.activateStart(i, j)
         tile.classList.add("highlighted")
-        this.active += 1
+        this.active = true;
     }
 
     processEndCell(i: number, j: number) {
@@ -86,9 +93,8 @@ export class ChessGame {
         if (this.validEnd(i, j) === false) {
             return;
         }
-
         this.moveTracker.setEndMove(i, j);
-        this.active = 0
+        this.active = false;
         this.submitMove()
     }
 
@@ -100,7 +106,7 @@ export class ChessGame {
         return "b";
     }
 
-    validStart(i: number, j: number) {
+    validStart(i: number, j: number): boolean {
 
         if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] != this.getTurnPlayer()) {
             return false
@@ -108,7 +114,7 @@ export class ChessGame {
         return true
     }
 
-    validEnd(i: number, j: number) {
+    validEnd(i: number, j: number): boolean {
 
         const tile = this.grid[i][j]
         if (tile.classList.contains("validmove")) {
@@ -276,7 +282,7 @@ export class ChessGame {
         tile.appendChild(img)
     }
 
-    paintTiles() : void {
+    paintTiles(): void {
 
         const painting = ["whitebg", "blackbg"]
 
