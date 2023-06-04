@@ -2,4 +2,11 @@
 
 import { ChessGame } from './chessgame.js';
 
-new ChessGame();
+
+
+const boardContainer: HTMLElement | null = document.querySelector(".board-container")
+
+if (boardContainer){
+    new ChessGame(boardContainer);
+}
+

@@ -5,7 +5,7 @@ import { Piece } from "./piece.js";
 
 export class ChessGame {
 
-    public boardContainer = document.querySelector(".board-container")
+    public boardContainer: HTMLElement;
 
     public turncount: number = 0
     public active: number = 0
@@ -15,8 +15,9 @@ export class ChessGame {
 
     public moveTracker = new MoveTracker();
 
-    constructor() {
+    constructor(boardContainer: HTMLElement) {
 
+        this.boardContainer = boardContainer;
         this.paintTiles()
         this.initializeBoardstate()
         this.fullboardPiecePaint()
@@ -278,11 +279,6 @@ export class ChessGame {
     paintTiles() : void {
 
         const painting = ["whitebg", "blackbg"]
-
-        if (this.boardContainer == null) {
-
-            return;
-        }
 
         var paint = 0
         for (let i = 0; i < 8; i++) {

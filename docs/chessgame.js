@@ -1,13 +1,13 @@
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 export class ChessGame {
-    constructor() {
-        this.boardContainer = document.querySelector(".board-container");
+    constructor(boardContainer) {
         this.turncount = 0;
         this.active = 0;
         this.boardstate = [];
         this.grid = [];
         this.moveTracker = new MoveTracker();
+        this.boardContainer = boardContainer;
         this.paintTiles();
         this.initializeBoardstate();
         this.fullboardPiecePaint();
@@ -211,9 +211,6 @@ export class ChessGame {
     }
     paintTiles() {
         const painting = ["whitebg", "blackbg"];
-        if (this.boardContainer == null) {
-            return;
-        }
         var paint = 0;
         for (let i = 0; i < 8; i++) {
             this.grid.push([]);
