@@ -1,4 +1,5 @@
 import { MoveTracker } from "./movetracker.js";
+import { Piece } from "./piece.js";
 export class ChessGame {
     constructor() {
         this.chessboard = document.querySelector(".board-container");
@@ -84,23 +85,27 @@ export class ChessGame {
     }
     activateStart(i, j) {
         const pieceChar = this.boardstate[i][j][0];
-        const piece = this.lookupPiece(pieceChar);
+        const pieceName = this.lookupPiece(pieceChar);
         const colour = this.boardstate[i][j][1];
-        if (piece === "pawn") {
-            this.pawnOptions(i, j, colour);
+        const piece = this.instantiatePiece(pieceName);
+        if (pieceName === "pawn") {
+            piece.pawnOptions(i, j, colour);
         }
-        if (piece === "knight") {
-            this.knightOptions(i, j, colour);
+        if (pieceName === "knight") {
+            piece.knightOptions(i, j, colour);
         }
-        if (piece === "rook" || piece === "queen") {
-            this.rookOptions(i, j, colour);
+        if (pieceName === "rook" || pieceName === "queen") {
+            piece.rookOptions(i, j, colour);
         }
-        if (piece === "bishop" || piece === "queen") {
-            this.bishopOptions(i, j, colour);
+        if (pieceName === "bishop" || pieceName === "queen") {
+            piece.bishopOptions(i, j, colour);
         }
-        if (piece === "king") {
-            this.kingOptions(i, j, colour);
+        if (pieceName === "king") {
+            piece.kingOptions(i, j, colour);
         }
+    }
+    instantiatePiece(pieceName) {
+        return new Piece(this);
     }
     submitMove() {
         const startMove = this.moveTracker.getStartMove();
@@ -125,27 +130,8 @@ export class ChessGame {
         document.querySelectorAll(".markerdot").forEach(el => el.remove());
         document.querySelectorAll(".markercircle").forEach(el => el.remove());
     }
-    pawnMove(i, j) {
-        if (this.invalidCoordinates(i, j) === true) {
-            return false;
-        }
-        if (this.boardstate[i][j] === ".") {
-            this.addDot(i, j);
-            return true;
-        }
-        return false;
-    }
-    pawnCapture(i, j, colour) {
-        if (this.invalidCoordinates(i, j) === true) {
-            return;
-        }
-        if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] === colour) {
-            return;
-        }
-        this.addCircle(i, j);
-    }
     legalPosition(i, j, colour) {
-        if (this.invalidCoordinates(i, j) === true) {
+        if (this.invalidCoordinates(i, j)) {
             return false;
         }
         if (this.boardstate[i][j] === ".") {
@@ -244,103 +230,5 @@ export class ChessGame {
             }
             paint = (paint + 1) % 2;
         }
-    }
-    pawnOptions(i, j, colour) {
-        if (colour === "w") {
-            if (this.pawnMove(i - 1, j) === true) {
-                // starting bonus
-                if (i === 6) {
-                    this.pawnMove(i - 2, j);
-                }
-            }
-            // capture diagonals
-            this.pawnCapture(i - 1, j - 1, colour);
-            this.pawnCapture(i - 1, j + 1, colour);
-            // en passant
-        }
-        if (colour === "b") {
-            if (this.pawnMove(i + 1, j) === true) {
-                // starting bonus
-                if (i === 1) {
-                    this.pawnMove(i + 2, j);
-                }
-            }
-            // capture diagonals
-            this.pawnCapture(i + 1, j - 1, colour);
-            this.pawnCapture(i + 1, j + 1, colour);
-            // en passant
-        }
-    }
-    rookOptions(i, j, colour) {
-        // up
-        var x = i - 1;
-        while (this.legalPosition(x, j, colour) === true) {
-            x -= 1;
-        }
-        // down
-        var x = i + 1;
-        while (this.legalPosition(x, j, colour) === true) {
-            x += 1;
-        }
-        // left
-        var x = j - 1;
-        while (this.legalPosition(i, x, colour) === true) {
-            x -= 1;
-        }
-        // right
-        var x = j + 1;
-        while (this.legalPosition(i, x, colour) === true) {
-            x += 1;
-        }
-    }
-    knightOptions(i, j, colour) {
-        this.legalPosition(i + 2, j - 1, colour);
-        this.legalPosition(i + 1, j - 2, colour);
-        this.legalPosition(i - 1, j - 2, colour);
-        this.legalPosition(i - 2, j - 1, colour);
-        this.legalPosition(i - 2, j + 1, colour);
-        this.legalPosition(i - 1, j + 2, colour);
-        this.legalPosition(i + 1, j + 2, colour);
-        this.legalPosition(i + 2, j + 1, colour);
-    }
-    bishopOptions(i, j, colour) {
-        // NE
-        var a = i - 1;
-        var b = j + 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1;
-            b += 1;
-        }
-        // SE
-        var a = i + 1;
-        var b = j + 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1;
-            b += 1;
-        }
-        // SW
-        var a = i + 1;
-        var b = j - 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1;
-            b -= 1;
-        }
-        // NW
-        var a = i - 1;
-        var b = j - 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1;
-            b -= 1;
-        }
-    }
-    kingOptions(i, j, colour) {
-        this.legalPosition(i - 1, j, colour);
-        this.legalPosition(i - 1, j + 1, colour);
-        this.legalPosition(i, j + 1, colour);
-        this.legalPosition(i + 1, j + 1, colour);
-        this.legalPosition(i + 1, j, colour);
-        this.legalPosition(i + 1, j - 1, colour);
-        this.legalPosition(i, j - 1, colour);
-        this.legalPosition(i - 1, j - 1, colour);
     }
 }

@@ -1,5 +1,6 @@
 
 import { MoveTracker } from "./movetracker.js";
+import { Piece } from "./piece.js";
 
 
 export class ChessGame {
@@ -84,16 +85,15 @@ export class ChessGame {
         if (this.validEnd(i, j) === false) {
             return;
         }
-        
-        this.moveTracker.setEndMove(i, j);
 
+        this.moveTracker.setEndMove(i, j);
         this.active = 0
         this.submitMove()
     }
 
     getTurnPlayer(): string {
 
-        if (this.turncount % 2 == 0){
+        if (this.turncount % 2 == 0) {
             return "w";
         }
         return "b";
@@ -119,24 +119,30 @@ export class ChessGame {
     activateStart(i: number, j: number) {
 
         const pieceChar: string = this.boardstate[i][j][0];
-        const piece = this.lookupPiece(pieceChar);
-        const colour = this.boardstate[i][j][1]
+        const pieceName = this.lookupPiece(pieceChar);
+        const colour = this.boardstate[i][j][1];
+        const piece = this.instantiatePiece(pieceName);
 
-        if (piece === "pawn") {
-            this.pawnOptions(i, j, colour)
+        if (pieceName === "pawn") {
+            piece.pawnOptions(i, j, colour)
         }
-        if (piece === "knight") {
-            this.knightOptions(i, j, colour)
+        if (pieceName === "knight") {
+            piece.knightOptions(i, j, colour)
         }
-        if (piece === "rook" || piece === "queen") {
-            this.rookOptions(i, j, colour)
+        if (pieceName === "rook" || pieceName === "queen") {
+            piece.rookOptions(i, j, colour)
         }
-        if (piece === "bishop" || piece === "queen") {
-            this.bishopOptions(i, j, colour)
+        if (pieceName === "bishop" || pieceName === "queen") {
+            piece.bishopOptions(i, j, colour)
         }
-        if (piece === "king") {
-            this.kingOptions(i, j, colour)
+        if (pieceName === "king") {
+            piece.kingOptions(i, j, colour)
         }
+    }
+
+    instantiatePiece(pieceName: string): Piece {
+
+        return new Piece(this);
     }
 
     submitMove() {
@@ -144,7 +150,7 @@ export class ChessGame {
         const startMove: number[] | undefined = this.moveTracker.getStartMove();
         const endMove: number[] | undefined = this.moveTracker.getEndMove();
 
-        if (!startMove || !endMove){
+        if (!startMove || !endMove) {
             return;
         }
 
@@ -169,32 +175,9 @@ export class ChessGame {
         document.querySelectorAll(".markercircle").forEach(el => el.remove())
     }
 
-    pawnMove(i: number, j: number) {
-
-        if (this.invalidCoordinates(i, j) === true) {
-            return false
-        }
-        if (this.boardstate[i][j] === ".") {
-            this.addDot(i, j)
-            return true
-        }
-        return false
-    }
-
-    pawnCapture(i: number, j: number, colour: string) {
-
-        if (this.invalidCoordinates(i, j) === true) {
-            return
-        }
-        if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] === colour) {
-            return
-        }
-        this.addCircle(i, j)
-    }
-
     legalPosition(i: number, j: number, colour: string) {
 
-        if (this.invalidCoordinates(i, j) === true) {
+        if (this.invalidCoordinates(i, j)) {
             return false;
         }
         if (this.boardstate[i][j] === ".") {
@@ -227,7 +210,6 @@ export class ChessGame {
         this.boardstate.push(["Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"])
     }
 
-
     fullboardPiecePaint() {
 
         for (let i = 0; i < 8; i++) {
@@ -253,10 +235,9 @@ export class ChessGame {
         this.grid[i][j].appendChild(circle)
     }
 
-
     lookupPiece(piece: string): string {
 
-        switch (piece){
+        switch (piece) {
             case "P":
                 return "pawn";
             case "R":
@@ -294,7 +275,7 @@ export class ChessGame {
         tile.appendChild(img)
     }
 
-    paintTiles() {
+    paintTiles() : void {
 
         const painting = ["whitebg", "blackbg"]
 
@@ -320,116 +301,5 @@ export class ChessGame {
             }
             paint = (paint + 1) % 2
         }
-    }
-
-
-
-    pawnOptions(i: number, j: number, colour: string) {
-
-        if (colour === "w") {
-            if (this.pawnMove(i - 1, j) === true) {
-                // starting bonus
-                if (i === 6) {
-                    this.pawnMove(i - 2, j)
-                }
-            }
-            // capture diagonals
-            this.pawnCapture(i - 1, j - 1, colour)
-            this.pawnCapture(i - 1, j + 1, colour)
-            // en passant
-        }
-
-        if (colour === "b") {
-            if (this.pawnMove(i + 1, j) === true) {
-                // starting bonus
-                if (i === 1) {
-                    this.pawnMove(i + 2, j)
-                }
-            }
-            // capture diagonals
-            this.pawnCapture(i + 1, j - 1, colour)
-            this.pawnCapture(i + 1, j + 1, colour)
-            // en passant
-        }
-    }
-
-    rookOptions(i: number, j: number, colour: string) {
-
-        // up
-        var x = i - 1
-        while (this.legalPosition(x, j, colour) === true) {
-            x -= 1
-        }
-        // down
-        var x = i + 1
-        while (this.legalPosition(x, j, colour) === true) {
-            x += 1
-        }
-        // left
-        var x = j - 1
-        while (this.legalPosition(i, x, colour) === true) {
-            x -= 1
-        }
-        // right
-        var x = j + 1
-        while (this.legalPosition(i, x, colour) === true) {
-            x += 1
-        }
-    }
-
-    knightOptions(i: number, j: number, colour: string) {
-
-        this.legalPosition(i + 2, j - 1, colour)
-        this.legalPosition(i + 1, j - 2, colour)
-        this.legalPosition(i - 1, j - 2, colour)
-        this.legalPosition(i - 2, j - 1, colour)
-        this.legalPosition(i - 2, j + 1, colour)
-        this.legalPosition(i - 1, j + 2, colour)
-        this.legalPosition(i + 1, j + 2, colour)
-        this.legalPosition(i + 2, j + 1, colour)
-    }
-
-    bishopOptions(i: number, j: number, colour: string) {
-
-        // NE
-        var a = i - 1
-        var b = j + 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1
-            b += 1
-        }
-        // SE
-        var a = i + 1
-        var b = j + 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1
-            b += 1
-        }
-        // SW
-        var a = i + 1
-        var b = j - 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1
-            b -= 1
-        }
-        // NW
-        var a = i - 1
-        var b = j - 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1
-            b -= 1
-        }
-    }
-
-    kingOptions(i: number, j: number, colour: string) {
-
-        this.legalPosition(i - 1, j, colour)
-        this.legalPosition(i - 1, j + 1, colour)
-        this.legalPosition(i, j + 1, colour)
-        this.legalPosition(i + 1, j + 1, colour)
-        this.legalPosition(i + 1, j, colour)
-        this.legalPosition(i + 1, j - 1, colour)
-        this.legalPosition(i, j - 1, colour)
-        this.legalPosition(i - 1, j - 1, colour)
     }
 }
