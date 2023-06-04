@@ -1,27 +1,32 @@
+import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
+import { Piece } from "./piece.js";
 export class ChessGame {
-    constructor() {
-        this.chessboard = document.querySelector(".board-container");
+    constructor(boardContainer) {
         this.turncount = 0;
-        this.active = 0;
+        this.active = false;
         this.boardstate = [];
         this.grid = [];
         this.moveTracker = new MoveTracker();
+        this.boardContainer = boardContainer;
         this.paintTiles();
         this.initializeBoardstate();
         this.fullboardPiecePaint();
     }
     checkClickEvent() {
-        const [i, j] = this.findClickedCell();
-        if (this.active === 0) {
-            this.processStartCell(i, j);
+        const move = this.findClickedCell();
+        if (!move) {
+            return;
         }
-        if (this.active === 1) {
-            this.processEndCell(i, j);
-            if (this.active === 1) {
+        if (!this.active) {
+            this.processStartMove(move);
+        }
+        else if (this.active) {
+            this.processEndCell(move);
+            if (this.active) {
                 this.clearHighlights();
-                this.active = 0;
-                this.processStartCell(i, j);
+                this.active = false;
+                this.processStartMove(move);
             }
         }
     }
@@ -38,30 +43,12 @@ export class ChessGame {
                 if (tile instanceof HTMLElement) {
                     if (tile.classList.contains("clicked")) {
                         tile.classList.remove("clicked");
-                        return [i, j];
+                        return new ChessMove(i, j);
                     }
                 }
             }
         }
-        return [-1, -1];
-    }
-    processStartCell(i, j) {
-        const tile = this.grid[i][j];
-        if (this.validStart(i, j) === false) {
-            return;
-        }
-        this.moveTracker.setStartMove(i, j);
-        this.activateStart(i, j);
-        tile.classList.add("highlighted");
-        this.active += 1;
-    }
-    processEndCell(i, j) {
-        if (this.validEnd(i, j) === false) {
-            return;
-        }
-        this.moveTracker.setEndMove(i, j);
-        this.active = 0;
-        this.submitMove();
+        return null;
     }
     getTurnPlayer() {
         if (this.turncount % 2 == 0) {
@@ -82,25 +69,48 @@ export class ChessGame {
         }
         return false;
     }
+    processStartMove(move) {
+        if (this.validStart(move.i, move.j)) {
+            this.activateStart(move.i, move.j);
+        }
+    }
+    processEndCell(move) {
+        if (this.validEnd(move.i, move.j)) {
+            this.moveTracker.setEndMove(move.i, move.j);
+            this.active = false;
+            this.submitMove();
+        }
+    }
     activateStart(i, j) {
+        const tile = this.grid[i][j];
+        this.moveTracker.setStartMove(i, j);
+        tile.classList.add("highlighted");
+        this.active = true;
+        this.populateOptions(i, j);
+    }
+    populateOptions(i, j) {
         const pieceChar = this.boardstate[i][j][0];
-        const piece = this.lookupPiece(pieceChar);
+        const pieceName = this.lookupPiece(pieceChar);
         const colour = this.boardstate[i][j][1];
-        if (piece === "pawn") {
-            this.pawnOptions(i, j, colour);
+        const piece = this.instantiatePiece(pieceName);
+        if (pieceName === "pawn") {
+            piece.pawnOptions(i, j, colour);
         }
-        if (piece === "knight") {
-            this.knightOptions(i, j, colour);
+        if (pieceName === "knight") {
+            piece.knightOptions(i, j, colour);
         }
-        if (piece === "rook" || piece === "queen") {
-            this.rookOptions(i, j, colour);
+        if (pieceName === "rook" || pieceName === "queen") {
+            piece.rookOptions(i, j, colour);
         }
-        if (piece === "bishop" || piece === "queen") {
-            this.bishopOptions(i, j, colour);
+        if (pieceName === "bishop" || pieceName === "queen") {
+            piece.bishopOptions(i, j, colour);
         }
-        if (piece === "king") {
-            this.kingOptions(i, j, colour);
+        if (pieceName === "king") {
+            piece.kingOptions(i, j, colour);
         }
+    }
+    instantiatePiece(pieceName) {
+        return new Piece(this);
     }
     submitMove() {
         const startMove = this.moveTracker.getStartMove();
@@ -125,43 +135,20 @@ export class ChessGame {
         document.querySelectorAll(".markerdot").forEach(el => el.remove());
         document.querySelectorAll(".markercircle").forEach(el => el.remove());
     }
-    pawnMove(i, j) {
-        if (this.invalidCoordinates(i, j) === true) {
-            return false;
-        }
-        if (this.boardstate[i][j] === ".") {
-            this.addDot(i, j);
-            return true;
-        }
-        return false;
-    }
-    pawnCapture(i, j, colour) {
-        if (this.invalidCoordinates(i, j) === true) {
-            return;
-        }
-        if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] === colour) {
-            return;
-        }
-        this.addCircle(i, j);
-    }
     legalPosition(i, j, colour) {
-        if (this.invalidCoordinates(i, j) === true) {
-            return false;
-        }
-        if (this.boardstate[i][j] === ".") {
-            this.addDot(i, j);
-            return true;
-        }
-        if (this.boardstate[i][j][1] != colour) {
-            this.addCircle(i, j);
+        if (this.validCoordinates(i, j)) {
+            if (this.boardstate[i][j] === ".") {
+                this.addDot(i, j);
+                return true;
+            }
+            if (this.boardstate[i][j][1] != colour) {
+                this.addCircle(i, j);
+            }
         }
         return false;
     }
-    invalidCoordinates(i, j) {
-        if (0 <= i && i < 8 && 0 <= j && j < 8) {
-            return false;
-        }
-        return true;
+    validCoordinates(i, j) {
+        return (0 <= i && i < 8 && 0 <= j && j < 8);
     }
     initializeBoardstate() {
         this.boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"]);
@@ -216,8 +203,9 @@ export class ChessGame {
             return;
         }
         const piece = this.boardstate[i][j][0];
+        const pieceName = this.lookupPiece(piece);
         const colour = this.boardstate[i][j][1];
-        const imgpath = `assets\\${this.lookupPiece(piece)}_${colour}.png`;
+        const imgpath = `assets\\${pieceName}_${colour}.png`;
         const img = document.createElement("img");
         img.src = imgpath;
         img.style.margin = "5px 5px";
@@ -237,110 +225,10 @@ export class ChessGame {
                     this.checkClickEvent();
                 });
                 this.grid[i].push(tile);
-                if (this.chessboard != null) {
-                    this.chessboard.appendChild(tile);
-                }
+                this.boardContainer.appendChild(tile);
                 paint = (paint + 1) % 2;
             }
             paint = (paint + 1) % 2;
         }
-    }
-    pawnOptions(i, j, colour) {
-        if (colour === "w") {
-            if (this.pawnMove(i - 1, j) === true) {
-                // starting bonus
-                if (i === 6) {
-                    this.pawnMove(i - 2, j);
-                }
-            }
-            // capture diagonals
-            this.pawnCapture(i - 1, j - 1, colour);
-            this.pawnCapture(i - 1, j + 1, colour);
-            // en passant
-        }
-        if (colour === "b") {
-            if (this.pawnMove(i + 1, j) === true) {
-                // starting bonus
-                if (i === 1) {
-                    this.pawnMove(i + 2, j);
-                }
-            }
-            // capture diagonals
-            this.pawnCapture(i + 1, j - 1, colour);
-            this.pawnCapture(i + 1, j + 1, colour);
-            // en passant
-        }
-    }
-    rookOptions(i, j, colour) {
-        // up
-        var x = i - 1;
-        while (this.legalPosition(x, j, colour) === true) {
-            x -= 1;
-        }
-        // down
-        var x = i + 1;
-        while (this.legalPosition(x, j, colour) === true) {
-            x += 1;
-        }
-        // left
-        var x = j - 1;
-        while (this.legalPosition(i, x, colour) === true) {
-            x -= 1;
-        }
-        // right
-        var x = j + 1;
-        while (this.legalPosition(i, x, colour) === true) {
-            x += 1;
-        }
-    }
-    knightOptions(i, j, colour) {
-        this.legalPosition(i + 2, j - 1, colour);
-        this.legalPosition(i + 1, j - 2, colour);
-        this.legalPosition(i - 1, j - 2, colour);
-        this.legalPosition(i - 2, j - 1, colour);
-        this.legalPosition(i - 2, j + 1, colour);
-        this.legalPosition(i - 1, j + 2, colour);
-        this.legalPosition(i + 1, j + 2, colour);
-        this.legalPosition(i + 2, j + 1, colour);
-    }
-    bishopOptions(i, j, colour) {
-        // NE
-        var a = i - 1;
-        var b = j + 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1;
-            b += 1;
-        }
-        // SE
-        var a = i + 1;
-        var b = j + 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1;
-            b += 1;
-        }
-        // SW
-        var a = i + 1;
-        var b = j - 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1;
-            b -= 1;
-        }
-        // NW
-        var a = i - 1;
-        var b = j - 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1;
-            b -= 1;
-        }
-    }
-    kingOptions(i, j, colour) {
-        this.legalPosition(i - 1, j, colour);
-        this.legalPosition(i - 1, j + 1, colour);
-        this.legalPosition(i, j + 1, colour);
-        this.legalPosition(i + 1, j + 1, colour);
-        this.legalPosition(i + 1, j, colour);
-        this.legalPosition(i + 1, j - 1, colour);
-        this.legalPosition(i, j - 1, colour);
-        this.legalPosition(i - 1, j - 1, colour);
     }
 }

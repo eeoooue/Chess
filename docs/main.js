@@ -1,2 +1,5 @@
 import { ChessGame } from './chessgame.js';
-new ChessGame();
+const boardContainer = document.querySelector(".board-container");
+if (boardContainer) {
+    new ChessGame(boardContainer);
+}
