@@ -73,10 +73,9 @@ export class ChessGame {
 
     processStartCell(i: number, j: number) {
 
-        if (this.validStart(i, j) === false) {
-            return;
+        if (this.validStart(i, j)) {
+            this.activateStart(i, j);
         }
-        this.activateStart(i, j);
     }
 
     processEndCell(i: number, j: number) {
