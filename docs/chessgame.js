@@ -18,18 +18,15 @@ export class ChessGame {
         if (!move) {
             return;
         }
-        const i = move.i;
-        const j = move.j;
         if (!this.active) {
-            this.processStartCell(i, j);
+            this.processStartMove(move);
         }
-        // else if goes here???
-        if (this.active) {
-            this.processEndCell(i, j);
+        else if (this.active) {
+            this.processEndCell(move);
             if (this.active) {
                 this.clearHighlights();
                 this.active = false;
-                this.processStartCell(i, j);
+                this.processStartMove(move);
             }
         }
     }
@@ -53,19 +50,6 @@ export class ChessGame {
         }
         return null;
     }
-    processStartCell(i, j) {
-        if (this.validStart(i, j)) {
-            this.activateStart(i, j);
-        }
-    }
-    processEndCell(i, j) {
-        if (this.validEnd(i, j) === false) {
-            return;
-        }
-        this.moveTracker.setEndMove(i, j);
-        this.active = false;
-        this.submitMove();
-    }
     getTurnPlayer() {
         if (this.turncount % 2 == 0) {
             return "w";
@@ -84,6 +68,18 @@ export class ChessGame {
             return true;
         }
         return false;
+    }
+    processStartMove(move) {
+        if (this.validStart(move.i, move.j)) {
+            this.activateStart(move.i, move.j);
+        }
+    }
+    processEndCell(move) {
+        if (this.validEnd(move.i, move.j)) {
+            this.moveTracker.setEndMove(move.i, move.j);
+            this.active = false;
+            this.submitMove();
+        }
     }
     activateStart(i, j) {
         const tile = this.grid[i][j];

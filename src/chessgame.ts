@@ -29,19 +29,14 @@ export class ChessGame {
             return;
         }
 
-        const i: number = move.i;
-        const j: number = move.j;
-
         if (!this.active) {
-            this.processStartCell(i, j);
-        }
-        // else if goes here???
-        if (this.active) {
-            this.processEndCell(i, j)
+            this.processStartMove(move);
+        } else if (this.active) {
+            this.processEndCell(move)
             if (this.active) {
                 this.clearHighlights();
                 this.active = false;
-                this.processStartCell(i, j);
+                this.processStartMove(move);
             }
         }
     }
@@ -71,22 +66,7 @@ export class ChessGame {
         return null;
     }
 
-    processStartCell(i: number, j: number) {
-
-        if (this.validStart(i, j)) {
-            this.activateStart(i, j);
-        }
-    }
-
-    processEndCell(i: number, j: number) {
-
-        if (this.validEnd(i, j) === false) {
-            return;
-        }
-        this.moveTracker.setEndMove(i, j);
-        this.active = false;
-        this.submitMove()
-    }
+    
 
     getTurnPlayer(): string {
 
@@ -113,6 +93,22 @@ export class ChessGame {
         return false
     }
 
+    processStartMove(move: ChessMove) {
+
+        if (this.validStart(move.i, move.j)) {
+            this.activateStart(move.i, move.j);
+        }
+    }
+
+    processEndCell(move: ChessMove) {
+
+        if (this.validEnd(move.i, move.j)) {
+            this.moveTracker.setEndMove(move.i, move.j);
+            this.active = false;
+            this.submitMove();
+        }
+    }
+
     activateStart(i: number, j: number) {
 
         const tile = this.grid[i][j]
@@ -122,7 +118,7 @@ export class ChessGame {
         this.populateOptions(i, j);
     }
 
-    populateOptions(i: number, j: number){
+    populateOptions(i: number, j: number) {
 
         const pieceChar: string = this.boardstate[i][j][0];
         const pieceName = this.lookupPiece(pieceChar);
@@ -183,7 +179,7 @@ export class ChessGame {
 
     legalPosition(i: number, j: number, colour: string): boolean {
 
-        if (this.validCoordinates(i, j)){
+        if (this.validCoordinates(i, j)) {
             if (this.boardstate[i][j] === ".") {
                 this.addDot(i, j)
                 return true
@@ -195,7 +191,7 @@ export class ChessGame {
         return false
     }
 
-    validCoordinates(i: number, j: number){
+    validCoordinates(i: number, j: number) {
 
         return (0 <= i && i < 8 && 0 <= j && j < 8);
     }
