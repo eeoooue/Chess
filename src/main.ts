@@ -1,12 +1,11 @@
 
 
-import { ChessGame } from './chessgame.js';
-
+import { WebChessGame } from './webchessgame.js';
 
 
 const boardContainer: HTMLElement | null = document.querySelector(".board-container")
 
 if (boardContainer){
-    new ChessGame(boardContainer);
+    new WebChessGame(boardContainer);
 }
 

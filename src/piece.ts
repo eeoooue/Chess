@@ -1,14 +1,14 @@
 
 
-import { ChessGame } from './chessgame.js';
+import { WebChessGame } from './webchessgame.js';
 
 
 export class Piece {
 
-    public game: ChessGame;
+    public game: WebChessGame;
     public boardstate: string[][] = [];
 
-    constructor(game: ChessGame){
+    constructor(game: WebChessGame){
 
         this.game = game;
         this.boardstate = game.boardstate;

@@ -3,7 +3,7 @@ import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 
-export class ChessGame {
+export class WebChessGame {
 
     public boardContainer: HTMLElement;
     public turncount: number = 0;
