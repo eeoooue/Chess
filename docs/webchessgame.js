@@ -15,19 +15,8 @@ export class WebChessGame {
     }
     checkClickEvent() {
         const move = this.findClickedCell();
-        if (!move) {
-            return;
-        }
-        if (!this.active) {
-            this.game.processStartMove(move);
-        }
-        else if (this.active) {
-            this.game.processEndCell(move);
-            if (this.active) {
-                this.clearHighlights();
-                this.active = false;
-                this.game.processStartMove(move);
-            }
+        if (move) {
+            this.game.interpretSelection(move);
         }
     }
     setValidMove(i, j) {
@@ -49,23 +38,6 @@ export class WebChessGame {
             }
         }
         return null;
-    }
-    submitMove() {
-        const startMove = this.moveTracker.getStartMove();
-        const endMove = this.moveTracker.getEndMove();
-        if (!startMove || !endMove) {
-            return;
-        }
-        let a = startMove[0];
-        let b = startMove[1];
-        let x = endMove[0];
-        let y = endMove[1];
-        this.game.boardstate[x][y] = this.game.boardstate[a][b];
-        this.game.boardstate[a][b] = ".";
-        this.paintPosition(x, y);
-        this.paintPosition(a, b);
-        this.clearHighlights();
-        this.turncount += 1;
     }
     clearHighlights() {
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));

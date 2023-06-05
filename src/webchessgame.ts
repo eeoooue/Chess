@@ -27,19 +27,8 @@ export class WebChessGame {
 
         const move: ChessMove | null = this.findClickedCell();
 
-        if (!move) {
-            return;
-        }
-
-        if (!this.active) {
-            this.game.processStartMove(move);
-        } else if (this.active) {
-            this.game.processEndCell(move)
-            if (this.active) {
-                this.clearHighlights();
-                this.active = false;
-                this.game.processStartMove(move);
-            }
+        if (move) {
+            this.game.interpretSelection(move);
         }
     }
 
@@ -66,30 +55,6 @@ export class WebChessGame {
         }
 
         return null;
-    }
-
-    
-
-    submitMove() {
-
-        const startMove: number[] | undefined = this.moveTracker.getStartMove();
-        const endMove: number[] | undefined = this.moveTracker.getEndMove();
-
-        if (!startMove || !endMove) {
-            return;
-        }
-
-        let a = startMove[0];
-        let b = startMove[1];
-        let x = endMove[0];
-        let y = endMove[1];
-
-        this.game.boardstate[x][y] = this.game.boardstate[a][b]
-        this.game.boardstate[a][b] = "."
-        this.paintPosition(x, y)
-        this.paintPosition(a, b)
-        this.clearHighlights()
-        this.turncount += 1
     }
 
     clearHighlights() {

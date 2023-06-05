@@ -13,6 +13,19 @@ export class ChessGame {
         this.turncount = 0;
         this.webgame = webgame;
     }
+    interpretSelection(move) {
+        if (!this.active) {
+            this.processStartMove(move);
+        }
+        else if (this.active) {
+            this.processEndCell(move);
+            if (this.active) {
+                this.webgame.clearHighlights();
+                this.active = false;
+                this.processStartMove(move);
+            }
+        }
+    }
     canStepHere(piece, i, j) {
         if (!this.validCoordinates(i, j)) {
             return false;
@@ -97,8 +110,25 @@ export class ChessGame {
         if (this.validEnd(move.i, move.j)) {
             this.moveTracker.setEndMove(move.i, move.j);
             this.active = false;
-            this.webgame.submitMove();
+            this.submitMove();
+            this.turncount += 1;
         }
+    }
+    submitMove() {
+        const startMove = this.moveTracker.getStartMove();
+        const endMove = this.moveTracker.getEndMove();
+        if (!startMove || !endMove) {
+            return;
+        }
+        let a = startMove[0];
+        let b = startMove[1];
+        let x = endMove[0];
+        let y = endMove[1];
+        this.boardstate[x][y] = this.boardstate[a][b];
+        this.boardstate[a][b] = ".";
+        this.webgame.paintPosition(x, y);
+        this.webgame.paintPosition(a, b);
+        this.webgame.clearHighlights();
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {
