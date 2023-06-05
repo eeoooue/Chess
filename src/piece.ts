@@ -1,17 +1,19 @@
 
 
+import { ChessGame } from './chessgame';
 import { WebChessGame } from './webchessgame.js';
-
 
 export class Piece {
 
-    public game: WebChessGame;
+    public webgame: WebChessGame;
     public boardstate: string[][] = [];
+    public game: ChessGame;
 
-    constructor(game: WebChessGame){
+    constructor(webgame: WebChessGame, game: ChessGame){
 
-        this.game = game;
+        this.webgame = webgame;
         this.boardstate = game.boardstate;
+        this.game = game;
     }
 
     invalidCoordinates(i: number, j: number){
@@ -30,7 +32,7 @@ export class Piece {
             return false
         }
         if (this.boardstate[i][j] === ".") {
-            this.game.addDot(i, j)
+            this.webgame.addDot(i, j)
             return true
         }
         return false
@@ -44,7 +46,7 @@ export class Piece {
         if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] === colour) {
             return
         }
-        this.game.addCircle(i, j)
+        this.webgame.addCircle(i, j)
     }
 
     pawnOptions(i: number, j: number, colour: string) {

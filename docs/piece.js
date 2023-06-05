@@ -1,8 +1,9 @@
 export class Piece {
-    constructor(game) {
+    constructor(webgame, game) {
         this.boardstate = [];
-        this.game = game;
+        this.webgame = webgame;
         this.boardstate = game.boardstate;
+        this.game = game;
     }
     invalidCoordinates(i, j) {
         return !this.game.validCoordinates(i, j);
@@ -15,7 +16,7 @@ export class Piece {
             return false;
         }
         if (this.boardstate[i][j] === ".") {
-            this.game.addDot(i, j);
+            this.webgame.addDot(i, j);
             return true;
         }
         return false;
@@ -27,7 +28,7 @@ export class Piece {
         if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] === colour) {
             return;
         }
-        this.game.addCircle(i, j);
+        this.webgame.addCircle(i, j);
     }
     pawnOptions(i, j, colour) {
         if (colour === "w") {
