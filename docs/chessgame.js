@@ -12,6 +12,7 @@ export class ChessGame {
         this.active = false;
         this.turncount = 0;
         this.webgame = webgame;
+        this.initializeBoardstate();
     }
     interpretSelection(move) {
         if (!this.active) {
@@ -34,36 +35,19 @@ export class ChessGame {
     }
     instantiatePiece(pieceName) {
         switch (pieceName) {
-            case "pawn":
+            case "P":
                 return new Pawn(this.webgame, this);
-            case "rook":
+            case "R":
                 return new Rook(this.webgame, this);
-            case "knight":
+            case "N":
                 return new Knight(this.webgame, this);
-            case "bishop":
+            case "B":
                 return new Bishop(this.webgame, this);
-            case "queen":
+            case "Q":
                 return new Queen(this.webgame, this);
             default:
                 return new King(this.webgame, this);
         }
-    }
-    lookupPiece(piece) {
-        switch (piece) {
-            case "P":
-                return "pawn";
-            case "R":
-                return "rook";
-            case "N":
-                return "knight";
-            case "B":
-                return "bishop";
-            case "Q":
-                return "queen";
-            case "K":
-                return "king";
-        }
-        return "";
     }
     activateStart(i, j) {
         const tile = this.webgame.grid[i][j];
@@ -147,9 +131,8 @@ export class ChessGame {
     }
     populateOptions(i, j) {
         const pieceChar = this.boardstate[i][j][0];
-        const pieceName = this.lookupPiece(pieceChar);
         const colour = this.boardstate[i][j][1];
-        const piece = this.instantiatePiece(pieceName);
+        const piece = this.instantiatePiece(pieceChar);
         piece.moveOptions(i, j, colour);
     }
 }

@@ -7,9 +7,6 @@ import { Piece } from "./piece.js";
 export class WebChessGame {
 
     public boardContainer: HTMLElement;
-    public turncount: number = 0;
-    public active: boolean = false;
-
     public grid: HTMLElement[][] = [];
     public moveTracker = new MoveTracker();
     public game: ChessGame;
@@ -19,7 +16,6 @@ export class WebChessGame {
         this.boardContainer = boardContainer;
         this.game = new ChessGame(this);
         this.paintTiles()
-        this.game.initializeBoardstate()
         this.fullboardPiecePaint()
     }
 
@@ -100,7 +96,7 @@ export class WebChessGame {
         }
 
         const piece = this.game.boardstate[i][j][0];
-        const pieceName = this.game.lookupPiece(piece);
+        const pieceName = this.lookupPiece(piece);
         const colour = this.game.boardstate[i][j][1];
         const imgpath = `assets\\${pieceName}_${colour}.png`;
 
@@ -109,6 +105,25 @@ export class WebChessGame {
         img.style.margin = "5px 5px"
 
         tile.appendChild(img)
+    }
+
+    lookupPiece(piece: string): string {
+
+        switch (piece) {
+            case "P":
+                return "pawn";
+            case "R":
+                return "rook";
+            case "N":
+                return "knight";
+            case "B":
+                return "bishop";
+            case "Q":
+                return "queen";
+            case "K":
+                return "king";
+        }
+        return "";
     }
 
     paintTiles(): void {

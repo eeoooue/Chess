@@ -3,14 +3,11 @@ import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
 export class WebChessGame {
     constructor(boardContainer) {
-        this.turncount = 0;
-        this.active = false;
         this.grid = [];
         this.moveTracker = new MoveTracker();
         this.boardContainer = boardContainer;
         this.game = new ChessGame(this);
         this.paintTiles();
-        this.game.initializeBoardstate();
         this.fullboardPiecePaint();
     }
     checkClickEvent() {
@@ -71,13 +68,30 @@ export class WebChessGame {
             return;
         }
         const piece = this.game.boardstate[i][j][0];
-        const pieceName = this.game.lookupPiece(piece);
+        const pieceName = this.lookupPiece(piece);
         const colour = this.game.boardstate[i][j][1];
         const imgpath = `assets\\${pieceName}_${colour}.png`;
         const img = document.createElement("img");
         img.src = imgpath;
         img.style.margin = "5px 5px";
         tile.appendChild(img);
+    }
+    lookupPiece(piece) {
+        switch (piece) {
+            case "P":
+                return "pawn";
+            case "R":
+                return "rook";
+            case "N":
+                return "knight";
+            case "B":
+                return "bishop";
+            case "Q":
+                return "queen";
+            case "K":
+                return "king";
+        }
+        return "";
     }
     paintTiles() {
         const painting = ["whitebg", "blackbg"];
