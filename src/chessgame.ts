@@ -2,7 +2,14 @@
 import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
-import { WebChessGame } from "./webchessgame";
+import { WebChessGame } from "./webchessgame.js";
+
+import { Bishop } from "./pieces/bishop.js";
+import { Rook } from "./pieces/rook.js";
+import { Knight } from "./pieces/knight.js";
+import { King } from "./pieces/king.js";
+import { Pawn } from "./pieces/pawn.js";
+import { Queen } from "./pieces/queen.js";
 
 export class ChessGame {
 
@@ -12,14 +19,40 @@ export class ChessGame {
     public webgame: WebChessGame;
     public turncount: number = 0;
 
-    constructor(webgame: WebChessGame){
+    constructor(webgame: WebChessGame) {
 
         this.webgame = webgame
     }
 
+    canStepHere(piece: Piece, i: number, j: number) {
+
+        if (!this.validCoordinates(i, j)) {
+            return false;
+        }
+        return true;
+    }
+
     instantiatePiece(pieceName: string): Piece {
 
-        return new Piece(this.webgame, this);
+        switch (pieceName) {
+            case "pawn":
+                return new Pawn(this.webgame, this);
+
+            case "rook":
+                return new Rook(this.webgame, this);
+
+            case "knight":
+                return new Knight(this.webgame, this);
+
+            case "bishop":
+                return new Bishop(this.webgame, this);
+
+            case "queen":
+                return new Queen(this.webgame, this);
+
+            default:
+                return new King(this.webgame, this);
+        }
     }
 
     lookupPiece(piece: string): string {
@@ -127,22 +160,8 @@ export class ChessGame {
         const pieceChar: string = this.boardstate[i][j][0];
         const pieceName = this.lookupPiece(pieceChar);
         const colour = this.boardstate[i][j][1];
-        const piece = this.instantiatePiece(pieceName);
+        const piece: Piece = this.instantiatePiece(pieceName);
 
-        if (pieceName === "pawn") {
-            piece.pawnOptions(i, j, colour)
-        }
-        if (pieceName === "knight") {
-            piece.knightOptions(i, j, colour)
-        }
-        if (pieceName === "rook" || pieceName === "queen") {
-            piece.rookOptions(i, j, colour)
-        }
-        if (pieceName === "bishop" || pieceName === "queen") {
-            piece.bishopOptions(i, j, colour)
-        }
-        if (pieceName === "king") {
-            piece.kingOptions(i, j, colour)
-        }
+        piece.moveOptions(i, j, colour);
     }
 }
