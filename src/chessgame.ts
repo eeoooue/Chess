@@ -2,71 +2,94 @@
 import { ChessMove } from "./chessmove.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
+import { WebChessGame } from "./webchessgame.js";
+
+import { Bishop } from "./pieces/bishop.js";
+import { Rook } from "./pieces/rook.js";
+import { Knight } from "./pieces/knight.js";
+import { King } from "./pieces/king.js";
+import { Pawn } from "./pieces/pawn.js";
+import { Queen } from "./pieces/queen.js";
 
 export class ChessGame {
 
-    public boardContainer: HTMLElement;
-    public turncount: number = 0;
-    public active: boolean = false;
-
     public boardstate: string[][] = [];
-    public grid: HTMLElement[][] = [];
     public moveTracker = new MoveTracker();
+    public active: boolean = false;
+    public webgame: WebChessGame;
+    public turncount: number = 0;
 
-    constructor(boardContainer: HTMLElement) {
+    constructor(webgame: WebChessGame) {
 
-        this.boardContainer = boardContainer;
-        this.paintTiles()
-        this.initializeBoardstate()
-        this.fullboardPiecePaint()
+        this.webgame = webgame;
+        this.initializeBoardstate();
     }
 
-    public checkClickEvent(): void {
-
-        const move: ChessMove | null = this.findClickedCell();
-
-        if (!move) {
-            return;
-        }
+    interpretSelection(move: ChessMove){
 
         if (!this.active) {
             this.processStartMove(move);
         } else if (this.active) {
             this.processEndCell(move)
             if (this.active) {
-                this.clearHighlights();
+                this.webgame.clearHighlights();
                 this.active = false;
                 this.processStartMove(move);
             }
         }
     }
 
-    setValidMove(i: number, j: number): void {
+    canStepHere(piece: Piece, i: number, j: number) {
 
-        const tile = this.grid[i][j];
-        if (!tile.classList.contains("validmove")) {
-            this.grid[i][j].classList.add("validmove")
+        if (!this.validCoordinates(i, j)) {
+            return false;
+        }
+        return true;
+    }
+
+    instantiatePiece(pieceName: string): Piece {
+
+        switch (pieceName) {
+            case "P":
+                return new Pawn(this.webgame, this);
+
+            case "R":
+                return new Rook(this.webgame, this);
+
+            case "N":
+                return new Knight(this.webgame, this);
+
+            case "B":
+                return new Bishop(this.webgame, this);
+
+            case "Q":
+                return new Queen(this.webgame, this);
+
+            default:
+                return new King(this.webgame, this);
         }
     }
 
-    findClickedCell(): ChessMove | null {
+    activateStart(i: number, j: number) {
 
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                const tile = this.grid[i][j]
-                if (tile instanceof HTMLElement) {
-                    if (tile.classList.contains("clicked")) {
-                        tile.classList.remove("clicked")
-                        return new ChessMove(i, j);
-                    }
-                }
-            }
-        }
-
-        return null;
+        const tile = this.webgame.grid[i][j]
+        this.moveTracker.setStartMove(i, j);
+        tile.classList.add("highlighted")
+        this.active = true;
+        this.populateOptions(i, j);
     }
 
-    
+    initializeBoardstate() {
+
+        this.boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"])
+        this.boardstate.push(["Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb"])
+        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
+        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
+        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
+        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
+        this.boardstate.push(["Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw"])
+        this.boardstate.push(["Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"])
+    }
 
     getTurnPlayer(): string {
 
@@ -86,7 +109,7 @@ export class ChessGame {
 
     validEnd(i: number, j: number): boolean {
 
-        const tile = this.grid[i][j]
+        const tile = this.webgame.grid[i][j]
         if (tile.classList.contains("validmove")) {
             return true
         }
@@ -106,45 +129,8 @@ export class ChessGame {
             this.moveTracker.setEndMove(move.i, move.j);
             this.active = false;
             this.submitMove();
+            this.turncount += 1;
         }
-    }
-
-    activateStart(i: number, j: number) {
-
-        const tile = this.grid[i][j]
-        this.moveTracker.setStartMove(i, j);
-        tile.classList.add("highlighted")
-        this.active = true;
-        this.populateOptions(i, j);
-    }
-
-    populateOptions(i: number, j: number) {
-
-        const pieceChar: string = this.boardstate[i][j][0];
-        const pieceName = this.lookupPiece(pieceChar);
-        const colour = this.boardstate[i][j][1];
-        const piece = this.instantiatePiece(pieceName);
-
-        if (pieceName === "pawn") {
-            piece.pawnOptions(i, j, colour)
-        }
-        if (pieceName === "knight") {
-            piece.knightOptions(i, j, colour)
-        }
-        if (pieceName === "rook" || pieceName === "queen") {
-            piece.rookOptions(i, j, colour)
-        }
-        if (pieceName === "bishop" || pieceName === "queen") {
-            piece.bishopOptions(i, j, colour)
-        }
-        if (pieceName === "king") {
-            piece.kingOptions(i, j, colour)
-        }
-    }
-
-    instantiatePiece(pieceName: string): Piece {
-
-        return new Piece(this);
     }
 
     submitMove() {
@@ -163,29 +149,20 @@ export class ChessGame {
 
         this.boardstate[x][y] = this.boardstate[a][b]
         this.boardstate[a][b] = "."
-        this.paintPosition(x, y)
-        this.paintPosition(a, b)
-        this.clearHighlights()
-        this.turncount += 1
-    }
-
-    clearHighlights() {
-
-        document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"))
-        document.querySelectorAll(".validmove").forEach(el => el.classList.remove("validmove"))
-        document.querySelectorAll(".markerdot").forEach(el => el.remove())
-        document.querySelectorAll(".markercircle").forEach(el => el.remove())
+        this.webgame.paintPosition(x, y)
+        this.webgame.paintPosition(a, b)
+        this.webgame.clearHighlights()
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
 
         if (this.validCoordinates(i, j)) {
             if (this.boardstate[i][j] === ".") {
-                this.addDot(i, j)
+                this.webgame.addDot(i, j)
                 return true
             }
             if (this.boardstate[i][j][1] != colour) {
-                this.addCircle(i, j)
+                this.webgame.addCircle(i, j)
             }
         }
         return false
@@ -196,104 +173,12 @@ export class ChessGame {
         return (0 <= i && i < 8 && 0 <= j && j < 8);
     }
 
-    initializeBoardstate() {
+    populateOptions(i: number, j: number) {
 
-        this.boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"])
-        this.boardstate.push(["Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb"])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push(["Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw"])
-        this.boardstate.push(["Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"])
-    }
-
-    fullboardPiecePaint() {
-
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                this.paintPosition(i, j)
-            }
-        }
-    }
-
-    addDot(i: number, j: number) {
-
-        const dot = document.createElement("div")
-        dot.classList.add("markerdot")
-        this.setValidMove(i, j)
-        this.grid[i][j].appendChild(dot)
-    }
-
-    addCircle(i: number, j: number) {
-
-        const circle = document.createElement("div")
-        circle.classList.add("markercircle")
-        this.setValidMove(i, j)
-        this.grid[i][j].appendChild(circle)
-    }
-
-    lookupPiece(piece: string): string {
-
-        switch (piece) {
-            case "P":
-                return "pawn";
-            case "R":
-                return "rook";
-            case "N":
-                return "knight";
-            case "B":
-                return "bishop";
-            case "Q":
-                return "queen";
-            case "K":
-                return "king";
-        }
-
-        return "";
-    }
-
-    paintPosition(i: number, j: number) {
-
-        const tile = this.grid[i][j]
-        tile.innerHTML = ""
-
-        if (this.boardstate[i][j] == ".") {
-            return;
-        }
-
-        const piece = this.boardstate[i][j][0];
-        const pieceName = this.lookupPiece(piece);
+        const pieceChar: string = this.boardstate[i][j][0];
         const colour = this.boardstate[i][j][1];
-        const imgpath = `assets\\${pieceName}_${colour}.png`;
+        const piece: Piece = this.instantiatePiece(pieceChar);
 
-        const img = document.createElement("img")
-        img.src = imgpath
-        img.style.margin = "5px 5px"
-
-        tile.appendChild(img)
-    }
-
-    paintTiles(): void {
-
-        const painting = ["whitebg", "blackbg"]
-
-        var paint: number = 0;
-        for (let i = 0; i < 8; i++) {
-            this.grid.push([])
-            for (let j = 0; j < 8; j++) {
-                const tile = document.createElement("div")
-                tile.classList.add("boardtile")
-                tile.classList.add(painting[paint])
-                tile.addEventListener("click", () => {
-                    tile.classList.toggle("clicked")
-                    this.checkClickEvent()
-                })
-                this.grid[i].push(tile)
-                this.boardContainer.appendChild(tile)
-                paint = (paint + 1) % 2
-            }
-            paint = (paint + 1) % 2
-        }
+        piece.moveOptions(i, j, colour);
     }
 }
