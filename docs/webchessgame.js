@@ -8,14 +8,28 @@ export class WebChessGame {
         this.grid = [];
         this.moveTracker = new MoveTracker();
         this.boardContainer = boardContainer;
-        this.game = new ChessGame(this);
+        this.game = new ChessGame();
         this.paintTiles();
         this.paintPieces(this.game.boardState);
+        this.game.attach(this);
     }
+    //#region observer pattern
+    update(subject) {
+        this.paintPieces(this.game.boardState);
+        this.clearHighlights();
+    }
+    //#endregion
     checkClickEvent() {
         const move = this.findClickedCell();
         if (move) {
             this.game.interpretSelection(move);
+            if (this.game.active) {
+                const piece = this.game.boardState[move.i][move.j];
+                const tile = this.grid[move.i][move.j];
+                tile.classList.add("highlighted");
+                const options = piece.getMoveOptions();
+                this.paintMoveOptions(options);
+            }
         }
     }
     setValidMove(i, j) {

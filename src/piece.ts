@@ -4,11 +4,11 @@ import { WebChessGame } from './webchessgame.js';
 import { BoardPosition } from './BoardPosition.js';
 import { Observer } from './observer.js';
 import { Subject } from "./subject.js";
-import { King } from './pieces/king';
+import { King } from './pieces/king.js';
+import { AnalysisBoard } from './AnalysisBoard.js';
 
 export class Piece implements Observer {
 
-    public webgame: WebChessGame;
     public boardState: Piece[][];
     public game: ChessGame;
     public colour: string;
@@ -18,9 +18,8 @@ export class Piece implements Observer {
     public j: number;
     public threatened: boolean;
 
-    constructor(webgame: WebChessGame, game: ChessGame, colour: string, name: string, i: number, j: number) {
+    constructor(game: ChessGame, colour: string, name: string, i: number, j: number) {
 
-        this.webgame = webgame;
         this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
@@ -43,9 +42,13 @@ export class Piece implements Observer {
 
     //#endregion observer pattern
 
-    getMoveOptions(i: number, j: number): BoardPosition[] {
+    getMoveOptions(): BoardPosition[] {
 
         return this.possibleMoves;
+    }
+
+    destroy(){
+        this.game.detach(this);
     }
 
     protected moveOptions(i: number, j: number): void { }
@@ -55,16 +58,29 @@ export class Piece implements Observer {
         return !this.game.validCoordinates(i, j);
     }
 
+    isSafeMove(destination: BoardPosition): boolean {
+
+        const start = new BoardPosition(this.i, this.j);
+        const analysisBoard = new AnalysisBoard(this.boardState, this.colour);
+        analysisBoard.submitMove(start, destination);
+        return analysisBoard.isSafe();
+    }
+
     canMove(i: number, j: number): boolean {
 
         if (this.game.legalPosition(i, j, this.colour)) {
 
-            const targetPiece = this.boardState[i][j];
-            targetPiece.threatened = true;
-
             const move: BoardPosition = new BoardPosition(i, j);
-            this.possibleMoves.push(move);
+
+            if (this.isSafeMove(move)) {
+                const targetPiece = this.boardState[i][j];
+                targetPiece.threatened = true;
+                this.possibleMoves.push(move);
+                
+            }
+
             return true;
+            
         }
 
         return false;
@@ -83,5 +99,12 @@ export class Piece implements Observer {
             i += di;
             j += dj;
         }
+    }
+
+    moveTo(position: BoardPosition){
+
+        this.i = position.i;
+        this.j = position.j;
+        this.boardState[this.i][this.j] = this;
     }
 }
