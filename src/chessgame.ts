@@ -33,12 +33,42 @@ export class ChessGame {
             this.boardOfPieces[i] = new Array<Piece>(8);
         }
 
-        for (let i = 0; i < 8; i++){
-            
+        this.placeBlackPieces();
+        this.placeWhitePieces();
+    }
+
+    placeBlackPieces(){
+
+        for(let j=0; j < 8; j++){
+            this.boardOfPieces[1][j] = new Pawn(this.webgame, this)
         }
 
+        this.boardOfPieces[0][0] = new Rook(this.webgame, this)
+        this.boardOfPieces[0][1] = new Knight(this.webgame, this)
+        this.boardOfPieces[0][2] = new Bishop(this.webgame, this)
+        this.boardOfPieces[0][3] = new Queen(this.webgame, this)
 
+        this.boardOfPieces[0][4] = new King(this.webgame, this)
+        this.boardOfPieces[0][5] = new Bishop(this.webgame, this)
+        this.boardOfPieces[0][6] = new Knight(this.webgame, this)
+        this.boardOfPieces[0][7] = new Rook(this.webgame, this)
+    }
 
+    placeWhitePieces(){
+
+        for(let j=0; j < 8; j++){
+            this.boardOfPieces[6][j] = new Pawn(this.webgame, this)
+        }
+
+        this.boardOfPieces[7][0] = new Rook(this.webgame, this)
+        this.boardOfPieces[7][1] = new Knight(this.webgame, this)
+        this.boardOfPieces[7][2] = new Bishop(this.webgame, this)
+        this.boardOfPieces[7][3] = new Queen(this.webgame, this)
+
+        this.boardOfPieces[7][4] = new King(this.webgame, this)
+        this.boardOfPieces[7][5] = new Bishop(this.webgame, this)
+        this.boardOfPieces[7][6] = new Knight(this.webgame, this)
+        this.boardOfPieces[7][7] = new Rook(this.webgame, this)
     }
 
     interpretSelection(move: BoardPosition) {
