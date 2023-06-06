@@ -24,15 +24,4 @@ export class Rook extends Piece {
         this.checkAlongImpulse(position, 0, -1);
         this.checkAlongImpulse(position, 0, 1);
     }
-
-    checkAlongImpulse(position: BoardPosition, di: number, dj: number){
-
-        var i = position.i + di;
-        var j = position.j + dj;
-
-        while (this.legalPosition(i, j) == true) {
-            i += di;
-            j += dj;
-        }
-    }
 }

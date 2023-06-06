@@ -10,7 +10,7 @@ export class WebChessGame {
         this.boardContainer = boardContainer;
         this.game = new ChessGame(this);
         this.paintTiles();
-        this.paintPieces(this.game.boardOfPieces);
+        this.paintPieces(this.game.boardState);
     }
     checkClickEvent() {
         const move = this.findClickedCell();
@@ -104,5 +104,18 @@ export class WebChessGame {
             this.checkClickEvent();
         });
         return tile;
+    }
+    paintMoveOptions(options) {
+        const n = options.length;
+        for (let i = 0; i < n; i++) {
+            const move = options[i];
+            const piece = this.game.boardState[move.i][move.j];
+            if (piece instanceof EmptyPiece) {
+                this.addDot(move.i, move.j);
+            }
+            else {
+                this.addCircle(move.i, move.j);
+            }
+        }
     }
 }

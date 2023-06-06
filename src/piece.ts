@@ -1,33 +1,63 @@
 
 import { ChessGame } from './chessgame.js';
 import { WebChessGame } from './webchessgame.js';
+import { BoardPosition } from './BoardPosition.js';
 
 export class Piece {
 
     public webgame: WebChessGame;
-    public boardOfPieces: Piece[][];
+    public boardState: Piece[][];
     public game: ChessGame;
     public colour: string;
     public name: string;
+    public possibleMoves: BoardPosition[] = [];
 
     constructor(webgame: WebChessGame, game: ChessGame, colour: string, name: string) {
 
         this.webgame = webgame;
-        this.boardOfPieces = game.boardOfPieces;
+        this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;
     }
 
-    moveOptions(i: number, j: number): void { }
+    getMoveOptions(i: number, j: number): BoardPosition[] {
+
+        this.possibleMoves = [];
+        this.moveOptions(i, j);
+        return this.possibleMoves;
+    }
+
+    protected moveOptions(i: number, j: number): void { }
 
     invalidCoordinates(i: number, j: number) {
 
         return !this.game.validCoordinates(i, j);
     }
 
-    legalPosition(i: number, j: number) {
+    canMove(i: number, j: number): boolean {
 
-        return this.game.legalPosition(i, j, this.colour);
+        if (this.game.legalPosition(i, j, this.colour)) {
+            const move: BoardPosition = new BoardPosition(i, j);
+            this.possibleMoves.push(move);
+            return true;
+        }
+
+        return false;
+    }
+
+    checkAlongImpulse(position: BoardPosition, di: number, dj: number) {
+
+        var i = position.i + di;
+        var j = position.j + dj;
+
+        while (this.canMove(i, j) == true) {
+            const piece: Piece = this.boardState[i][j];
+            if (piece.colour == "b" || piece.colour == "w") {
+                break;
+            }
+            i += di;
+            j += dj;
+        }
     }
 }
