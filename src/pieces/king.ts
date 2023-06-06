@@ -20,13 +20,13 @@ export class King extends Piece {
 
     kingOptions(i: number, j: number, colour: string) {
 
-        this.legalPosition(i - 1, j)
-        this.legalPosition(i - 1, j + 1)
-        this.legalPosition(i, j + 1)
-        this.legalPosition(i + 1, j + 1)
-        this.legalPosition(i + 1, j)
-        this.legalPosition(i + 1, j - 1)
-        this.legalPosition(i, j - 1)
-        this.legalPosition(i - 1, j - 1)
+        this.canMove(i - 1, j)
+        this.canMove(i - 1, j + 1)
+        this.canMove(i, j + 1)
+        this.canMove(i + 1, j + 1)
+        this.canMove(i + 1, j)
+        this.canMove(i + 1, j - 1)
+        this.canMove(i, j - 1)
+        this.canMove(i - 1, j - 1)
     }
 }

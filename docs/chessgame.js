@@ -101,21 +101,21 @@ export class ChessGame {
         if (!start || !end) {
             return;
         }
+        const movingPiece = this.boardOfPieces[start.i][start.j];
+        var targetPiece = this.boardOfPieces[end.i][end.j];
+        if (targetPiece.colour != movingPiece.colour) {
+            targetPiece = new EmptyPiece(this.webgame, this);
+        }
         const piece = this.boardOfPieces[start.i][start.j];
-        this.boardOfPieces[end.i][end.j] = piece;
-        this.boardOfPieces[start.i][start.j] = new EmptyPiece(this.webgame, this);
+        this.boardOfPieces[end.i][end.j] = movingPiece;
+        this.boardOfPieces[start.i][start.j] = targetPiece;
         this.webgame.paintPieces(this.boardOfPieces);
         this.webgame.clearHighlights();
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {
             const piece = this.boardOfPieces[i][j];
-            if (piece instanceof EmptyPiece) {
-                this.webgame.addDot(i, j);
-                return true;
-            }
-            if (piece.colour != colour) {
-                this.webgame.addCircle(i, j);
+            if (piece instanceof EmptyPiece || piece.colour != colour) {
                 return true;
             }
         }
@@ -126,6 +126,7 @@ export class ChessGame {
     }
     populateOptions(i, j) {
         const piece = this.boardOfPieces[i][j];
-        piece.moveOptions(i, j);
+        const options = piece.getMoveOptions(i, j);
+        this.webgame.paintMoveOptions(options);
     }
 }

@@ -18,7 +18,7 @@ export class Pawn extends Piece {
         if (this.game.validCoordinates(i, j)) {
             const destination = this.boardOfPieces[i][j];
             if (destination instanceof EmptyPiece) {
-                this.webgame.addDot(i, j);
+                this.canMove(i, j);
                 return true;
             }
         }
@@ -30,7 +30,7 @@ export class Pawn extends Piece {
             if (targetPiece instanceof EmptyPiece || targetPiece.colour == this.colour) {
                 return;
             }
-            this.webgame.addCircle(i, j);
+            this.canMove(i, j);
         }
     }
     blackPawnOptions(i, j) {

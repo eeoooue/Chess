@@ -105,4 +105,17 @@ export class WebChessGame {
         });
         return tile;
     }
+    paintMoveOptions(options) {
+        const n = options.length;
+        for (let i = 0; i < n; i++) {
+            const move = options[i];
+            const piece = this.game.boardOfPieces[move.i][move.j];
+            if (piece instanceof EmptyPiece) {
+                this.addDot(move.i, move.j);
+            }
+            else {
+                this.addCircle(move.i, move.j);
+            }
+        }
+    }
 }

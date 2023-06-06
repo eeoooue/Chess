@@ -118,6 +118,7 @@ export class ChessGame {
         tile.classList.add("highlighted")
         this.active = true;
         this.populateOptions(i, j);
+
     }
 
     processEndCell(move: BoardPosition) {
@@ -139,10 +140,17 @@ export class ChessGame {
             return;
         }
 
+        const movingPiece: Piece = this.boardOfPieces[start.i][start.j];
+        var targetPiece: Piece = this.boardOfPieces[end.i][end.j];
+
+        if (targetPiece.colour != movingPiece.colour){
+            targetPiece = new EmptyPiece(this.webgame, this);
+        }
+
         const piece: Piece = this.boardOfPieces[start.i][start.j]
 
-        this.boardOfPieces[end.i][end.j] = piece
-        this.boardOfPieces[start.i][start.j] = new EmptyPiece(this.webgame, this);
+        this.boardOfPieces[end.i][end.j] = movingPiece;
+        this.boardOfPieces[start.i][start.j] = targetPiece;
         this.webgame.paintPieces(this.boardOfPieces)
         this.webgame.clearHighlights()
     }
@@ -151,13 +159,8 @@ export class ChessGame {
 
         if (this.validCoordinates(i, j)) {
             const piece: Piece = this.boardOfPieces[i][j];
-            if (piece instanceof EmptyPiece){
-                this.webgame.addDot(i, j);
+            if (piece instanceof EmptyPiece || piece.colour != colour){
                 return true;
-            }
-            if (piece.colour != colour) {
-                this.webgame.addCircle(i, j)
-                return true
             }
         }
 
@@ -172,6 +175,7 @@ export class ChessGame {
     populateOptions(i: number, j: number) {
 
         const piece: Piece = this.boardOfPieces[i][j];
-        piece.moveOptions(i, j);
+        const options: BoardPosition[] = piece.getMoveOptions(i, j);
+        this.webgame.paintMoveOptions(options);
     }
 }
