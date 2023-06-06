@@ -19,22 +19,36 @@ export class ChessGame implements Subject {
     public boardState: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker = new MoveTracker();
     public active: boolean = false;
-    public webgame: WebChessGame;
     public turncount: number = 0;
     private observers: Observer[] = [];
 
-    constructor(webgame: WebChessGame) {
+    constructor() {
 
-        this.webgame = webgame;
         this.initializeboardState();
-        this.resetThreats();
+        // this.resetThreats();
         this.notify();
     }
 
-    resetThreats(){
+    getKingOfColour(colour: string): Piece {
 
-        for(let i=0; i<8; i++){
-            for(let j=0; j<8; j++){
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                const piece = this.boardState[i][j];
+                if (piece instanceof King){
+                    if (piece.colour == colour){
+                        return piece;
+                    }
+                }
+            }
+        }
+
+        return new EmptyPiece(this, 0, 0);
+    }
+
+    resetThreats() {
+
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
                 const piece = this.boardState[i][j];
                 piece.threatened = false;
             }
@@ -53,8 +67,8 @@ export class ChessGame implements Subject {
 
         const n = this.observers.length;
 
-        for(let i=0; i<n; i++){
-            if (this.observers[i] == observer){
+        for (let i = 0; i < n; i++) {
+            if (this.observers[i] == observer) {
                 this.observers.splice(i, 1);
                 return;
             }
@@ -65,7 +79,7 @@ export class ChessGame implements Subject {
     notify(): void {
 
         const n = this.observers.length;
-        for(let i=0; i<n; i++){
+        for (let i = 0; i < n; i++) {
             const observer = this.observers[i];
             observer.update(this);
         }
@@ -77,11 +91,11 @@ export class ChessGame implements Subject {
 
         for (let i = 0; i < 8; i++) {
             this.boardState[i] = new Array<Piece>(8);
-            for (let j = 0; j < 8; j++){
-                this.boardState[i][j] = new EmptyPiece(this.webgame, this, i, j);
+            for (let j = 0; j < 8; j++) {
+                this.boardState[i][j] = new EmptyPiece(this, i, j);
             }
         }
-        
+
         this.placeBlackPieces();
         this.placeWhitePieces();
     }
@@ -89,35 +103,35 @@ export class ChessGame implements Subject {
     placeBlackPieces() {
 
         for (let j = 0; j < 8; j++) {
-            this.boardState[1][j] = new Pawn(this.webgame, this, "b", 1, j)
+            this.boardState[1][j] = new Pawn(this, "b", 1, j)
         }
 
-        this.boardState[0][0] = new Rook(this.webgame, this, "b", 0, 0)
-        this.boardState[0][1] = new Knight(this.webgame, this, "b", 0, 1)
-        this.boardState[0][2] = new Bishop(this.webgame, this, "b", 0, 2)
-        this.boardState[0][3] = new Queen(this.webgame, this, "b", 0, 3)
+        this.boardState[0][0] = new Rook(this, "b", 0, 0)
+        this.boardState[0][1] = new Knight(this, "b", 0, 1)
+        this.boardState[0][2] = new Bishop(this, "b", 0, 2)
+        this.boardState[0][3] = new Queen(this, "b", 0, 3)
 
-        this.boardState[0][4] = new King(this.webgame, this, "b", 0, 4)
-        this.boardState[0][5] = new Bishop(this.webgame, this, "b", 0, 5)
-        this.boardState[0][6] = new Knight(this.webgame, this, "b", 0, 6)
-        this.boardState[0][7] = new Rook(this.webgame, this, "b", 0, 7)
+        this.boardState[0][4] = new King(this, "b", 0, 4)
+        this.boardState[0][5] = new Bishop(this, "b", 0, 5)
+        this.boardState[0][6] = new Knight(this, "b", 0, 6)
+        this.boardState[0][7] = new Rook(this, "b", 0, 7)
     }
 
     placeWhitePieces() {
 
         for (let j = 0; j < 8; j++) {
-            this.boardState[6][j] = new Pawn(this.webgame, this, "w", 6, j)
+            this.boardState[6][j] = new Pawn(this, "w", 6, j)
         }
 
-        this.boardState[7][0] = new Rook(this.webgame, this, "w", 7, 0)
-        this.boardState[7][1] = new Knight(this.webgame, this, "w", 7, 1)
-        this.boardState[7][2] = new Bishop(this.webgame, this, "w", 7, 2)
-        this.boardState[7][3] = new Queen(this.webgame, this, "w", 7, 3)
+        this.boardState[7][0] = new Rook(this, "w", 7, 0)
+        this.boardState[7][1] = new Knight(this, "w", 7, 1)
+        this.boardState[7][2] = new Bishop(this, "w", 7, 2)
+        this.boardState[7][3] = new Queen(this, "w", 7, 3)
 
-        this.boardState[7][4] = new King(this.webgame, this, "w", 7, 4)
-        this.boardState[7][5] = new Bishop(this.webgame, this, "w", 7, 5)
-        this.boardState[7][6] = new Knight(this.webgame, this, "w", 7, 6)
-        this.boardState[7][7] = new Rook(this.webgame, this, "w", 7, 7)
+        this.boardState[7][4] = new King(this, "w", 7, 4)
+        this.boardState[7][5] = new Bishop(this, "w", 7, 5)
+        this.boardState[7][6] = new Knight(this, "w", 7, 6)
+        this.boardState[7][7] = new Rook(this, "w", 7, 7)
     }
 
     interpretSelection(move: BoardPosition) {
@@ -127,7 +141,6 @@ export class ChessGame implements Subject {
         } else if (this.active) {
             this.processEndCell(move)
             if (this.active) {
-                this.webgame.clearHighlights();
                 this.active = false;
                 this.processStartMove(move);
             }
@@ -147,8 +160,22 @@ export class ChessGame implements Subject {
 
     validEnd(i: number, j: number): boolean {
 
-        const tile = this.webgame.grid[i][j]
-        return (tile.classList.contains("validmove"));
+        const start: BoardPosition | undefined = this.moveTracker.getStartMove();
+
+        if (start instanceof BoardPosition) {
+
+            const piece = this.boardState[start.i][start.j];
+            const possibleMoves = piece.getMoveOptions();
+            const n = possibleMoves.length;
+            for (let ind = 0; ind < n; ind++) {
+                const move: BoardPosition = possibleMoves[ind];
+                if (move.i == i && move.j == j) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     processStartMove(move: BoardPosition) {
@@ -160,11 +187,8 @@ export class ChessGame implements Subject {
 
     activateStart(i: number, j: number) {
 
-        const tile = this.webgame.grid[i][j]
         this.moveTracker.setStartMove(i, j);
-        tile.classList.add("highlighted")
         this.active = true;
-        this.populateOptions(i, j);
     }
 
     processEndCell(move: BoardPosition) {
@@ -172,49 +196,42 @@ export class ChessGame implements Subject {
         if (this.validEnd(move.i, move.j)) {
             this.moveTracker.setEndMove(move.i, move.j);
             this.active = false;
-            this.submitMove();
-            this.turncount += 1;
+
+            const start: BoardPosition | undefined = this.moveTracker.getStartMove();
+            const end: BoardPosition | undefined = this.moveTracker.getEndMove();
+
+            if (start && end) {
+                this.submitMove(start, end);
+                this.turncount += 1;
+                return;
+            }
         }
+        
+        this.notify();
     }
 
-    submitMove() {
-
-        const start: BoardPosition | undefined = this.moveTracker.getStartMove();
-        const end: BoardPosition | undefined = this.moveTracker.getEndMove();
-
-        if (!start || !end) {
-            return;
-        }
+    submitMove(start: BoardPosition, end: BoardPosition) {
 
         const movingPiece: Piece = this.boardState[start.i][start.j];
         var targetPiece: Piece = this.boardState[end.i][end.j];
 
-        this.boardState[start.i][start.j] = new EmptyPiece(this.webgame, this, start.i, start.j);
-        this.boardState[end.i][end.j] = new EmptyPiece(this.webgame, this, end.i, end.j);
-
-        if (targetPiece.colour != movingPiece.colour){
-            targetPiece = new EmptyPiece(this.webgame, this, end.i, end.j);
+        if (targetPiece.colour != movingPiece.colour) {
+            targetPiece.destroy();
+            targetPiece = new EmptyPiece(this, end.i, end.j);
         }
-        
-        targetPiece.i = start.i;
-        targetPiece.j = start.j;
-        this.boardState[start.i][start.j] = targetPiece;
 
-        movingPiece.i = end.i
-        movingPiece.j = end.j
-        this.boardState[end.i][end.j] = movingPiece;
+        targetPiece.moveTo(start);
+        movingPiece.moveTo(end);
 
         this.resetThreats();
         this.notify();
-        this.webgame.paintPieces(this.boardState)
-        this.webgame.clearHighlights()
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
 
         if (this.validCoordinates(i, j)) {
             const piece: Piece = this.boardState[i][j];
-            if (piece instanceof EmptyPiece || piece.colour != colour){
+            if (piece instanceof EmptyPiece || piece.colour != colour) {
                 return true;
             }
         }
@@ -225,12 +242,5 @@ export class ChessGame implements Subject {
     validCoordinates(i: number, j: number) {
 
         return (0 <= i && i < 8 && 0 <= j && j < 8);
-    }
-
-    populateOptions(i: number, j: number) {
-
-        const piece: Piece = this.boardState[i][j];
-        const options: BoardPosition[] = piece.getMoveOptions(i, j);
-        this.webgame.paintMoveOptions(options);
     }
 }

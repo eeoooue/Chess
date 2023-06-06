@@ -5,8 +5,10 @@ import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 import { EmptyPiece } from "./pieces/emptypiece.js";
 import { King } from "./pieces/king.js";
+import { Observer } from "./observer.js";
+import { Subject } from "./subject.js";
 
-export class WebChessGame {
+export class WebChessGame implements Observer {
 
     public boardContainer: HTMLElement;
     public grid: HTMLElement[][] = [];
@@ -16,10 +18,21 @@ export class WebChessGame {
     constructor(boardContainer: HTMLElement) {
 
         this.boardContainer = boardContainer;
-        this.game = new ChessGame(this);
+        this.game = new ChessGame();
         this.paintTiles()
         this.paintPieces(this.game.boardState)
+        this.game.attach(this)
     }
+
+    //#region observer pattern
+
+    update(subject: Subject): void {
+
+        this.paintPieces(this.game.boardState)
+        this.clearHighlights()
+    }
+
+    //#endregion
 
     public checkClickEvent(): void {
 
@@ -27,6 +40,15 @@ export class WebChessGame {
 
         if (move) {
             this.game.interpretSelection(move);
+            if (this.game.active){
+                const piece : Piece = this.game.boardState[move.i][move.j]
+
+                const tile = this.grid[move.i][move.j]
+                tile.classList.add("highlighted")
+
+                const options: BoardPosition[] = piece.getMoveOptions();
+                this.paintMoveOptions(options);                
+            }
         }
     }
 
@@ -150,7 +172,6 @@ export class WebChessGame {
 
         for(let i=0; i<n; i++){
             const move = options[i];
-
             const piece: Piece = this.game.boardState[move.i][move.j]
 
             if (piece instanceof EmptyPiece){

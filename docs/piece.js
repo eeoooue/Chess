@@ -1,8 +1,8 @@
 import { BoardPosition } from './BoardPosition.js';
+import { AnalysisBoard } from './AnalysisBoard.js';
 export class Piece {
-    constructor(webgame, game, colour, name, i, j) {
+    constructor(game, colour, name, i, j) {
         this.possibleMoves = [];
-        this.webgame = webgame;
         this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
@@ -19,19 +19,30 @@ export class Piece {
         this.moveOptions(this.i, this.j);
     }
     //#endregion observer pattern
-    getMoveOptions(i, j) {
+    getMoveOptions() {
         return this.possibleMoves;
+    }
+    destroy() {
+        this.game.detach(this);
     }
     moveOptions(i, j) { }
     invalidCoordinates(i, j) {
         return !this.game.validCoordinates(i, j);
     }
+    isSafeMove(destination) {
+        const start = new BoardPosition(this.i, this.j);
+        const analysisBoard = new AnalysisBoard(this.boardState, this.colour);
+        analysisBoard.submitMove(start, destination);
+        return analysisBoard.isSafe();
+    }
     canMove(i, j) {
         if (this.game.legalPosition(i, j, this.colour)) {
-            const targetPiece = this.boardState[i][j];
-            targetPiece.threatened = true;
             const move = new BoardPosition(i, j);
-            this.possibleMoves.push(move);
+            if (this.isSafeMove(move)) {
+                const targetPiece = this.boardState[i][j];
+                targetPiece.threatened = true;
+                this.possibleMoves.push(move);
+            }
             return true;
         }
         return false;
@@ -47,5 +58,10 @@ export class Piece {
             i += di;
             j += dj;
         }
+    }
+    moveTo(position) {
+        this.i = position.i;
+        this.j = position.j;
+        this.boardState[this.i][this.j] = this;
     }
 }

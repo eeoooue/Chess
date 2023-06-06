@@ -1,15 +1,14 @@
 
 
 import { ChessGame } from '../chessgame.js';
-import { WebChessGame } from '../webchessgame.js';
 import { Piece } from "../piece.js";
 import { BoardPosition } from '../BoardPosition.js';
 
 
 export class Bishop extends Piece {
 
-    constructor(webgame: WebChessGame, game: ChessGame, colour: string, i:number, j:number) {
-        super(webgame, game, colour, "bishop", i, j);
+    constructor(game: ChessGame, colour: string, i:number, j:number) {
+        super(game, colour, "bishop", i, j);
     }
 
     override moveOptions(i: number, j: number): void {
