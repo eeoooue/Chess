@@ -149,10 +149,14 @@ export class ChessGame {
             const end = this.moveTracker.getEndMove();
             if (start && end) {
                 this.submitMove(start, end);
-                this.turncount += 1;
                 return;
             }
         }
+        this.notify();
+    }
+    concludeTurn() {
+        this.turncount += 1;
+        this.resetThreats();
         this.notify();
     }
     submitMove(start, end) {
@@ -162,10 +166,23 @@ export class ChessGame {
             targetPiece.destroy();
             targetPiece = new EmptyPiece(this, end.i, end.j);
         }
+        if (movingPiece instanceof Pawn && Math.abs(start.i - end.i) == 2) {
+            const pawn = movingPiece;
+            pawn.enPassantTurn = this.turncount + 1;
+        }
+        // en passant
+        if (movingPiece instanceof Pawn) {
+            if (start.j != end.j && targetPiece instanceof EmptyPiece) {
+                const victim = this.boardState[start.i][end.j];
+                if (victim instanceof Pawn && victim.enPassantTurn == this.turncount) {
+                    victim.destroy();
+                    this.boardState[start.i][end.j] = new EmptyPiece(this, start.i, end.j);
+                }
+            }
+        }
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
-        this.resetThreats();
-        this.notify();
+        this.concludeTurn();
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {

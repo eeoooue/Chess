@@ -201,12 +201,19 @@ export class ChessGame implements Subject {
             const end: BoardPosition | undefined = this.moveTracker.getEndMove();
 
             if (start && end) {
-                this.submitMove(start, end);
-                this.turncount += 1;
+                this.submitMove(start, end);                
                 return;
             }
         }
         
+        this.notify();
+    }
+
+
+    concludeTurn(){
+
+        this.turncount += 1;
+        this.resetThreats();
         this.notify();
     }
 
@@ -220,11 +227,26 @@ export class ChessGame implements Subject {
             targetPiece = new EmptyPiece(this, end.i, end.j);
         }
 
+        if (movingPiece instanceof Pawn && Math.abs(start.i - end.i) == 2){
+            const pawn: Pawn = movingPiece as Pawn;
+            pawn.enPassantTurn = this.turncount + 1;
+        }
+
+        // en passant
+        if (movingPiece instanceof Pawn){
+            if (start.j != end.j && targetPiece instanceof EmptyPiece){
+                const victim = this.boardState[start.i][end.j]
+
+                if (victim instanceof Pawn && victim.enPassantTurn == this.turncount){
+                    victim.destroy();
+                    this.boardState[start.i][end.j] = new EmptyPiece(this, start.i, end.j);
+                }
+            }
+        }
+
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
-
-        this.resetThreats();
-        this.notify();
+        this.concludeTurn();
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
