@@ -13,37 +13,58 @@ export class Pawn extends Piece {
 
     override moveOptions(i: number, j: number): void {
 
-        this.pawnOptions(i, j, this.colour);
+        switch (this.colour){
+            case "b":
+                this.blackPawnOptions(i, j);
+                return;
+            default:
+                this.whitePawnOptions(i, j);
+                return;
+        }
     }
 
     pawnMove(i: number, j: number) {
 
-        if (this.invalidCoordinates(i, j) === true) {
-            return false
-        }
-        if (this.boardOfPieces[i][j] instanceof EmptyPiece) {
-            this.webgame.addDot(i, j)
-            return true
+        if (this.game.validCoordinates(i, j)){
+            const destination: Piece = this.boardOfPieces[i][j];
+            if (destination instanceof EmptyPiece) {
+                this.webgame.addDot(i, j)
+                return true
+            }
         }
         return false
     }
 
-    pawnCapture(i: number, j: number, colour: string) {
+    pawnCapture(i: number, j: number) {
 
-        if (this.invalidCoordinates(i, j) === true) {
-            return
-        }
-
-        const targetPiece = this.boardOfPieces[i][j];
-        if (targetPiece instanceof EmptyPiece || targetPiece.colour === colour) {
-            return
-        }
-        this.webgame.addCircle(i, j)
+        if (this.game.validCoordinates(i, j)){
+            const targetPiece = this.boardOfPieces[i][j];
+            if (targetPiece instanceof EmptyPiece || targetPiece.colour == this.colour) {
+                return
+            }
+            this.webgame.addCircle(i, j)
+        }        
     }
 
-    pawnOptions(i: number, j: number, colour: string) {
 
-        if (colour === "w") {
+    blackPawnOptions(i: number, j: number) {
+
+        if (this.pawnMove(i + 1, j) === true) {
+            // starting bonus
+            if (i === 1) {
+                this.pawnMove(i + 2, j)
+            }
+        }
+        // capture diagonals
+        this.pawnCapture(i + 1, j - 1)
+        this.pawnCapture(i + 1, j + 1)
+        // en passant
+    }
+
+
+    whitePawnOptions(i: number, j: number) {
+
+        if (this.colour === "w") {
             if (this.pawnMove(i - 1, j) === true) {
                 // starting bonus
                 if (i === 6) {
@@ -51,21 +72,8 @@ export class Pawn extends Piece {
                 }
             }
             // capture diagonals
-            this.pawnCapture(i - 1, j - 1, colour)
-            this.pawnCapture(i - 1, j + 1, colour)
-            // en passant
-        }
-
-        if (colour === "b") {
-            if (this.pawnMove(i + 1, j) === true) {
-                // starting bonus
-                if (i === 1) {
-                    this.pawnMove(i + 2, j)
-                }
-            }
-            // capture diagonals
-            this.pawnCapture(i + 1, j - 1, colour)
-            this.pawnCapture(i + 1, j + 1, colour)
+            this.pawnCapture(i - 1, j - 1)
+            this.pawnCapture(i - 1, j + 1)
             // en passant
         }
     }
