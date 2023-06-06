@@ -1,6 +1,6 @@
 
 import { ChessGame } from "./chessgame.js";
-import { ChessMove } from "./chessmove.js";
+import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 
@@ -16,12 +16,12 @@ export class WebChessGame {
         this.boardContainer = boardContainer;
         this.game = new ChessGame(this);
         this.paintTiles()
-        this.fullboardPiecePaint()
+        this.fullboardPiecePaint(this.game.boardstate)
     }
 
     public checkClickEvent(): void {
 
-        const move: ChessMove | null = this.findClickedCell();
+        const move: BoardPosition | null = this.findClickedCell();
 
         if (move) {
             this.game.interpretSelection(move);
@@ -36,7 +36,7 @@ export class WebChessGame {
         }
     }
 
-    findClickedCell(): ChessMove | null {
+    findClickedCell(): BoardPosition | null {
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -44,7 +44,7 @@ export class WebChessGame {
                 if (tile instanceof HTMLElement) {
                     if (tile.classList.contains("clicked")) {
                         tile.classList.remove("clicked")
-                        return new ChessMove(i, j);
+                        return new BoardPosition(i, j);
                     }
                 }
             }
@@ -59,15 +59,6 @@ export class WebChessGame {
         document.querySelectorAll(".validmove").forEach(el => el.classList.remove("validmove"))
         document.querySelectorAll(".markerdot").forEach(el => el.remove())
         document.querySelectorAll(".markercircle").forEach(el => el.remove())
-    }
-
-    fullboardPiecePaint() {
-
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                this.paintPosition(i, j)
-            }
-        }
     }
 
     addDot(i: number, j: number) {
@@ -86,18 +77,27 @@ export class WebChessGame {
         this.grid[i][j].appendChild(circle)
     }
 
-    paintPosition(i: number, j: number) {
+    fullboardPiecePaint(boardstate: string[][]) {
 
-        const tile = this.grid[i][j]
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                this.paintPosition(new BoardPosition(i, j), boardstate)
+            }
+        }
+    }
+
+    paintPosition(position: BoardPosition, boardstate: string[][]) {
+
+        const tile = this.grid[position.i][position.j]
         tile.innerHTML = ""
 
-        if (this.game.boardstate[i][j] == ".") {
+        if (boardstate[position.i][position.j] == ".") {
             return;
         }
 
-        const piece = this.game.boardstate[i][j][0];
+        const piece = boardstate[position.i][position.j][0];
         const pieceName = this.lookupPiece(piece);
-        const colour = this.game.boardstate[i][j][1];
+        const colour = boardstate[position.i][position.j][1];
         const imgpath = `assets\\${pieceName}_${colour}.png`;
 
         const img = document.createElement("img")
@@ -134,18 +134,26 @@ export class WebChessGame {
         for (let i = 0; i < 8; i++) {
             this.grid.push([])
             for (let j = 0; j < 8; j++) {
-                const tile = document.createElement("div")
-                tile.classList.add("boardtile")
-                tile.classList.add(painting[paint])
-                tile.addEventListener("click", () => {
-                    tile.classList.toggle("clicked")
-                    this.checkClickEvent()
-                })
+                const tile = this.createTile(painting[paint]);
                 this.grid[i].push(tile)
                 this.boardContainer.appendChild(tile)
                 paint = (paint + 1) % 2
             }
             paint = (paint + 1) % 2
         }
+    }
+
+    createTile(paint: string): HTMLElement {
+
+        const tile: HTMLElement = document.createElement("div")
+        tile.classList.add("boardtile")
+        tile.classList.add(paint)
+
+        tile.addEventListener("click", () => {
+            tile.classList.toggle("clicked")
+            this.checkClickEvent()
+        })
+
+        return tile;
     }
 }
