@@ -10,7 +10,7 @@ export class EmptyPiece extends Piece {
         super(webgame, game, "x", "empty");
     }
 
-    override moveOptions(i: number, j: number, colour: string): void {
+    override moveOptions(i: number, j: number): void {
 
         return;
     }

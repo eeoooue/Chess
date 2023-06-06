@@ -34,6 +34,7 @@ export class ChessGame {
                 this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
             }
         }
+        
         this.placeBlackPieces();
         this.placeWhitePieces();
     }
@@ -171,6 +172,6 @@ export class ChessGame {
     populateOptions(i: number, j: number) {
 
         const piece: Piece = this.boardOfPieces[i][j];
-        piece.moveOptions(i, j, piece.colour);
+        piece.moveOptions(i, j);
     }
 }

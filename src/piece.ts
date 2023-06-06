@@ -19,15 +19,15 @@ export class Piece {
         this.name = name;
     }
 
-    moveOptions(i: number, j: number, colour: string): void { }
+    moveOptions(i: number, j: number): void { }
 
     invalidCoordinates(i: number, j: number) {
 
         return !this.game.validCoordinates(i, j);
     }
 
-    legalPosition(i: number, j: number, colour: string) {
+    legalPosition(i: number, j: number) {
 
-        return this.game.legalPosition(i, j, colour);
+        return this.game.legalPosition(i, j, this.colour);
     }
 }

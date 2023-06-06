@@ -3,6 +3,7 @@
 import { ChessGame } from '../chessgame.js';
 import { WebChessGame } from '../webchessgame.js';
 import { Piece } from "../piece.js";
+import { BoardPosition } from '../BoardPosition.js';
 
 export class Queen extends Piece {
 
@@ -10,65 +11,34 @@ export class Queen extends Piece {
         super(webgame, game, colour, "queen");
     }
 
-    override moveOptions(i: number, j: number, colour: string): void {
+    override moveOptions(i: number, j: number): void {
 
-        this.bishopOptions(i, j, colour);
-        this.rookOptions(i, j, colour);
-    }
-    
-    bishopOptions(i: number, j: number, colour: string) {
-
-        // NE
-        var a = i - 1
-        var b = j + 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1
-            b += 1
-        }
-        // SE
-        var a = i + 1
-        var b = j + 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1
-            b += 1
-        }
-        // SW
-        var a = i + 1
-        var b = j - 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1
-            b -= 1
-        }
-        // NW
-        var a = i - 1
-        var b = j - 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1
-            b -= 1
-        }
+        this.queenOptions(i, j);
     }
 
-    rookOptions(i: number, j: number, colour: string) {
+    queenOptions(i: number, j: number){
 
-        // up
-        var x = i - 1
-        while (this.legalPosition(x, j, colour) === true) {
-            x -= 1
-        }
-        // down
-        var x = i + 1
-        while (this.legalPosition(x, j, colour) === true) {
-            x += 1
-        }
-        // left
-        var x = j - 1
-        while (this.legalPosition(i, x, colour) === true) {
-            x -= 1
-        }
-        // right
-        var x = j + 1
-        while (this.legalPosition(i, x, colour) === true) {
-            x += 1
+        const position = new BoardPosition(i, j);
+
+        this.checkAlongImpulse(position, -1, 0);
+        this.checkAlongImpulse(position, 1, 0);
+        this.checkAlongImpulse(position, 0, -1);
+        this.checkAlongImpulse(position, 0, 1);
+
+        this.checkAlongImpulse(position, -1, 1);
+        this.checkAlongImpulse(position, 1, 1);
+        this.checkAlongImpulse(position, 1, -1);
+        this.checkAlongImpulse(position, -1, -1);
+    }
+
+    checkAlongImpulse(position: BoardPosition, di: number, dj: number){
+
+        var i = position.i + di;
+        var j = position.j + dj;
+
+        while (this.legalPosition(i, j) == true) {
+            i += di;
+            j += dj;
         }
     }
 }

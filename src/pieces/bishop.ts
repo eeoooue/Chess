@@ -3,6 +3,8 @@
 import { ChessGame } from '../chessgame.js';
 import { WebChessGame } from '../webchessgame.js';
 import { Piece } from "../piece.js";
+import { BoardPosition } from '../BoardPosition.js';
+
 
 export class Bishop extends Piece {
 
@@ -10,40 +12,29 @@ export class Bishop extends Piece {
         super(webgame, game, colour, "bishop");
     }
 
-    override moveOptions(i: number, j: number, colour: string): void {
+    override moveOptions(i: number, j: number): void {
 
-        this.bishopOptions(i, j, colour);
+        this.bishopOptions(i, j);
     }
     
-    bishopOptions(i: number, j: number, colour: string) {
+    bishopOptions(i: number, j: number) {
+        
+        const position = new BoardPosition(i, j);
 
-        // NE
-        var a = i - 1
-        var b = j + 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1
-            b += 1
-        }
-        // SE
-        var a = i + 1
-        var b = j + 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1
-            b += 1
-        }
-        // SW
-        var a = i + 1
-        var b = j - 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1
-            b -= 1
-        }
-        // NW
-        var a = i - 1
-        var b = j - 1
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1
-            b -= 1
+        this.checkAlongImpulse(position, -1, 1);
+        this.checkAlongImpulse(position, 1, 1);
+        this.checkAlongImpulse(position, 1, -1);
+        this.checkAlongImpulse(position, -1, -1);
+    }
+
+    checkAlongImpulse(position: BoardPosition, di: number, dj: number){
+
+        var i = position.i + di;
+        var j = position.j + dj;
+
+        while (this.legalPosition(i, j) == true) {
+            i += di;
+            j += dj;
         }
     }
 }
