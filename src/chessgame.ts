@@ -2,7 +2,6 @@
 import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
-import { WebChessGame } from "./webchessgame.js";
 
 import { Bishop } from "./pieces/bishop.js";
 import { Rook } from "./pieces/rook.js";

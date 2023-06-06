@@ -1,5 +1,4 @@
 
-
 import { ChessGame } from '../chessgame.js';
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './emptypiece.js';
