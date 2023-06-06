@@ -105,25 +105,6 @@ export class WebChessGame {
         tile.appendChild(img)
     }
 
-    lookupPiece(piece: string): string {
-
-        switch (piece) {
-            case "P":
-                return "pawn";
-            case "R":
-                return "rook";
-            case "N":
-                return "knight";
-            case "B":
-                return "bishop";
-            case "Q":
-                return "queen";
-            case "K":
-                return "king";
-        }
-        return "";
-    }
-
     paintTiles(): void {
 
         const painting = ["whitebg", "blackbg"]

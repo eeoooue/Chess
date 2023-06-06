@@ -74,23 +74,6 @@ export class WebChessGame {
         img.style.margin = "5px 5px";
         tile.appendChild(img);
     }
-    lookupPiece(piece) {
-        switch (piece) {
-            case "P":
-                return "pawn";
-            case "R":
-                return "rook";
-            case "N":
-                return "knight";
-            case "B":
-                return "bishop";
-            case "Q":
-                return "queen";
-            case "K":
-                return "king";
-        }
-        return "";
-    }
     paintTiles() {
         const painting = ["whitebg", "blackbg"];
         var paint = 0;
