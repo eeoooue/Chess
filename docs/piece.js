@@ -66,4 +66,14 @@ export class Piece {
         this.j = position.j;
         this.boardState[this.i][this.j] = this;
     }
+    inMoveOptions(i, j) {
+        const n = this.possibleMoves.length;
+        for (let index = 0; index < n; index++) {
+            const position = this.possibleMoves[index];
+            if (position.i == i && position.j == j) {
+                return true;
+            }
+        }
+        return false;
+    }
 }

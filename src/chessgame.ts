@@ -243,6 +243,22 @@ export class ChessGame implements Subject {
             }
         }
 
+        // castling
+        if (movingPiece instanceof King && Math.abs(start.j - end.j) == 2){
+
+            if (start.j > end.j){
+                const rookPiece = this.boardState[start.i][0];
+                rookPiece.moveTo(new BoardPosition(start.i, end.j + 1));
+                this.boardState[start.i][0] = new EmptyPiece(this, start.i, 0);
+            }
+
+            if (start.j < end.j){
+                const rookPiece = this.boardState[start.i][7];
+                rookPiece.moveTo(new BoardPosition(start.i, end.j - 1));
+                this.boardState[start.i][7] = new EmptyPiece(this, start.i, 7);
+            }
+        }
+
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
         this.concludeTurn();

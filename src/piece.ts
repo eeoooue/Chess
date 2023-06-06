@@ -107,4 +107,17 @@ export class Piece implements Observer {
         this.j = position.j;
         this.boardState[this.i][this.j] = this;
     }
+
+    inMoveOptions(i: number, j: number){
+
+        const n: number = this.possibleMoves.length;
+
+        for(let index=0; index<n; index++){
+            const position = this.possibleMoves[index];
+            if (position.i == i && position.j == j){
+                return true
+            }
+        }
+        return false;
+    }
 }
