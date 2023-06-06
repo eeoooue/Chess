@@ -22,10 +22,8 @@ export class ChessGame {
                 this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
             }
         }
-        // this.placeBlackPieces();
-        // this.placeWhitePieces();
-        this.boardOfPieces[0][3] = new Rook(this.webgame, this, "b");
-        this.boardOfPieces[7][3] = new Queen(this.webgame, this, "w");
+        this.placeBlackPieces();
+        this.placeWhitePieces();
     }
     placeBlackPieces() {
         for (let j = 0; j < 8; j++) {
