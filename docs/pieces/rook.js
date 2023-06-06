@@ -5,9 +5,9 @@ export class Rook extends Piece {
         super(webgame, game, colour, "rook");
     }
     moveOptions(i, j) {
-        this.rookOptions(i, j, this.colour);
+        this.rookOptions(i, j);
     }
-    rookOptions(i, j, colour) {
+    rookOptions(i, j) {
         const position = new BoardPosition(i, j);
         this.checkAlongImpulse(position, -1, 0);
         this.checkAlongImpulse(position, 1, 0);
@@ -17,7 +17,7 @@ export class Rook extends Piece {
     checkAlongImpulse(position, di, dj) {
         var i = position.i + di;
         var j = position.j + dj;
-        while (this.legalPosition(i, j, this.colour) === true) {
+        while (this.legalPosition(i, j) == true) {
             i += di;
             j += dj;
         }

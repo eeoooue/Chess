@@ -32,7 +32,7 @@ export class Bishop extends Piece {
         var i = position.i + di;
         var j = position.j + dj;
 
-        while (this.legalPosition(i, j, this.colour) === true) {
+        while (this.legalPosition(i, j) == true) {
             i += di;
             j += dj;
         }

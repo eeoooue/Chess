@@ -7,13 +7,13 @@ export class King extends Piece {
         this.kingOptions(i, j, this.colour);
     }
     kingOptions(i, j, colour) {
-        this.legalPosition(i - 1, j, colour);
-        this.legalPosition(i - 1, j + 1, colour);
-        this.legalPosition(i, j + 1, colour);
-        this.legalPosition(i + 1, j + 1, colour);
-        this.legalPosition(i + 1, j, colour);
-        this.legalPosition(i + 1, j - 1, colour);
-        this.legalPosition(i, j - 1, colour);
-        this.legalPosition(i - 1, j - 1, colour);
+        this.legalPosition(i - 1, j);
+        this.legalPosition(i - 1, j + 1);
+        this.legalPosition(i, j + 1);
+        this.legalPosition(i + 1, j + 1);
+        this.legalPosition(i + 1, j);
+        this.legalPosition(i + 1, j - 1);
+        this.legalPosition(i, j - 1);
+        this.legalPosition(i - 1, j - 1);
     }
 }

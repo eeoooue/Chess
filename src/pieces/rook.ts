@@ -12,10 +12,10 @@ export class Rook extends Piece {
 
     override moveOptions(i: number, j: number): void {
 
-        this.rookOptions(i, j, this.colour);
+        this.rookOptions(i, j);
     }
 
-    rookOptions(i: number, j: number, colour: string) {
+    rookOptions(i: number, j: number) {
 
         const position = new BoardPosition(i, j);
 
@@ -30,7 +30,7 @@ export class Rook extends Piece {
         var i = position.i + di;
         var j = position.j + dj;
 
-        while (this.legalPosition(i, j, this.colour) === true) {
+        while (this.legalPosition(i, j) == true) {
             i += di;
             j += dj;
         }

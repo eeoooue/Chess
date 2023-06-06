@@ -17,13 +17,13 @@ export class Knight extends Piece {
     
     knightOptions(i: number, j: number, colour: string) {
 
-        this.legalPosition(i + 2, j - 1, colour)
-        this.legalPosition(i + 1, j - 2, colour)
-        this.legalPosition(i - 1, j - 2, colour)
-        this.legalPosition(i - 2, j - 1, colour)
-        this.legalPosition(i - 2, j + 1, colour)
-        this.legalPosition(i - 1, j + 2, colour)
-        this.legalPosition(i + 1, j + 2, colour)
-        this.legalPosition(i + 2, j + 1, colour)
+        this.legalPosition(i + 2, j - 1)
+        this.legalPosition(i + 1, j - 2)
+        this.legalPosition(i - 1, j - 2)
+        this.legalPosition(i - 2, j - 1)
+        this.legalPosition(i - 2, j + 1)
+        this.legalPosition(i - 1, j + 2)
+        this.legalPosition(i + 1, j + 2)
+        this.legalPosition(i + 2, j + 1)
     }
 }

@@ -13,10 +13,10 @@ export class Queen extends Piece {
 
     override moveOptions(i: number, j: number): void {
 
-        this.queenOptions(i, j, this.colour);
+        this.queenOptions(i, j);
     }
 
-    queenOptions(i: number, j: number, colour: string){
+    queenOptions(i: number, j: number){
 
         const position = new BoardPosition(i, j);
 
@@ -36,7 +36,7 @@ export class Queen extends Piece {
         var i = position.i + di;
         var j = position.j + dj;
 
-        while (this.legalPosition(i, j, this.colour) === true) {
+        while (this.legalPosition(i, j) == true) {
             i += di;
             j += dj;
         }
