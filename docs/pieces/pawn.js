@@ -4,8 +4,8 @@ export class Pawn extends Piece {
     constructor(webgame, game, colour) {
         super(webgame, game, colour, "pawn");
     }
-    moveOptions(i, j, colour) {
-        this.pawnOptions(i, j, colour);
+    moveOptions(i, j) {
+        this.pawnOptions(i, j, this.colour);
     }
     pawnMove(i, j) {
         if (this.invalidCoordinates(i, j) === true) {

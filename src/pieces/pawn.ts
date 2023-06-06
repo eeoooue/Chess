@@ -11,9 +11,9 @@ export class Pawn extends Piece {
         super(webgame, game, colour, "pawn");
     }
 
-    override moveOptions(i: number, j: number, colour: string): void {
+    override moveOptions(i: number, j: number): void {
 
-        this.pawnOptions(i, j, colour);
+        this.pawnOptions(i, j, this.colour);
     }
 
     pawnMove(i: number, j: number) {

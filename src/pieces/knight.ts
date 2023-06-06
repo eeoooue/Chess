@@ -10,9 +10,9 @@ export class Knight extends Piece {
         super(webgame, game, colour, "knight");
     }
 
-    override moveOptions(i: number, j: number, colour: string): void {
+    override moveOptions(i: number, j: number): void {
 
-        this.knightOptions(i, j, colour);
+        this.knightOptions(i, j, this.colour);
     }
     
     knightOptions(i: number, j: number, colour: string) {

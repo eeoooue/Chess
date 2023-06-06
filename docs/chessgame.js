@@ -22,8 +22,10 @@ export class ChessGame {
                 this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
             }
         }
-        this.placeBlackPieces();
-        this.placeWhitePieces();
+        // this.placeBlackPieces();
+        // this.placeWhitePieces();
+        this.boardOfPieces[0][3] = new Rook(this.webgame, this, "b");
+        this.boardOfPieces[7][3] = new Queen(this.webgame, this, "w");
     }
     placeBlackPieces() {
         for (let j = 0; j < 8; j++) {
@@ -126,6 +128,6 @@ export class ChessGame {
     }
     populateOptions(i, j) {
         const piece = this.boardOfPieces[i][j];
-        piece.moveOptions(i, j, piece.colour);
+        piece.moveOptions(i, j);
     }
 }

@@ -1,39 +1,25 @@
 import { Piece } from "../piece.js";
+import { BoardPosition } from '../BoardPosition.js';
 export class Bishop extends Piece {
     constructor(webgame, game, colour) {
         super(webgame, game, colour, "bishop");
     }
-    moveOptions(i, j, colour) {
-        this.bishopOptions(i, j, colour);
+    moveOptions(i, j) {
+        this.bishopOptions(i, j);
     }
-    bishopOptions(i, j, colour) {
-        // NE
-        var a = i - 1;
-        var b = j + 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1;
-            b += 1;
-        }
-        // SE
-        var a = i + 1;
-        var b = j + 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1;
-            b += 1;
-        }
-        // SW
-        var a = i + 1;
-        var b = j - 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a += 1;
-            b -= 1;
-        }
-        // NW
-        var a = i - 1;
-        var b = j - 1;
-        while (this.legalPosition(a, b, colour) === true) {
-            a -= 1;
-            b -= 1;
+    bishopOptions(i, j) {
+        const position = new BoardPosition(i, j);
+        this.checkAlongImpulse(position, -1, 1);
+        this.checkAlongImpulse(position, 1, 1);
+        this.checkAlongImpulse(position, 1, -1);
+        this.checkAlongImpulse(position, -1, -1);
+    }
+    checkAlongImpulse(position, di, dj) {
+        var i = position.i + di;
+        var j = position.j + dj;
+        while (this.legalPosition(i, j, this.colour) === true) {
+            i += di;
+            j += dj;
         }
     }
 }

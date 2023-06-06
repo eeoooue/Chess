@@ -6,7 +6,7 @@ export class Piece {
         this.colour = colour;
         this.name = name;
     }
-    moveOptions(i, j, colour) { }
+    moveOptions(i, j) { }
     invalidCoordinates(i, j) {
         return !this.game.validCoordinates(i, j);
     }

@@ -19,7 +19,7 @@ export class Piece {
         this.name = name;
     }
 
-    moveOptions(i: number, j: number, colour: string): void { }
+    moveOptions(i: number, j: number): void { }
 
     invalidCoordinates(i: number, j: number) {
 
