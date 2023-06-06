@@ -1,16 +1,67 @@
+import { BoardPosition } from './BoardPosition.js';
+import { AnalysisBoard } from './AnalysisBoard.js';
 export class Piece {
-    constructor(webgame, game, colour, name) {
-        this.webgame = webgame;
-        this.boardOfPieces = game.boardOfPieces;
+    constructor(game, colour, name, i, j) {
+        this.possibleMoves = [];
+        this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;
+        this.i = i;
+        this.j = j;
+        this.threatened = false;
+        game.attach(this);
+    }
+    //#region observer pattern
+    // Receive update from subject.
+    update(subject) {
+        this.possibleMoves = [];
+        this.moveOptions(this.i, this.j);
+    }
+    //#endregion observer pattern
+    getMoveOptions() {
+        return this.possibleMoves;
+    }
+    destroy() {
+        this.game.detach(this);
     }
     moveOptions(i, j) { }
     invalidCoordinates(i, j) {
         return !this.game.validCoordinates(i, j);
     }
-    legalPosition(i, j) {
-        return this.game.legalPosition(i, j, this.colour);
+    isSafeMove(destination) {
+        const start = new BoardPosition(this.i, this.j);
+        const analysisBoard = new AnalysisBoard(this.boardState, this.colour);
+        analysisBoard.submitMove(start, destination);
+        return analysisBoard.isSafe();
+    }
+    canMove(i, j) {
+        if (this.game.legalPosition(i, j, this.colour)) {
+            const move = new BoardPosition(i, j);
+            if (this.isSafeMove(move)) {
+                const targetPiece = this.boardState[i][j];
+                targetPiece.threatened = true;
+                this.possibleMoves.push(move);
+            }
+            return true;
+        }
+        return false;
+    }
+    checkAlongImpulse(position, di, dj) {
+        var i = position.i + di;
+        var j = position.j + dj;
+        while (this.canMove(i, j) == true) {
+            const piece = this.boardState[i][j];
+            if (piece.colour == "b" || piece.colour == "w") {
+                break;
+            }
+            i += di;
+            j += dj;
+        }
+    }
+    moveTo(position) {
+        this.i = position.i;
+        this.j = position.j;
+        this.boardState[this.i][this.j] = this;
     }
 }

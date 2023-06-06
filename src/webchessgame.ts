@@ -4,8 +4,11 @@ import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 import { EmptyPiece } from "./pieces/emptypiece.js";
+import { King } from "./pieces/king.js";
+import { Observer } from "./observer.js";
+import { Subject } from "./subject.js";
 
-export class WebChessGame {
+export class WebChessGame implements Observer {
 
     public boardContainer: HTMLElement;
     public grid: HTMLElement[][] = [];
@@ -15,10 +18,21 @@ export class WebChessGame {
     constructor(boardContainer: HTMLElement) {
 
         this.boardContainer = boardContainer;
-        this.game = new ChessGame(this);
+        this.game = new ChessGame();
         this.paintTiles()
-        this.paintPieces(this.game.boardOfPieces)
+        this.paintPieces(this.game.boardState)
+        this.game.attach(this)
     }
+
+    //#region observer pattern
+
+    update(subject: Subject): void {
+
+        this.paintPieces(this.game.boardState)
+        this.clearHighlights()
+    }
+
+    //#endregion
 
     public checkClickEvent(): void {
 
@@ -26,6 +40,15 @@ export class WebChessGame {
 
         if (move) {
             this.game.interpretSelection(move);
+            if (this.game.active){
+                const piece : Piece = this.game.boardState[move.i][move.j]
+
+                const tile = this.grid[move.i][move.j]
+                tile.classList.add("highlighted")
+
+                const options: BoardPosition[] = piece.getMoveOptions();
+                this.paintMoveOptions(options);                
+            }
         }
     }
 
@@ -96,10 +119,17 @@ export class WebChessGame {
             return;
         }
 
-        const imgpath = `assets\\${piece.name}_${piece.colour}.png`;
+        var img_name = `${piece.name}_${piece.colour}`;
+
+        if (piece instanceof King){
+            const kingPiece = piece as King;
+            if (kingPiece.threatened){
+                img_name += `_check`
+            }
+        }
 
         const img = document.createElement("img")
-        img.src = imgpath
+        img.src = `assets\\${img_name}.png`
         img.style.margin = "5px 5px"
 
         tile.appendChild(img)
@@ -134,5 +164,21 @@ export class WebChessGame {
         })
 
         return tile;
+    }
+
+    paintMoveOptions(options: BoardPosition[]){
+
+        const n: number = options.length;
+
+        for(let i=0; i<n; i++){
+            const move = options[i];
+            const piece: Piece = this.game.boardState[move.i][move.j]
+
+            if (piece instanceof EmptyPiece){
+                this.addDot(move.i, move.j)
+            } else {
+                this.addCircle(move.i, move.j)
+            }
+        }
     }
 }

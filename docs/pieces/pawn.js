@@ -1,8 +1,8 @@
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './emptypiece.js';
 export class Pawn extends Piece {
-    constructor(webgame, game, colour) {
-        super(webgame, game, colour, "pawn");
+    constructor(game, colour, i, j) {
+        super(game, colour, "pawn", i, j);
     }
     moveOptions(i, j) {
         switch (this.colour) {
@@ -16,9 +16,9 @@ export class Pawn extends Piece {
     }
     pawnMove(i, j) {
         if (this.game.validCoordinates(i, j)) {
-            const destination = this.boardOfPieces[i][j];
+            const destination = this.boardState[i][j];
             if (destination instanceof EmptyPiece) {
-                this.webgame.addDot(i, j);
+                this.canMove(i, j);
                 return true;
             }
         }
@@ -26,11 +26,11 @@ export class Pawn extends Piece {
     }
     pawnCapture(i, j) {
         if (this.game.validCoordinates(i, j)) {
-            const targetPiece = this.boardOfPieces[i][j];
+            const targetPiece = this.boardState[i][j];
             if (targetPiece instanceof EmptyPiece || targetPiece.colour == this.colour) {
                 return;
             }
-            this.webgame.addCircle(i, j);
+            this.canMove(i, j);
         }
     }
     blackPawnOptions(i, j) {

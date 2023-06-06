@@ -1,19 +1,19 @@
 import { Piece } from "../piece.js";
 export class King extends Piece {
-    constructor(webgame, game, colour) {
-        super(webgame, game, colour, "king");
+    constructor(game, colour, i, j) {
+        super(game, colour, "king", i, j);
     }
     moveOptions(i, j) {
-        this.kingOptions(i, j, this.colour);
+        this.kingOptions(i, j);
     }
-    kingOptions(i, j, colour) {
-        this.legalPosition(i - 1, j);
-        this.legalPosition(i - 1, j + 1);
-        this.legalPosition(i, j + 1);
-        this.legalPosition(i + 1, j + 1);
-        this.legalPosition(i + 1, j);
-        this.legalPosition(i + 1, j - 1);
-        this.legalPosition(i, j - 1);
-        this.legalPosition(i - 1, j - 1);
+    kingOptions(i, j) {
+        this.canMove(i - 1, j);
+        this.canMove(i - 1, j + 1);
+        this.canMove(i, j + 1);
+        this.canMove(i + 1, j + 1);
+        this.canMove(i + 1, j);
+        this.canMove(i + 1, j - 1);
+        this.canMove(i, j - 1);
+        this.canMove(i - 1, j - 1);
     }
 }

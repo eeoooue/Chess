@@ -1,14 +1,13 @@
 
 
 import { ChessGame } from '../chessgame.js';
-import { WebChessGame } from '../webchessgame.js';
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './emptypiece.js';
 
 export class Pawn extends Piece {
 
-    constructor(webgame: WebChessGame, game: ChessGame, colour: string) {
-        super(webgame, game, colour, "pawn");
+    constructor(game: ChessGame, colour: string, i:number, j:number) {
+        super(game, colour, "pawn", i, j);
     }
 
     override moveOptions(i: number, j: number): void {
@@ -23,26 +22,26 @@ export class Pawn extends Piece {
         }
     }
 
-    pawnMove(i: number, j: number) {
+    pawnMove(i: number, j: number) : boolean {
 
         if (this.game.validCoordinates(i, j)){
-            const destination: Piece = this.boardOfPieces[i][j];
+            const destination: Piece = this.boardState[i][j];
             if (destination instanceof EmptyPiece) {
-                this.webgame.addDot(i, j)
+                this.canMove(i, j);
                 return true
             }
         }
         return false
     }
 
-    pawnCapture(i: number, j: number) {
+    pawnCapture(i: number, j: number) : void {
 
         if (this.game.validCoordinates(i, j)){
-            const targetPiece = this.boardOfPieces[i][j];
+            const targetPiece = this.boardState[i][j];
             if (targetPiece instanceof EmptyPiece || targetPiece.colour == this.colour) {
                 return
             }
-            this.webgame.addCircle(i, j)
+            this.canMove(i, j);
         }        
     }
 

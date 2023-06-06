@@ -2,19 +2,34 @@ import { ChessGame } from "./chessgame.js";
 import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { EmptyPiece } from "./pieces/emptypiece.js";
+import { King } from "./pieces/king.js";
 export class WebChessGame {
     constructor(boardContainer) {
         this.grid = [];
         this.moveTracker = new MoveTracker();
         this.boardContainer = boardContainer;
-        this.game = new ChessGame(this);
+        this.game = new ChessGame();
         this.paintTiles();
-        this.paintPieces(this.game.boardOfPieces);
+        this.paintPieces(this.game.boardState);
+        this.game.attach(this);
     }
+    //#region observer pattern
+    update(subject) {
+        this.paintPieces(this.game.boardState);
+        this.clearHighlights();
+    }
+    //#endregion
     checkClickEvent() {
         const move = this.findClickedCell();
         if (move) {
             this.game.interpretSelection(move);
+            if (this.game.active) {
+                const piece = this.game.boardState[move.i][move.j];
+                const tile = this.grid[move.i][move.j];
+                tile.classList.add("highlighted");
+                const options = piece.getMoveOptions();
+                this.paintMoveOptions(options);
+            }
         }
     }
     setValidMove(i, j) {
@@ -68,9 +83,15 @@ export class WebChessGame {
         if (piece instanceof EmptyPiece) {
             return;
         }
-        const imgpath = `assets\\${piece.name}_${piece.colour}.png`;
+        var img_name = `${piece.name}_${piece.colour}`;
+        if (piece instanceof King) {
+            const kingPiece = piece;
+            if (kingPiece.threatened) {
+                img_name += `_check`;
+            }
+        }
         const img = document.createElement("img");
-        img.src = imgpath;
+        img.src = `assets\\${img_name}.png`;
         img.style.margin = "5px 5px";
         tile.appendChild(img);
     }
@@ -97,5 +118,18 @@ export class WebChessGame {
             this.checkClickEvent();
         });
         return tile;
+    }
+    paintMoveOptions(options) {
+        const n = options.length;
+        for (let i = 0; i < n; i++) {
+            const move = options[i];
+            const piece = this.game.boardState[move.i][move.j];
+            if (piece instanceof EmptyPiece) {
+                this.addDot(move.i, move.j);
+            }
+            else {
+                this.addCircle(move.i, move.j);
+            }
+        }
     }
 }
