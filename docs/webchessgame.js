@@ -72,7 +72,7 @@ export class WebChessGame {
         var img_name = `${piece.name}_${piece.colour}`;
         if (piece instanceof King) {
             const kingPiece = piece;
-            if (kingPiece.check) {
+            if (kingPiece.threatened) {
                 img_name += `_check`;
             }
         }

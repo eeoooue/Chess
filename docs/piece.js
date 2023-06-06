@@ -9,6 +9,7 @@ export class Piece {
         this.name = name;
         this.i = i;
         this.j = j;
+        this.threatened = false;
         game.attach(this);
     }
     //#region observer pattern
@@ -27,6 +28,8 @@ export class Piece {
     }
     canMove(i, j) {
         if (this.game.legalPosition(i, j, this.colour)) {
+            const targetPiece = this.boardState[i][j];
+            targetPiece.threatened = true;
             const move = new BoardPosition(i, j);
             this.possibleMoves.push(move);
             return true;

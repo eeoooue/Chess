@@ -13,17 +13,17 @@ export class ChessGame {
         this.active = false;
         this.turncount = 0;
         this.observers = [];
-        this.kings = [];
         this.webgame = webgame;
         this.initializeboardState();
-        this.resetKings();
+        this.resetThreats();
         this.notify();
     }
-    resetKings() {
-        const n = this.kings.length;
-        for (let i = 0; i < n; i++) {
-            const king = this.kings[i];
-            king.check = false;
+    resetThreats() {
+        for (let i = 0; i < 8; i++) {
+            for (let j = 0; j < 8; j++) {
+                const piece = this.boardState[i][j];
+                piece.threatened = false;
+            }
         }
     }
     //#region observer pattern
@@ -148,9 +148,10 @@ export class ChessGame {
         movingPiece.i = end.i;
         movingPiece.j = end.j;
         this.boardState[end.i][end.j] = movingPiece;
+        this.resetThreats();
+        this.notify();
         this.webgame.paintPieces(this.boardState);
         this.webgame.clearHighlights();
-        this.notify();
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {

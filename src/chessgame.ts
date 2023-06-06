@@ -21,25 +21,23 @@ export class ChessGame implements Subject {
     public active: boolean = false;
     public webgame: WebChessGame;
     public turncount: number = 0;
-
     private observers: Observer[] = [];
-    public kings: King[] = [];
 
     constructor(webgame: WebChessGame) {
 
         this.webgame = webgame;
         this.initializeboardState();
-        this.resetKings();
+        this.resetThreats();
         this.notify();
     }
 
-    resetKings(){
+    resetThreats(){
 
-        const n = this.kings.length;
-
-        for(let i=0; i<n; i++){
-            const king: King = this.kings[i];
-            king.check = false;
+        for(let i=0; i<8; i++){
+            for(let j=0; j<8; j++){
+                const piece = this.boardState[i][j];
+                piece.threatened = false;
+            }
         }
     }
 
@@ -167,7 +165,6 @@ export class ChessGame implements Subject {
         tile.classList.add("highlighted")
         this.active = true;
         this.populateOptions(i, j);
-
     }
 
     processEndCell(move: BoardPosition) {
@@ -207,9 +204,10 @@ export class ChessGame implements Subject {
         movingPiece.j = end.j
         this.boardState[end.i][end.j] = movingPiece;
 
+        this.resetThreats();
+        this.notify();
         this.webgame.paintPieces(this.boardState)
         this.webgame.clearHighlights()
-        this.notify();
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
