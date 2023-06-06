@@ -7,8 +7,8 @@ import { EmptyPiece } from './emptypiece.js';
 
 export class Pawn extends Piece {
 
-    constructor(webgame: WebChessGame, game: ChessGame, colour: string) {
-        super(webgame, game, colour, "pawn");
+    constructor(webgame: WebChessGame, game: ChessGame, colour: string, i:number, j:number) {
+        super(webgame, game, colour, "pawn", i, j);
     }
 
     override moveOptions(i: number, j: number): void {

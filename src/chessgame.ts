@@ -11,8 +11,10 @@ import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
 import { Queen } from "./pieces/queen.js";
 import { EmptyPiece } from "./pieces/emptypiece.js";
+import { Observer } from "./observer.js";
+import { Subject } from "./subject.js";
 
-export class ChessGame {
+export class ChessGame implements Subject {
 
     public boardState: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker = new MoveTracker();
@@ -20,18 +22,65 @@ export class ChessGame {
     public webgame: WebChessGame;
     public turncount: number = 0;
 
+    private observers: Observer[] = [];
+    public kings: King[] = [];
+
     constructor(webgame: WebChessGame) {
 
         this.webgame = webgame;
         this.initializeboardState();
+        this.resetKings();
+        this.notify();
     }
+
+    resetKings(){
+
+        const n = this.kings.length;
+
+        for(let i=0; i<n; i++){
+            const king: King = this.kings[i];
+            king.check = false;
+        }
+    }
+
+    //#region observer pattern
+
+    attach(observer: Observer): void {
+
+        this.observers.push(observer);
+    }
+
+    // Detach an observer from the subject.
+    detach(observer: Observer): void {
+
+        const n = this.observers.length;
+
+        for(let i=0; i<n; i++){
+            if (this.observers[i] == observer){
+                this.observers.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    // Notify all observers about an event.
+    notify(): void {
+
+        const n = this.observers.length;
+        for(let i=0; i<n; i++){
+            const observer = this.observers[i];
+            observer.update(this);
+        }
+    }
+
+    //#endregion observer pattern
 
     initializeboardState() {
 
         for (let i = 0; i < 8; i++) {
             this.boardState[i] = new Array<Piece>(8);
             for (let j = 0; j < 8; j++){
-                this.boardState[i][j] = new EmptyPiece(this.webgame, this);
+                this.boardState[i][j] = new EmptyPiece(this.webgame, this, i, j);
             }
         }
         
@@ -42,35 +91,35 @@ export class ChessGame {
     placeBlackPieces() {
 
         for (let j = 0; j < 8; j++) {
-            this.boardState[1][j] = new Pawn(this.webgame, this, "b")
+            this.boardState[1][j] = new Pawn(this.webgame, this, "b", 1, j)
         }
 
-        this.boardState[0][0] = new Rook(this.webgame, this, "b")
-        this.boardState[0][1] = new Knight(this.webgame, this, "b")
-        this.boardState[0][2] = new Bishop(this.webgame, this, "b")
-        this.boardState[0][3] = new Queen(this.webgame, this, "b")
+        this.boardState[0][0] = new Rook(this.webgame, this, "b", 0, 0)
+        this.boardState[0][1] = new Knight(this.webgame, this, "b", 0, 1)
+        this.boardState[0][2] = new Bishop(this.webgame, this, "b", 0, 2)
+        this.boardState[0][3] = new Queen(this.webgame, this, "b", 0, 3)
 
-        this.boardState[0][4] = new King(this.webgame, this, "b")
-        this.boardState[0][5] = new Bishop(this.webgame, this, "b")
-        this.boardState[0][6] = new Knight(this.webgame, this, "b")
-        this.boardState[0][7] = new Rook(this.webgame, this, "b")
+        this.boardState[0][4] = new King(this.webgame, this, "b", 0, 4)
+        this.boardState[0][5] = new Bishop(this.webgame, this, "b", 0, 5)
+        this.boardState[0][6] = new Knight(this.webgame, this, "b", 0, 6)
+        this.boardState[0][7] = new Rook(this.webgame, this, "b", 0, 7)
     }
 
     placeWhitePieces() {
 
         for (let j = 0; j < 8; j++) {
-            this.boardState[6][j] = new Pawn(this.webgame, this, "w")
+            this.boardState[6][j] = new Pawn(this.webgame, this, "w", 6, j)
         }
 
-        this.boardState[7][0] = new Rook(this.webgame, this, "w")
-        this.boardState[7][1] = new Knight(this.webgame, this, "w")
-        this.boardState[7][2] = new Bishop(this.webgame, this, "w")
-        this.boardState[7][3] = new Queen(this.webgame, this, "w")
+        this.boardState[7][0] = new Rook(this.webgame, this, "w", 7, 0)
+        this.boardState[7][1] = new Knight(this.webgame, this, "w", 7, 1)
+        this.boardState[7][2] = new Bishop(this.webgame, this, "w", 7, 2)
+        this.boardState[7][3] = new Queen(this.webgame, this, "w", 7, 3)
 
-        this.boardState[7][4] = new King(this.webgame, this, "w")
-        this.boardState[7][5] = new Bishop(this.webgame, this, "w")
-        this.boardState[7][6] = new Knight(this.webgame, this, "w")
-        this.boardState[7][7] = new Rook(this.webgame, this, "w")
+        this.boardState[7][4] = new King(this.webgame, this, "w", 7, 4)
+        this.boardState[7][5] = new Bishop(this.webgame, this, "w", 7, 5)
+        this.boardState[7][6] = new Knight(this.webgame, this, "w", 7, 6)
+        this.boardState[7][7] = new Rook(this.webgame, this, "w", 7, 7)
     }
 
     interpretSelection(move: BoardPosition) {
@@ -143,14 +192,24 @@ export class ChessGame {
         const movingPiece: Piece = this.boardState[start.i][start.j];
         var targetPiece: Piece = this.boardState[end.i][end.j];
 
-        if (targetPiece.colour != movingPiece.colour){
-            targetPiece = new EmptyPiece(this.webgame, this);
-        }
+        this.boardState[start.i][start.j] = new EmptyPiece(this.webgame, this, start.i, start.j);
+        this.boardState[end.i][end.j] = new EmptyPiece(this.webgame, this, end.i, end.j);
 
-        this.boardState[end.i][end.j] = movingPiece;
+        if (targetPiece.colour != movingPiece.colour){
+            targetPiece = new EmptyPiece(this.webgame, this, end.i, end.j);
+        }
+        
+        targetPiece.i = start.i;
+        targetPiece.j = start.j;
         this.boardState[start.i][start.j] = targetPiece;
+
+        movingPiece.i = end.i
+        movingPiece.j = end.j
+        this.boardState[end.i][end.j] = movingPiece;
+
         this.webgame.paintPieces(this.boardState)
         this.webgame.clearHighlights()
+        this.notify();
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
