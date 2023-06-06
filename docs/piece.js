@@ -3,7 +3,7 @@ export class Piece {
     constructor(webgame, game, colour, name) {
         this.possibleMoves = [];
         this.webgame = webgame;
-        this.boardOfPieces = game.boardState;
+        this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;
@@ -29,6 +29,10 @@ export class Piece {
         var i = position.i + di;
         var j = position.j + dj;
         while (this.canMove(i, j) == true) {
+            const piece = this.boardState[i][j];
+            if (piece.colour == "b" || piece.colour == "w") {
+                break;
+            }
             i += di;
             j += dj;
         }

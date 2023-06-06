@@ -26,7 +26,7 @@ export class Pawn extends Piece {
     pawnMove(i: number, j: number) : boolean {
 
         if (this.game.validCoordinates(i, j)){
-            const destination: Piece = this.boardOfPieces[i][j];
+            const destination: Piece = this.boardState[i][j];
             if (destination instanceof EmptyPiece) {
                 this.canMove(i, j);
                 return true
@@ -38,7 +38,7 @@ export class Pawn extends Piece {
     pawnCapture(i: number, j: number) : void {
 
         if (this.game.validCoordinates(i, j)){
-            const targetPiece = this.boardOfPieces[i][j];
+            const targetPiece = this.boardState[i][j];
             if (targetPiece instanceof EmptyPiece || targetPiece.colour == this.colour) {
                 return
             }

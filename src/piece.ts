@@ -6,7 +6,7 @@ import { BoardPosition } from './BoardPosition.js';
 export class Piece {
 
     public webgame: WebChessGame;
-    public boardOfPieces: Piece[][];
+    public boardState: Piece[][];
     public game: ChessGame;
     public colour: string;
     public name: string;
@@ -15,7 +15,7 @@ export class Piece {
     constructor(webgame: WebChessGame, game: ChessGame, colour: string, name: string) {
 
         this.webgame = webgame;
-        this.boardOfPieces = game.boardState;
+        this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;
@@ -35,9 +35,9 @@ export class Piece {
         return !this.game.validCoordinates(i, j);
     }
 
-    canMove(i: number, j: number) : boolean {
+    canMove(i: number, j: number): boolean {
 
-        if (this.game.legalPosition(i, j, this.colour)){
+        if (this.game.legalPosition(i, j, this.colour)) {
             const move: BoardPosition = new BoardPosition(i, j);
             this.possibleMoves.push(move);
             return true;
@@ -46,12 +46,16 @@ export class Piece {
         return false;
     }
 
-    checkAlongImpulse(position: BoardPosition, di: number, dj: number){
+    checkAlongImpulse(position: BoardPosition, di: number, dj: number) {
 
         var i = position.i + di;
         var j = position.j + dj;
 
         while (this.canMove(i, j) == true) {
+            const piece: Piece = this.boardState[i][j];
+            if (piece.colour == "b" || piece.colour == "w") {
+                break;
+            }
             i += di;
             j += dj;
         }
