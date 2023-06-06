@@ -81,13 +81,6 @@ export class WebChessGame {
         img.style.margin = "5px 5px";
         tile.appendChild(img);
     }
-    getCheckWarning() {
-        const imgpath = `assets\\red_circle.svg`;
-        const img = document.createElement("img");
-        img.src = imgpath;
-        img.style.margin = "5px 5px";
-        return img;
-    }
     paintTiles() {
         const painting = ["whitebg", "blackbg"];
         var paint = 0;
