@@ -3,6 +3,7 @@ import { AnalysisBoard } from './AnalysisBoard.js';
 export class Piece {
     constructor(game, colour, name, i, j) {
         this.possibleMoves = [];
+        this.hasMoved = false;
         this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
@@ -60,8 +61,19 @@ export class Piece {
         }
     }
     moveTo(position) {
+        this.hasMoved = true;
         this.i = position.i;
         this.j = position.j;
         this.boardState[this.i][this.j] = this;
+    }
+    inMoveOptions(i, j) {
+        const n = this.possibleMoves.length;
+        for (let index = 0; index < n; index++) {
+            const position = this.possibleMoves[index];
+            if (position.i == i && position.j == j) {
+                return true;
+            }
+        }
+        return false;
     }
 }
