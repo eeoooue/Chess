@@ -2,8 +2,11 @@
 import { ChessGame } from './chessgame.js';
 import { WebChessGame } from './webchessgame.js';
 import { BoardPosition } from './BoardPosition.js';
+import { Observer } from './observer.js';
+import { Subject } from "./subject.js";
+import { King } from './pieces/king';
 
-export class Piece {
+export class Piece implements Observer {
 
     public webgame: WebChessGame;
     public boardState: Piece[][];
@@ -11,20 +14,37 @@ export class Piece {
     public colour: string;
     public name: string;
     public possibleMoves: BoardPosition[] = [];
+    public i: number;
+    public j: number;
+    public threatened: boolean;
 
-    constructor(webgame: WebChessGame, game: ChessGame, colour: string, name: string) {
+    constructor(webgame: WebChessGame, game: ChessGame, colour: string, name: string, i: number, j: number) {
 
         this.webgame = webgame;
         this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;
+        this.i = i;
+        this.j = j;
+        this.threatened = false;
+        game.attach(this);
     }
+
+    //#region observer pattern
+
+
+    // Receive update from subject.
+    update(subject: Subject): void {
+
+        this.possibleMoves = [];
+        this.moveOptions(this.i, this.j);
+    }
+
+    //#endregion observer pattern
 
     getMoveOptions(i: number, j: number): BoardPosition[] {
 
-        this.possibleMoves = [];
-        this.moveOptions(i, j);
         return this.possibleMoves;
     }
 
@@ -38,6 +58,10 @@ export class Piece {
     canMove(i: number, j: number): boolean {
 
         if (this.game.legalPosition(i, j, this.colour)) {
+
+            const targetPiece = this.boardState[i][j];
+            targetPiece.threatened = true;
+
             const move: BoardPosition = new BoardPosition(i, j);
             this.possibleMoves.push(move);
             return true;

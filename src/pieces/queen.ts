@@ -7,8 +7,8 @@ import { BoardPosition } from '../BoardPosition.js';
 
 export class Queen extends Piece {
 
-    constructor(webgame: WebChessGame, game: ChessGame, colour: string) {
-        super(webgame, game, colour, "queen");
+    constructor(webgame: WebChessGame, game: ChessGame, colour: string, i:number, j:number) {
+        super(webgame, game, colour, "queen", i, j);
     }
 
     override moveOptions(i: number, j: number): void {

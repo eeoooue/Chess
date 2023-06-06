@@ -1,8 +1,8 @@
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './emptypiece.js';
 export class Pawn extends Piece {
-    constructor(webgame, game, colour) {
-        super(webgame, game, colour, "pawn");
+    constructor(webgame, game, colour, i, j) {
+        super(webgame, game, colour, "pawn", i, j);
     }
     moveOptions(i, j) {
         switch (this.colour) {

@@ -1,8 +1,8 @@
 import { Piece } from "../piece.js";
 import { BoardPosition } from '../BoardPosition.js';
 export class Bishop extends Piece {
-    constructor(webgame, game, colour) {
-        super(webgame, game, colour, "bishop");
+    constructor(webgame, game, colour, i, j) {
+        super(webgame, game, colour, "bishop", i, j);
     }
     moveOptions(i, j) {
         this.bishopOptions(i, j);

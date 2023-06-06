@@ -1,16 +1,25 @@
 import { BoardPosition } from './BoardPosition.js';
 export class Piece {
-    constructor(webgame, game, colour, name) {
+    constructor(webgame, game, colour, name, i, j) {
         this.possibleMoves = [];
         this.webgame = webgame;
         this.boardState = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;
+        this.i = i;
+        this.j = j;
+        this.threatened = false;
+        game.attach(this);
     }
-    getMoveOptions(i, j) {
+    //#region observer pattern
+    // Receive update from subject.
+    update(subject) {
         this.possibleMoves = [];
-        this.moveOptions(i, j);
+        this.moveOptions(this.i, this.j);
+    }
+    //#endregion observer pattern
+    getMoveOptions(i, j) {
         return this.possibleMoves;
     }
     moveOptions(i, j) { }
@@ -19,6 +28,8 @@ export class Piece {
     }
     canMove(i, j) {
         if (this.game.legalPosition(i, j, this.colour)) {
+            const targetPiece = this.boardState[i][j];
+            targetPiece.threatened = true;
             const move = new BoardPosition(i, j);
             this.possibleMoves.push(move);
             return true;
