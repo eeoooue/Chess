@@ -6,8 +6,11 @@ import { Piece } from "../piece.js";
 
 export class King extends Piece {
 
+    public check: boolean;
+
     constructor(webgame: WebChessGame, game: ChessGame, colour: string) {
         super(webgame, game, colour, "king");
+        this.check = true;
     }
 
     override moveOptions(i: number, j: number): void {

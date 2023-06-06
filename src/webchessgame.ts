@@ -4,6 +4,7 @@ import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 import { EmptyPiece } from "./pieces/emptypiece.js";
+import { King } from "./pieces/king.js";
 
 export class WebChessGame {
 
@@ -96,13 +97,31 @@ export class WebChessGame {
             return;
         }
 
-        const imgpath = `assets\\${piece.name}_${piece.colour}.png`;
+        var img_name = `${piece.name}_${piece.colour}`;
+
+        if (piece instanceof King){
+            const kingPiece = piece as King;
+            if (kingPiece.check){
+                img_name += `_check`
+            }
+        }
+
+        const img = document.createElement("img")
+        img.src = `assets\\${img_name}.png`
+        img.style.margin = "5px 5px"
+
+        tile.appendChild(img)
+    }
+
+    getCheckWarning(): HTMLImageElement {
+
+        const imgpath = `assets\\red_circle.svg`;
 
         const img = document.createElement("img")
         img.src = imgpath
         img.style.margin = "5px 5px"
 
-        tile.appendChild(img)
+        return img;
     }
 
     paintTiles(): void {
