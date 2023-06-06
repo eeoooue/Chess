@@ -14,7 +14,7 @@ import { EmptyPiece } from "./pieces/emptypiece.js";
 
 export class ChessGame {
 
-    public boardOfPieces: Piece[][] = new Array<Array<Piece>>(8);
+    public boardState: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker = new MoveTracker();
     public active: boolean = false;
     public webgame: WebChessGame;
@@ -23,15 +23,15 @@ export class ChessGame {
     constructor(webgame: WebChessGame) {
 
         this.webgame = webgame;
-        this.initializeBoardOfPieces();
+        this.initializeboardState();
     }
 
-    initializeBoardOfPieces() {
+    initializeboardState() {
 
         for (let i = 0; i < 8; i++) {
-            this.boardOfPieces[i] = new Array<Piece>(8);
+            this.boardState[i] = new Array<Piece>(8);
             for (let j = 0; j < 8; j++){
-                this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
+                this.boardState[i][j] = new EmptyPiece(this.webgame, this);
             }
         }
         
@@ -42,35 +42,35 @@ export class ChessGame {
     placeBlackPieces() {
 
         for (let j = 0; j < 8; j++) {
-            this.boardOfPieces[1][j] = new Pawn(this.webgame, this, "b")
+            this.boardState[1][j] = new Pawn(this.webgame, this, "b")
         }
 
-        this.boardOfPieces[0][0] = new Rook(this.webgame, this, "b")
-        this.boardOfPieces[0][1] = new Knight(this.webgame, this, "b")
-        this.boardOfPieces[0][2] = new Bishop(this.webgame, this, "b")
-        this.boardOfPieces[0][3] = new Queen(this.webgame, this, "b")
+        this.boardState[0][0] = new Rook(this.webgame, this, "b")
+        this.boardState[0][1] = new Knight(this.webgame, this, "b")
+        this.boardState[0][2] = new Bishop(this.webgame, this, "b")
+        this.boardState[0][3] = new Queen(this.webgame, this, "b")
 
-        this.boardOfPieces[0][4] = new King(this.webgame, this, "b")
-        this.boardOfPieces[0][5] = new Bishop(this.webgame, this, "b")
-        this.boardOfPieces[0][6] = new Knight(this.webgame, this, "b")
-        this.boardOfPieces[0][7] = new Rook(this.webgame, this, "b")
+        this.boardState[0][4] = new King(this.webgame, this, "b")
+        this.boardState[0][5] = new Bishop(this.webgame, this, "b")
+        this.boardState[0][6] = new Knight(this.webgame, this, "b")
+        this.boardState[0][7] = new Rook(this.webgame, this, "b")
     }
 
     placeWhitePieces() {
 
         for (let j = 0; j < 8; j++) {
-            this.boardOfPieces[6][j] = new Pawn(this.webgame, this, "w")
+            this.boardState[6][j] = new Pawn(this.webgame, this, "w")
         }
 
-        this.boardOfPieces[7][0] = new Rook(this.webgame, this, "w")
-        this.boardOfPieces[7][1] = new Knight(this.webgame, this, "w")
-        this.boardOfPieces[7][2] = new Bishop(this.webgame, this, "w")
-        this.boardOfPieces[7][3] = new Queen(this.webgame, this, "w")
+        this.boardState[7][0] = new Rook(this.webgame, this, "w")
+        this.boardState[7][1] = new Knight(this.webgame, this, "w")
+        this.boardState[7][2] = new Bishop(this.webgame, this, "w")
+        this.boardState[7][3] = new Queen(this.webgame, this, "w")
 
-        this.boardOfPieces[7][4] = new King(this.webgame, this, "w")
-        this.boardOfPieces[7][5] = new Bishop(this.webgame, this, "w")
-        this.boardOfPieces[7][6] = new Knight(this.webgame, this, "w")
-        this.boardOfPieces[7][7] = new Rook(this.webgame, this, "w")
+        this.boardState[7][4] = new King(this.webgame, this, "w")
+        this.boardState[7][5] = new Bishop(this.webgame, this, "w")
+        this.boardState[7][6] = new Knight(this.webgame, this, "w")
+        this.boardState[7][7] = new Rook(this.webgame, this, "w")
     }
 
     interpretSelection(move: BoardPosition) {
@@ -94,7 +94,7 @@ export class ChessGame {
 
     validStart(i: number, j: number): boolean {
 
-        const piece = this.boardOfPieces[i][j];
+        const piece = this.boardState[i][j];
         return piece.colour == this.getTurnPlayer();
     }
 
@@ -140,25 +140,23 @@ export class ChessGame {
             return;
         }
 
-        const movingPiece: Piece = this.boardOfPieces[start.i][start.j];
-        var targetPiece: Piece = this.boardOfPieces[end.i][end.j];
+        const movingPiece: Piece = this.boardState[start.i][start.j];
+        var targetPiece: Piece = this.boardState[end.i][end.j];
 
         if (targetPiece.colour != movingPiece.colour){
             targetPiece = new EmptyPiece(this.webgame, this);
         }
 
-        const piece: Piece = this.boardOfPieces[start.i][start.j]
-
-        this.boardOfPieces[end.i][end.j] = movingPiece;
-        this.boardOfPieces[start.i][start.j] = targetPiece;
-        this.webgame.paintPieces(this.boardOfPieces)
+        this.boardState[end.i][end.j] = movingPiece;
+        this.boardState[start.i][start.j] = targetPiece;
+        this.webgame.paintPieces(this.boardState)
         this.webgame.clearHighlights()
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
 
         if (this.validCoordinates(i, j)) {
-            const piece: Piece = this.boardOfPieces[i][j];
+            const piece: Piece = this.boardState[i][j];
             if (piece instanceof EmptyPiece || piece.colour != colour){
                 return true;
             }
@@ -174,7 +172,7 @@ export class ChessGame {
 
     populateOptions(i: number, j: number) {
 
-        const piece: Piece = this.boardOfPieces[i][j];
+        const piece: Piece = this.boardState[i][j];
         const options: BoardPosition[] = piece.getMoveOptions(i, j);
         this.webgame.paintMoveOptions(options);
     }

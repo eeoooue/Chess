@@ -3,7 +3,7 @@ export class Piece {
     constructor(webgame, game, colour, name) {
         this.possibleMoves = [];
         this.webgame = webgame;
-        this.boardOfPieces = game.boardOfPieces;
+        this.boardOfPieces = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;

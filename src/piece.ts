@@ -15,7 +15,7 @@ export class Piece {
     constructor(webgame: WebChessGame, game: ChessGame, colour: string, name: string) {
 
         this.webgame = webgame;
-        this.boardOfPieces = game.boardOfPieces;
+        this.boardOfPieces = game.boardState;
         this.game = game;
         this.colour = colour;
         this.name = name;

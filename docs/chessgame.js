@@ -8,18 +8,18 @@ import { Queen } from "./pieces/queen.js";
 import { EmptyPiece } from "./pieces/emptypiece.js";
 export class ChessGame {
     constructor(webgame) {
-        this.boardOfPieces = new Array(8);
+        this.boardState = new Array(8);
         this.moveTracker = new MoveTracker();
         this.active = false;
         this.turncount = 0;
         this.webgame = webgame;
-        this.initializeBoardOfPieces();
+        this.initializeboardState();
     }
-    initializeBoardOfPieces() {
+    initializeboardState() {
         for (let i = 0; i < 8; i++) {
-            this.boardOfPieces[i] = new Array(8);
+            this.boardState[i] = new Array(8);
             for (let j = 0; j < 8; j++) {
-                this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
+                this.boardState[i][j] = new EmptyPiece(this.webgame, this);
             }
         }
         this.placeBlackPieces();
@@ -27,29 +27,29 @@ export class ChessGame {
     }
     placeBlackPieces() {
         for (let j = 0; j < 8; j++) {
-            this.boardOfPieces[1][j] = new Pawn(this.webgame, this, "b");
+            this.boardState[1][j] = new Pawn(this.webgame, this, "b");
         }
-        this.boardOfPieces[0][0] = new Rook(this.webgame, this, "b");
-        this.boardOfPieces[0][1] = new Knight(this.webgame, this, "b");
-        this.boardOfPieces[0][2] = new Bishop(this.webgame, this, "b");
-        this.boardOfPieces[0][3] = new Queen(this.webgame, this, "b");
-        this.boardOfPieces[0][4] = new King(this.webgame, this, "b");
-        this.boardOfPieces[0][5] = new Bishop(this.webgame, this, "b");
-        this.boardOfPieces[0][6] = new Knight(this.webgame, this, "b");
-        this.boardOfPieces[0][7] = new Rook(this.webgame, this, "b");
+        this.boardState[0][0] = new Rook(this.webgame, this, "b");
+        this.boardState[0][1] = new Knight(this.webgame, this, "b");
+        this.boardState[0][2] = new Bishop(this.webgame, this, "b");
+        this.boardState[0][3] = new Queen(this.webgame, this, "b");
+        this.boardState[0][4] = new King(this.webgame, this, "b");
+        this.boardState[0][5] = new Bishop(this.webgame, this, "b");
+        this.boardState[0][6] = new Knight(this.webgame, this, "b");
+        this.boardState[0][7] = new Rook(this.webgame, this, "b");
     }
     placeWhitePieces() {
         for (let j = 0; j < 8; j++) {
-            this.boardOfPieces[6][j] = new Pawn(this.webgame, this, "w");
+            this.boardState[6][j] = new Pawn(this.webgame, this, "w");
         }
-        this.boardOfPieces[7][0] = new Rook(this.webgame, this, "w");
-        this.boardOfPieces[7][1] = new Knight(this.webgame, this, "w");
-        this.boardOfPieces[7][2] = new Bishop(this.webgame, this, "w");
-        this.boardOfPieces[7][3] = new Queen(this.webgame, this, "w");
-        this.boardOfPieces[7][4] = new King(this.webgame, this, "w");
-        this.boardOfPieces[7][5] = new Bishop(this.webgame, this, "w");
-        this.boardOfPieces[7][6] = new Knight(this.webgame, this, "w");
-        this.boardOfPieces[7][7] = new Rook(this.webgame, this, "w");
+        this.boardState[7][0] = new Rook(this.webgame, this, "w");
+        this.boardState[7][1] = new Knight(this.webgame, this, "w");
+        this.boardState[7][2] = new Bishop(this.webgame, this, "w");
+        this.boardState[7][3] = new Queen(this.webgame, this, "w");
+        this.boardState[7][4] = new King(this.webgame, this, "w");
+        this.boardState[7][5] = new Bishop(this.webgame, this, "w");
+        this.boardState[7][6] = new Knight(this.webgame, this, "w");
+        this.boardState[7][7] = new Rook(this.webgame, this, "w");
     }
     interpretSelection(move) {
         if (!this.active) {
@@ -68,7 +68,7 @@ export class ChessGame {
         return (this.turncount % 2 == 0) ? "w" : "b";
     }
     validStart(i, j) {
-        const piece = this.boardOfPieces[i][j];
+        const piece = this.boardState[i][j];
         return piece.colour == this.getTurnPlayer();
     }
     validEnd(i, j) {
@@ -101,20 +101,19 @@ export class ChessGame {
         if (!start || !end) {
             return;
         }
-        const movingPiece = this.boardOfPieces[start.i][start.j];
-        var targetPiece = this.boardOfPieces[end.i][end.j];
+        const movingPiece = this.boardState[start.i][start.j];
+        var targetPiece = this.boardState[end.i][end.j];
         if (targetPiece.colour != movingPiece.colour) {
             targetPiece = new EmptyPiece(this.webgame, this);
         }
-        const piece = this.boardOfPieces[start.i][start.j];
-        this.boardOfPieces[end.i][end.j] = movingPiece;
-        this.boardOfPieces[start.i][start.j] = targetPiece;
-        this.webgame.paintPieces(this.boardOfPieces);
+        this.boardState[end.i][end.j] = movingPiece;
+        this.boardState[start.i][start.j] = targetPiece;
+        this.webgame.paintPieces(this.boardState);
         this.webgame.clearHighlights();
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {
-            const piece = this.boardOfPieces[i][j];
+            const piece = this.boardState[i][j];
             if (piece instanceof EmptyPiece || piece.colour != colour) {
                 return true;
             }
@@ -125,7 +124,7 @@ export class ChessGame {
         return (0 <= i && i < 8 && 0 <= j && j < 8);
     }
     populateOptions(i, j) {
-        const piece = this.boardOfPieces[i][j];
+        const piece = this.boardState[i][j];
         const options = piece.getMoveOptions(i, j);
         this.webgame.paintMoveOptions(options);
     }

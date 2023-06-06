@@ -18,7 +18,7 @@ export class WebChessGame {
         this.boardContainer = boardContainer;
         this.game = new ChessGame(this);
         this.paintTiles()
-        this.paintPieces(this.game.boardOfPieces)
+        this.paintPieces(this.game.boardState)
     }
 
     public checkClickEvent(): void {
@@ -151,7 +151,7 @@ export class WebChessGame {
         for(let i=0; i<n; i++){
             const move = options[i];
 
-            const piece: Piece = this.game.boardOfPieces[move.i][move.j]
+            const piece: Piece = this.game.boardState[move.i][move.j]
 
             if (piece instanceof EmptyPiece){
                 this.addDot(move.i, move.j)
