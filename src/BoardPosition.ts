@@ -1,5 +1,5 @@
 
-export class ChessMove {
+export class BoardPosition {
 
     public i: number;
     public j: number;

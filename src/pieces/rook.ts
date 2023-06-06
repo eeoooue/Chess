@@ -6,6 +6,10 @@ import { Piece } from "../piece.js";
 
 export class Rook extends Piece {
 
+    constructor(webgame: WebChessGame, game: ChessGame, colour: string) {
+        super(webgame, game, colour, "rook");
+    }
+
     override moveOptions(i: number, j: number, colour: string): void {
 
         this.rookOptions(i, j, colour);

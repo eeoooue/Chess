@@ -1,26 +1,27 @@
 
+import { BoardPosition } from "./BoardPosition.js";
 
 export class MoveTracker {
 
-    private startMove: undefined | number[];
-    private endMove: undefined | number[];
+    private startMove: undefined | BoardPosition;
+    private endMove: undefined | BoardPosition;
 
     public setStartMove(i: number, j: number) : void {
 
-        this.startMove = [i, j];
+        this.startMove = new BoardPosition(i, j);
     }
 
     public setEndMove(i: number, j: number) : void {
 
-        this.endMove = [i, j];
+        this.endMove = new BoardPosition(i, j);
     }
 
-    public getStartMove(){
+    public getStartMove(): BoardPosition | undefined {
 
         return this.startMove;
     }
 
-    public getEndMove(){
+    public getEndMove(): BoardPosition | undefined {
 
         return this.endMove;
     }

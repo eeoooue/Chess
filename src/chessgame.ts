@@ -1,5 +1,5 @@
 
-import { ChessMove } from "./chessmove.js";
+import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 import { WebChessGame } from "./webchessgame.js";
@@ -10,10 +10,11 @@ import { Knight } from "./pieces/knight.js";
 import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
 import { Queen } from "./pieces/queen.js";
+import { EmptyPiece } from "./pieces/emptypiece.js";
 
 export class ChessGame {
 
-    public boardstate: string[][] = [];
+    public boardOfPieces: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker = new MoveTracker();
     public active: boolean = false;
     public webgame: WebChessGame;
@@ -22,10 +23,56 @@ export class ChessGame {
     constructor(webgame: WebChessGame) {
 
         this.webgame = webgame;
-        this.initializeBoardstate();
+        this.initializeBoardOfPieces();
     }
 
-    interpretSelection(move: ChessMove){
+    initializeBoardOfPieces() {
+
+        for (let i = 0; i < 8; i++) {
+            this.boardOfPieces[i] = new Array<Piece>(8);
+            for (let j = 0; j < 8; j++){
+                this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
+            }
+        }
+        this.placeBlackPieces();
+        this.placeWhitePieces();
+    }
+
+    placeBlackPieces() {
+
+        for (let j = 0; j < 8; j++) {
+            this.boardOfPieces[1][j] = new Pawn(this.webgame, this, "b")
+        }
+
+        this.boardOfPieces[0][0] = new Rook(this.webgame, this, "b")
+        this.boardOfPieces[0][1] = new Knight(this.webgame, this, "b")
+        this.boardOfPieces[0][2] = new Bishop(this.webgame, this, "b")
+        this.boardOfPieces[0][3] = new Queen(this.webgame, this, "b")
+
+        this.boardOfPieces[0][4] = new King(this.webgame, this, "b")
+        this.boardOfPieces[0][5] = new Bishop(this.webgame, this, "b")
+        this.boardOfPieces[0][6] = new Knight(this.webgame, this, "b")
+        this.boardOfPieces[0][7] = new Rook(this.webgame, this, "b")
+    }
+
+    placeWhitePieces() {
+
+        for (let j = 0; j < 8; j++) {
+            this.boardOfPieces[6][j] = new Pawn(this.webgame, this, "w")
+        }
+
+        this.boardOfPieces[7][0] = new Rook(this.webgame, this, "w")
+        this.boardOfPieces[7][1] = new Knight(this.webgame, this, "w")
+        this.boardOfPieces[7][2] = new Bishop(this.webgame, this, "w")
+        this.boardOfPieces[7][3] = new Queen(this.webgame, this, "w")
+
+        this.boardOfPieces[7][4] = new King(this.webgame, this, "w")
+        this.boardOfPieces[7][5] = new Bishop(this.webgame, this, "w")
+        this.boardOfPieces[7][6] = new Knight(this.webgame, this, "w")
+        this.boardOfPieces[7][7] = new Rook(this.webgame, this, "w")
+    }
+
+    interpretSelection(move: BoardPosition) {
 
         if (!this.active) {
             this.processStartMove(move);
@@ -39,34 +86,27 @@ export class ChessGame {
         }
     }
 
-    canStepHere(piece: Piece, i: number, j: number) {
+    getTurnPlayer(): string {
 
-        if (!this.validCoordinates(i, j)) {
-            return false;
-        }
-        return true;
+        return (this.turncount % 2 == 0) ? "w" : "b";
     }
 
-    instantiatePiece(pieceName: string): Piece {
+    validStart(i: number, j: number): boolean {
 
-        switch (pieceName) {
-            case "P":
-                return new Pawn(this.webgame, this);
+        const piece = this.boardOfPieces[i][j];
+        return piece.colour == this.getTurnPlayer();
+    }
 
-            case "R":
-                return new Rook(this.webgame, this);
+    validEnd(i: number, j: number): boolean {
 
-            case "N":
-                return new Knight(this.webgame, this);
+        const tile = this.webgame.grid[i][j]
+        return (tile.classList.contains("validmove"));
+    }
 
-            case "B":
-                return new Bishop(this.webgame, this);
+    processStartMove(move: BoardPosition) {
 
-            case "Q":
-                return new Queen(this.webgame, this);
-
-            default:
-                return new King(this.webgame, this);
+        if (this.validStart(move.i, move.j)) {
+            this.activateStart(move.i, move.j);
         }
     }
 
@@ -79,51 +119,7 @@ export class ChessGame {
         this.populateOptions(i, j);
     }
 
-    initializeBoardstate() {
-
-        this.boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"])
-        this.boardstate.push(["Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb"])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."])
-        this.boardstate.push(["Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw"])
-        this.boardstate.push(["Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"])
-    }
-
-    getTurnPlayer(): string {
-
-        if (this.turncount % 2 == 0) {
-            return "w";
-        }
-        return "b";
-    }
-
-    validStart(i: number, j: number): boolean {
-
-        if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] != this.getTurnPlayer()) {
-            return false
-        }
-        return true
-    }
-
-    validEnd(i: number, j: number): boolean {
-
-        const tile = this.webgame.grid[i][j]
-        if (tile.classList.contains("validmove")) {
-            return true
-        }
-        return false
-    }
-
-    processStartMove(move: ChessMove) {
-
-        if (this.validStart(move.i, move.j)) {
-            this.activateStart(move.i, move.j);
-        }
-    }
-
-    processEndCell(move: ChessMove) {
+    processEndCell(move: BoardPosition) {
 
         if (this.validEnd(move.i, move.j)) {
             this.moveTracker.setEndMove(move.i, move.j);
@@ -135,37 +131,36 @@ export class ChessGame {
 
     submitMove() {
 
-        const startMove: number[] | undefined = this.moveTracker.getStartMove();
-        const endMove: number[] | undefined = this.moveTracker.getEndMove();
+        const start: BoardPosition | undefined = this.moveTracker.getStartMove();
+        const end: BoardPosition | undefined = this.moveTracker.getEndMove();
 
-        if (!startMove || !endMove) {
+        if (!start || !end) {
             return;
         }
 
-        let a = startMove[0];
-        let b = startMove[1];
-        let x = endMove[0];
-        let y = endMove[1];
+        const piece: Piece = this.boardOfPieces[start.i][start.j]
 
-        this.boardstate[x][y] = this.boardstate[a][b]
-        this.boardstate[a][b] = "."
-        this.webgame.paintPosition(x, y)
-        this.webgame.paintPosition(a, b)
+        this.boardOfPieces[end.i][end.j] = piece
+        this.boardOfPieces[start.i][start.j] = new EmptyPiece(this.webgame, this);
+        this.webgame.paintPieces(this.boardOfPieces)
         this.webgame.clearHighlights()
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
 
         if (this.validCoordinates(i, j)) {
-            if (this.boardstate[i][j] === ".") {
-                this.webgame.addDot(i, j)
+            const piece: Piece = this.boardOfPieces[i][j];
+            if (piece instanceof EmptyPiece){
+                this.webgame.addDot(i, j);
+                return true;
+            }
+            if (piece.colour != colour) {
+                this.webgame.addCircle(i, j)
                 return true
             }
-            if (this.boardstate[i][j][1] != colour) {
-                this.webgame.addCircle(i, j)
-            }
         }
-        return false
+
+        return false;
     }
 
     validCoordinates(i: number, j: number) {
@@ -175,10 +170,7 @@ export class ChessGame {
 
     populateOptions(i: number, j: number) {
 
-        const pieceChar: string = this.boardstate[i][j][0];
-        const colour = this.boardstate[i][j][1];
-        const piece: Piece = this.instantiatePiece(pieceChar);
-
-        piece.moveOptions(i, j, colour);
+        const piece: Piece = this.boardOfPieces[i][j];
+        piece.moveOptions(i, j, piece.colour);
     }
 }
