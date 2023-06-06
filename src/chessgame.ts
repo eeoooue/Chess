@@ -1,5 +1,5 @@
 
-import { ChessMove } from "./chessmove.js";
+import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
 import { WebChessGame } from "./webchessgame.js";
@@ -14,6 +14,7 @@ import { Queen } from "./pieces/queen.js";
 export class ChessGame {
 
     public boardstate: string[][] = [];
+    public boardOfPieces: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker = new MoveTracker();
     public active: boolean = false;
     public webgame: WebChessGame;
@@ -22,10 +23,25 @@ export class ChessGame {
     constructor(webgame: WebChessGame) {
 
         this.webgame = webgame;
+        this.initializeBoardOfPieces();
         this.initializeBoardstate();
     }
 
-    interpretSelection(move: ChessMove){
+    initializeBoardOfPieces() {
+
+        for (let i = 0; i < 8; i++) {
+            this.boardOfPieces[i] = new Array<Piece>(8);
+        }
+
+        for (let i = 0; i < 8; i++){
+            
+        }
+
+
+
+    }
+
+    interpretSelection(move: BoardPosition) {
 
         if (!this.active) {
             this.processStartMove(move);
@@ -39,32 +55,19 @@ export class ChessGame {
         }
     }
 
-    canStepHere(piece: Piece, i: number, j: number) {
-
-        if (!this.validCoordinates(i, j)) {
-            return false;
-        }
-        return true;
-    }
-
     instantiatePiece(pieceName: string): Piece {
 
         switch (pieceName) {
             case "P":
                 return new Pawn(this.webgame, this);
-
             case "R":
                 return new Rook(this.webgame, this);
-
             case "N":
                 return new Knight(this.webgame, this);
-
             case "B":
                 return new Bishop(this.webgame, this);
-
             case "Q":
                 return new Queen(this.webgame, this);
-
             default:
                 return new King(this.webgame, this);
         }
@@ -116,14 +119,14 @@ export class ChessGame {
         return false
     }
 
-    processStartMove(move: ChessMove) {
+    processStartMove(move: BoardPosition) {
 
         if (this.validStart(move.i, move.j)) {
             this.activateStart(move.i, move.j);
         }
     }
 
-    processEndCell(move: ChessMove) {
+    processEndCell(move: BoardPosition) {
 
         if (this.validEnd(move.i, move.j)) {
             this.moveTracker.setEndMove(move.i, move.j);
@@ -135,22 +138,17 @@ export class ChessGame {
 
     submitMove() {
 
-        const startMove: number[] | undefined = this.moveTracker.getStartMove();
-        const endMove: number[] | undefined = this.moveTracker.getEndMove();
+        const start: BoardPosition | undefined = this.moveTracker.getStartMove();
+        const end: BoardPosition | undefined = this.moveTracker.getEndMove();
 
-        if (!startMove || !endMove) {
+        if (!start || !end) {
             return;
         }
 
-        let a = startMove[0];
-        let b = startMove[1];
-        let x = endMove[0];
-        let y = endMove[1];
-
-        this.boardstate[x][y] = this.boardstate[a][b]
-        this.boardstate[a][b] = "."
-        this.webgame.paintPosition(x, y)
-        this.webgame.paintPosition(a, b)
+        const piece: string = this.boardstate[start.i][start.j]
+        this.boardstate[end.i][end.j] = piece
+        this.boardstate[start.i][start.j] = "."
+        this.webgame.fullboardPiecePaint(this.boardstate)
         this.webgame.clearHighlights()
     }
 
