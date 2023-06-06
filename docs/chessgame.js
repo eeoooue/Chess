@@ -25,29 +25,29 @@ export class ChessGame {
     }
     placeBlackPieces() {
         for (let j = 0; j < 8; j++) {
-            this.boardOfPieces[1][j] = new Pawn(this.webgame, this);
+            this.boardOfPieces[1][j] = new Pawn(this.webgame, this, "b");
         }
-        this.boardOfPieces[0][0] = new Rook(this.webgame, this);
-        this.boardOfPieces[0][1] = new Knight(this.webgame, this);
-        this.boardOfPieces[0][2] = new Bishop(this.webgame, this);
-        this.boardOfPieces[0][3] = new Queen(this.webgame, this);
-        this.boardOfPieces[0][4] = new King(this.webgame, this);
-        this.boardOfPieces[0][5] = new Bishop(this.webgame, this);
-        this.boardOfPieces[0][6] = new Knight(this.webgame, this);
-        this.boardOfPieces[0][7] = new Rook(this.webgame, this);
+        this.boardOfPieces[0][0] = new Rook(this.webgame, this, "b");
+        this.boardOfPieces[0][1] = new Knight(this.webgame, this, "b");
+        this.boardOfPieces[0][2] = new Bishop(this.webgame, this, "b");
+        this.boardOfPieces[0][3] = new Queen(this.webgame, this, "b");
+        this.boardOfPieces[0][4] = new King(this.webgame, this, "b");
+        this.boardOfPieces[0][5] = new Bishop(this.webgame, this, "b");
+        this.boardOfPieces[0][6] = new Knight(this.webgame, this, "b");
+        this.boardOfPieces[0][7] = new Rook(this.webgame, this, "b");
     }
     placeWhitePieces() {
         for (let j = 0; j < 8; j++) {
-            this.boardOfPieces[6][j] = new Pawn(this.webgame, this);
+            this.boardOfPieces[6][j] = new Pawn(this.webgame, this, "w");
         }
-        this.boardOfPieces[7][0] = new Rook(this.webgame, this);
-        this.boardOfPieces[7][1] = new Knight(this.webgame, this);
-        this.boardOfPieces[7][2] = new Bishop(this.webgame, this);
-        this.boardOfPieces[7][3] = new Queen(this.webgame, this);
-        this.boardOfPieces[7][4] = new King(this.webgame, this);
-        this.boardOfPieces[7][5] = new Bishop(this.webgame, this);
-        this.boardOfPieces[7][6] = new Knight(this.webgame, this);
-        this.boardOfPieces[7][7] = new Rook(this.webgame, this);
+        this.boardOfPieces[7][0] = new Rook(this.webgame, this, "w");
+        this.boardOfPieces[7][1] = new Knight(this.webgame, this, "w");
+        this.boardOfPieces[7][2] = new Bishop(this.webgame, this, "w");
+        this.boardOfPieces[7][3] = new Queen(this.webgame, this, "w");
+        this.boardOfPieces[7][4] = new King(this.webgame, this, "w");
+        this.boardOfPieces[7][5] = new Bishop(this.webgame, this, "w");
+        this.boardOfPieces[7][6] = new Knight(this.webgame, this, "w");
+        this.boardOfPieces[7][7] = new Rook(this.webgame, this, "w");
     }
     interpretSelection(move) {
         if (!this.active) {
@@ -63,19 +63,20 @@ export class ChessGame {
         }
     }
     instantiatePiece(pieceName) {
+        const colour = "w";
         switch (pieceName) {
             case "P":
-                return new Pawn(this.webgame, this);
+                return new Pawn(this.webgame, this, colour);
             case "R":
-                return new Rook(this.webgame, this);
+                return new Rook(this.webgame, this, colour);
             case "N":
-                return new Knight(this.webgame, this);
+                return new Knight(this.webgame, this, colour);
             case "B":
-                return new Bishop(this.webgame, this);
+                return new Bishop(this.webgame, this, colour);
             case "Q":
-                return new Queen(this.webgame, this);
+                return new Queen(this.webgame, this, colour);
             default:
-                return new King(this.webgame, this);
+                return new King(this.webgame, this, colour);
         }
     }
     activateStart(i, j) {
