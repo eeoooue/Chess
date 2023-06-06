@@ -17,6 +17,7 @@ export class Piece implements Observer {
     public i: number;
     public j: number;
     public threatened: boolean;
+    public hasMoved: boolean = false;
 
     constructor(game: ChessGame, colour: string, name: string, i: number, j: number) {
 
@@ -101,6 +102,7 @@ export class Piece implements Observer {
 
     moveTo(position: BoardPosition) {
 
+        this.hasMoved = true;
         this.i = position.i;
         this.j = position.j;
         this.boardState[this.i][this.j] = this;
