@@ -12,10 +12,10 @@ export class King extends Piece {
 
     override moveOptions(i: number, j: number): void {
 
-        this.kingOptions(i, j, this.colour);
+        this.kingOptions(i, j);
     }
 
-    kingOptions(i: number, j: number, colour: string) {
+    kingOptions(i: number, j: number) {
 
         this.canMove(i - 1, j)
         this.canMove(i - 1, j + 1)
@@ -56,8 +56,6 @@ export class King extends Piece {
 
         return false;
     }
-
-
 
     threatenedByDiagonals() : boolean {
 
