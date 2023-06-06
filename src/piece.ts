@@ -47,7 +47,7 @@ export class Piece implements Observer {
         return this.possibleMoves;
     }
 
-    destroy(){
+    destroy() {
         this.game.detach(this);
     }
 
@@ -76,11 +76,9 @@ export class Piece implements Observer {
                 const targetPiece = this.boardState[i][j];
                 targetPiece.threatened = true;
                 this.possibleMoves.push(move);
-                
             }
 
             return true;
-            
         }
 
         return false;
@@ -101,7 +99,7 @@ export class Piece implements Observer {
         }
     }
 
-    moveTo(position: BoardPosition){
+    moveTo(position: BoardPosition) {
 
         this.i = position.i;
         this.j = position.j;
