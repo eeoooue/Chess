@@ -3,6 +3,7 @@ import { ChessGame } from "./chessgame.js";
 import { BoardPosition } from "./BoardPosition.js";
 import { MoveTracker } from "./movetracker.js";
 import { Piece } from "./piece.js";
+import { EmptyPiece } from "./pieces/emptypiece.js";
 
 export class WebChessGame {
 
@@ -16,7 +17,7 @@ export class WebChessGame {
         this.boardContainer = boardContainer;
         this.game = new ChessGame(this);
         this.paintTiles()
-        this.fullboardPiecePaint(this.game.boardstate)
+        this.paintPieces(this.game.boardOfPieces)
     }
 
     public checkClickEvent(): void {
@@ -77,28 +78,25 @@ export class WebChessGame {
         this.grid[i][j].appendChild(circle)
     }
 
-    fullboardPiecePaint(boardstate: string[][]) {
+    paintPieces(boardstate: Piece[][]) {
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                this.paintPosition(new BoardPosition(i, j), boardstate)
+                this.paintPosition(new BoardPosition(i, j), boardstate[i][j])
             }
         }
     }
 
-    paintPosition(position: BoardPosition, boardstate: string[][]) {
+    paintPosition(position: BoardPosition, piece: Piece) {
 
         const tile = this.grid[position.i][position.j]
         tile.innerHTML = ""
 
-        if (boardstate[position.i][position.j] == ".") {
+        if (piece instanceof EmptyPiece) {
             return;
         }
 
-        const piece = boardstate[position.i][position.j][0];
-        const pieceName = this.lookupPiece(piece);
-        const colour = boardstate[position.i][position.j][1];
-        const imgpath = `assets\\${pieceName}_${colour}.png`;
+        const imgpath = `assets\\${piece.name}_${piece.colour}.png`;
 
         const img = document.createElement("img")
         img.src = imgpath

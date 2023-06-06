@@ -5,20 +5,22 @@ import { Knight } from "./pieces/knight.js";
 import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
 import { Queen } from "./pieces/queen.js";
+import { EmptyPiece } from "./pieces/emptypiece.js";
 export class ChessGame {
     constructor(webgame) {
-        this.boardstate = [];
         this.boardOfPieces = new Array(8);
         this.moveTracker = new MoveTracker();
         this.active = false;
         this.turncount = 0;
         this.webgame = webgame;
         this.initializeBoardOfPieces();
-        this.initializeBoardstate();
     }
     initializeBoardOfPieces() {
         for (let i = 0; i < 8; i++) {
             this.boardOfPieces[i] = new Array(8);
+            for (let j = 0; j < 8; j++) {
+                this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
+            }
         }
         this.placeBlackPieces();
         this.placeWhitePieces();
@@ -62,40 +64,6 @@ export class ChessGame {
             }
         }
     }
-    instantiatePiece(pieceName) {
-        const colour = "w";
-        switch (pieceName) {
-            case "P":
-                return new Pawn(this.webgame, this, colour);
-            case "R":
-                return new Rook(this.webgame, this, colour);
-            case "N":
-                return new Knight(this.webgame, this, colour);
-            case "B":
-                return new Bishop(this.webgame, this, colour);
-            case "Q":
-                return new Queen(this.webgame, this, colour);
-            default:
-                return new King(this.webgame, this, colour);
-        }
-    }
-    activateStart(i, j) {
-        const tile = this.webgame.grid[i][j];
-        this.moveTracker.setStartMove(i, j);
-        tile.classList.add("highlighted");
-        this.active = true;
-        this.populateOptions(i, j);
-    }
-    initializeBoardstate() {
-        this.boardstate.push(["Rb", "Nb", "Bb", "Qb", "Kb", "Bb", "Nb", "Rb"]);
-        this.boardstate.push(["Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb", "Pb"]);
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."]);
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."]);
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."]);
-        this.boardstate.push([".", ".", ".", ".", ".", ".", ".", "."]);
-        this.boardstate.push(["Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw", "Pw"]);
-        this.boardstate.push(["Rw", "Nw", "Bw", "Qw", "Kw", "Bw", "Nw", "Rw"]);
-    }
     getTurnPlayer() {
         if (this.turncount % 2 == 0) {
             return "w";
@@ -103,7 +71,7 @@ export class ChessGame {
         return "b";
     }
     validStart(i, j) {
-        if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] != this.getTurnPlayer()) {
+        if (this.boardOfPieces[i][j] == null || this.boardOfPieces[i][j].colour != this.getTurnPlayer()) {
             return false;
         }
         return true;
@@ -120,6 +88,13 @@ export class ChessGame {
             this.activateStart(move.i, move.j);
         }
     }
+    activateStart(i, j) {
+        const tile = this.webgame.grid[i][j];
+        this.moveTracker.setStartMove(i, j);
+        tile.classList.add("highlighted");
+        this.active = true;
+        this.populateOptions(i, j);
+    }
     processEndCell(move) {
         if (this.validEnd(move.i, move.j)) {
             this.moveTracker.setEndMove(move.i, move.j);
@@ -134,31 +109,34 @@ export class ChessGame {
         if (!start || !end) {
             return;
         }
-        const piece = this.boardstate[start.i][start.j];
-        this.boardstate[end.i][end.j] = piece;
-        this.boardstate[start.i][start.j] = ".";
-        this.webgame.fullboardPiecePaint(this.boardstate);
+        const piece = this.boardOfPieces[start.i][start.j];
+        this.boardOfPieces[end.i][end.j] = piece;
+        this.boardOfPieces[start.i][start.j] = new EmptyPiece(this.webgame, this);
+        this.webgame.paintPieces(this.boardOfPieces);
         this.webgame.clearHighlights();
     }
     legalPosition(i, j, colour) {
-        if (this.validCoordinates(i, j)) {
-            if (this.boardstate[i][j] === ".") {
-                this.webgame.addDot(i, j);
-                return true;
-            }
-            if (this.boardstate[i][j][1] != colour) {
-                this.webgame.addCircle(i, j);
-            }
+        if (!this.validCoordinates(i, j)) {
+            return false;
         }
-        return false;
+        const piece = this.boardOfPieces[i][j];
+        if (piece instanceof EmptyPiece) {
+            this.webgame.addDot(i, j);
+            return true;
+        }
+        if (piece.colour == colour) {
+            return false;
+        }
+        if (piece.colour != colour) {
+            this.webgame.addCircle(i, j);
+        }
+        return true;
     }
     validCoordinates(i, j) {
         return (0 <= i && i < 8 && 0 <= j && j < 8);
     }
     populateOptions(i, j) {
-        const pieceChar = this.boardstate[i][j][0];
-        const colour = this.boardstate[i][j][1];
-        const piece = this.instantiatePiece(pieceChar);
-        piece.moveOptions(i, j, colour);
+        const piece = this.boardOfPieces[i][j];
+        piece.moveOptions(i, j, piece.colour);
     }
 }

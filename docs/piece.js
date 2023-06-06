@@ -1,10 +1,10 @@
 export class Piece {
-    constructor(webgame, game, colour) {
-        this.boardstate = [];
+    constructor(webgame, game, colour, name) {
         this.webgame = webgame;
-        this.boardstate = game.boardstate;
+        this.boardOfPieces = game.boardOfPieces;
         this.game = game;
         this.colour = colour;
+        this.name = name;
     }
     moveOptions(i, j, colour) { }
     invalidCoordinates(i, j) {

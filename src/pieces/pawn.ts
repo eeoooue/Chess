@@ -3,13 +3,17 @@
 import { ChessGame } from '../chessgame.js';
 import { WebChessGame } from '../webchessgame.js';
 import { Piece } from "../piece.js";
+import { EmptyPiece } from './emptypiece.js';
 
 export class Pawn extends Piece {
+
+    constructor(webgame: WebChessGame, game: ChessGame, colour: string) {
+        super(webgame, game, colour, "pawn");
+    }
 
     override moveOptions(i: number, j: number, colour: string): void {
 
         this.pawnOptions(i, j, colour);
-        
     }
 
     pawnMove(i: number, j: number) {
@@ -17,7 +21,7 @@ export class Pawn extends Piece {
         if (this.invalidCoordinates(i, j) === true) {
             return false
         }
-        if (this.boardstate[i][j] === ".") {
+        if (this.boardOfPieces[i][j] instanceof EmptyPiece) {
             this.webgame.addDot(i, j)
             return true
         }
@@ -29,7 +33,9 @@ export class Pawn extends Piece {
         if (this.invalidCoordinates(i, j) === true) {
             return
         }
-        if (this.boardstate[i][j] === "." || this.boardstate[i][j][1] === colour) {
+
+        const targetPiece = this.boardOfPieces[i][j];
+        if (targetPiece instanceof EmptyPiece || targetPiece.colour === colour) {
             return
         }
         this.webgame.addCircle(i, j)
