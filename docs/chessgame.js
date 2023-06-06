@@ -65,23 +65,15 @@ export class ChessGame {
         }
     }
     getTurnPlayer() {
-        if (this.turncount % 2 == 0) {
-            return "w";
-        }
-        return "b";
+        return (this.turncount % 2 == 0) ? "w" : "b";
     }
     validStart(i, j) {
-        if (this.boardOfPieces[i][j] == null || this.boardOfPieces[i][j].colour != this.getTurnPlayer()) {
-            return false;
-        }
-        return true;
+        const piece = this.boardOfPieces[i][j];
+        return piece.colour == this.getTurnPlayer();
     }
     validEnd(i, j) {
         const tile = this.webgame.grid[i][j];
-        if (tile.classList.contains("validmove")) {
-            return true;
-        }
-        return false;
+        return (tile.classList.contains("validmove"));
     }
     processStartMove(move) {
         if (this.validStart(move.i, move.j)) {
@@ -116,21 +108,18 @@ export class ChessGame {
         this.webgame.clearHighlights();
     }
     legalPosition(i, j, colour) {
-        if (!this.validCoordinates(i, j)) {
-            return false;
+        if (this.validCoordinates(i, j)) {
+            const piece = this.boardOfPieces[i][j];
+            if (piece instanceof EmptyPiece) {
+                this.webgame.addDot(i, j);
+                return true;
+            }
+            if (piece.colour != colour) {
+                this.webgame.addCircle(i, j);
+                return true;
+            }
         }
-        const piece = this.boardOfPieces[i][j];
-        if (piece instanceof EmptyPiece) {
-            this.webgame.addDot(i, j);
-            return true;
-        }
-        if (piece.colour == colour) {
-            return false;
-        }
-        if (piece.colour != colour) {
-            this.webgame.addCircle(i, j);
-        }
-        return true;
+        return false;
     }
     validCoordinates(i, j) {
         return (0 <= i && i < 8 && 0 <= j && j < 8);

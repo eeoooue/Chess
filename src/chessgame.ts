@@ -30,12 +30,10 @@ export class ChessGame {
 
         for (let i = 0; i < 8; i++) {
             this.boardOfPieces[i] = new Array<Piece>(8);
-
             for (let j = 0; j < 8; j++){
                 this.boardOfPieces[i][j] = new EmptyPiece(this.webgame, this);
             }
         }
-
         this.placeBlackPieces();
         this.placeWhitePieces();
     }
@@ -90,27 +88,19 @@ export class ChessGame {
 
     getTurnPlayer(): string {
 
-        if (this.turncount % 2 == 0) {
-            return "w";
-        }
-        return "b";
+        return (this.turncount % 2 == 0) ? "w" : "b";
     }
 
     validStart(i: number, j: number): boolean {
 
-        if (this.boardOfPieces[i][j] == null || this.boardOfPieces[i][j].colour != this.getTurnPlayer()) {
-            return false
-        }
-        return true
+        const piece = this.boardOfPieces[i][j];
+        return piece.colour == this.getTurnPlayer();
     }
 
     validEnd(i: number, j: number): boolean {
 
         const tile = this.webgame.grid[i][j]
-        if (tile.classList.contains("validmove")) {
-            return true
-        }
-        return false
+        return (tile.classList.contains("validmove"));
     }
 
     processStartMove(move: BoardPosition) {
@@ -149,6 +139,7 @@ export class ChessGame {
         }
 
         const piece: Piece = this.boardOfPieces[start.i][start.j]
+
         this.boardOfPieces[end.i][end.j] = piece
         this.boardOfPieces[start.i][start.j] = new EmptyPiece(this.webgame, this);
         this.webgame.paintPieces(this.boardOfPieces)
@@ -157,26 +148,19 @@ export class ChessGame {
 
     legalPosition(i: number, j: number, colour: string): boolean {
 
-        if (!this.validCoordinates(i, j)) {
-            return false;
+        if (this.validCoordinates(i, j)) {
+            const piece: Piece = this.boardOfPieces[i][j];
+            if (piece instanceof EmptyPiece){
+                this.webgame.addDot(i, j);
+                return true;
+            }
+            if (piece.colour != colour) {
+                this.webgame.addCircle(i, j)
+                return true
+            }
         }
 
-        const piece: Piece = this.boardOfPieces[i][j];
-
-        if (piece instanceof EmptyPiece){
-            this.webgame.addDot(i, j);
-            return true;
-        }
-
-        if (piece.colour == colour) {
-            return false;
-        }
-
-        if (piece.colour != colour) {
-            this.webgame.addCircle(i, j)
-        }
-
-        return true
+        return false;
     }
 
     validCoordinates(i: number, j: number) {
