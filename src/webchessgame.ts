@@ -7,6 +7,7 @@ import { Subject } from "./subject.js";
 
 import { BoardElement } from "./BoardElement.js";
 import { EndCard } from "./EndCard.js";
+import { PromotionCard } from "./PromotionCard.js";
 
 export class WebChessGame implements Observer {
 
