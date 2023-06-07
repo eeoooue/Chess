@@ -1,10 +1,8 @@
 
-
 import { ChessGame } from '../chessgame.js';
 import { Piece } from "../piece.js";
 import { Rook } from './rook.js';
 import { BoardPosition } from '../BoardPosition.js';
-import { EmptyPiece } from './emptypiece.js';
 
 export class King extends Piece {
 
@@ -14,44 +12,38 @@ export class King extends Piece {
 
     override moveOptions(i: number, j: number): void {
 
-        this.kingOptions(i, j);
+        this.kingOptions();
         this.checkCastling();
     }
 
     override moveTo(position: BoardPosition): void {
-        
+
         this.game.clearSquare(this.i, this.j);
         this.hasMoved = true;
 
         this.checkCastlingApplies(position);
-
         this.i = position.i;
         this.j = position.j;
         this.boardState[this.i][this.j] = this;
     }
 
-    kingOptions(i: number, j: number) {
+    kingOptions() {
 
-        this.canMove(i - 1, j)
-        this.canMove(i - 1, j + 1)
-        this.canMove(i, j + 1)
-        this.canMove(i + 1, j + 1)
-        this.canMove(i + 1, j)
-        this.canMove(i + 1, j - 1)
-        this.canMove(i, j - 1)
-        this.canMove(i - 1, j - 1)
+        for (let a = -1; a <= 1; a++) {
+            for (let b = -1; b <= 1; b++) {
+                this.canMove(this.i + a, this.j + b);
+            }
+        }
     }
 
-    checkCastlingApplies(end: BoardPosition){
+    checkCastlingApplies(end: BoardPosition) {
 
-        if (Math.abs(this.j - end.j) == 2){
-
-            if (this.j > end.j){
+        if (Math.abs(this.j - end.j) == 2) {
+            if (this.j > end.j) {
                 const rookPiece = this.boardState[this.i][0];
                 rookPiece.moveTo(new BoardPosition(this.i, end.j + 1));
             }
-
-            if (this.j < end.j){
+            if (this.j < end.j) {
                 const rookPiece = this.boardState[this.i][7];
                 rookPiece.moveTo(new BoardPosition(this.i, end.j - 1));
             }
@@ -69,7 +61,6 @@ export class King extends Piece {
     checkCastleLeft() {
 
         const rookPiece = this.boardState[this.i][0];
-
         if (rookPiece instanceof Rook && !rookPiece.hasMoved) {
             if (this.inMoveOptions(this.i, this.j - 1)) {
                 this.canMove(this.i, this.j - 2);
@@ -81,7 +72,6 @@ export class King extends Piece {
     checkCastleRight() {
 
         const rookPiece = this.boardState[this.i][7];
-
         if (rookPiece instanceof Rook && !rookPiece.hasMoved) {
             if (this.inMoveOptions(this.i, this.j + 1)) {
                 this.canMove(this.i, this.j + 2);

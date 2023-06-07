@@ -6,7 +6,7 @@ export class King extends Piece {
         super(game, colour, "king", i, j);
     }
     moveOptions(i, j) {
-        this.kingOptions(i, j);
+        this.kingOptions();
         this.checkCastling();
     }
     moveTo(position) {
@@ -17,15 +17,12 @@ export class King extends Piece {
         this.j = position.j;
         this.boardState[this.i][this.j] = this;
     }
-    kingOptions(i, j) {
-        this.canMove(i - 1, j);
-        this.canMove(i - 1, j + 1);
-        this.canMove(i, j + 1);
-        this.canMove(i + 1, j + 1);
-        this.canMove(i + 1, j);
-        this.canMove(i + 1, j - 1);
-        this.canMove(i, j - 1);
-        this.canMove(i - 1, j - 1);
+    kingOptions() {
+        for (let a = -1; a <= 1; a++) {
+            for (let b = -1; b <= 1; b++) {
+                this.canMove(this.i + a, this.j + b);
+            }
+        }
     }
     checkCastlingApplies(end) {
         if (Math.abs(this.j - end.j) == 2) {
