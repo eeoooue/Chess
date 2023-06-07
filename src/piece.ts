@@ -1,10 +1,8 @@
 
 import { ChessGame } from './chessgame.js';
-import { WebChessGame } from './webchessgame.js';
 import { BoardPosition } from './BoardPosition.js';
 import { Observer } from './observer.js';
 import { Subject } from "./subject.js";
-import { King } from './pieces/king.js';
 import { AnalysisBoard } from './AnalysisBoard.js';
 
 export class Piece implements Observer {
