@@ -171,10 +171,13 @@ export class ChessGame {
         movingPiece.moveTo(end);
         this.concludeTurn();
     }
+    clearSquare(i, j) {
+        this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
     removePiece(i, j) {
         const piece = this.boardState[i][j];
         this.detach(piece);
-        this.boardState[i][j] = new EmptyPiece(this, i, j);
+        this.clearSquare(i, j);
     }
     checkCastling(start, end) {
         // could move this into King class?

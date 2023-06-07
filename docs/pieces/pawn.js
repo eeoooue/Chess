@@ -16,6 +16,7 @@ export class Pawn extends Piece {
         }
     }
     moveTo(position) {
+        this.game.clearSquare(this.i, this.j);
         if (Math.abs(this.i - position.i) == 2) {
             this.enPassantTurn = this.game.turncount + 1;
         }

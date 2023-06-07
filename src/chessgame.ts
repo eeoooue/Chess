@@ -233,12 +233,16 @@ export class ChessGame implements Subject {
         this.concludeTurn();
     }
 
+    clearSquare(i: number, j: number){
+
+        this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
 
     removePiece(i: number, j: number){
 
         const piece: Piece = this.boardState[i][j];
         this.detach(piece);
-        this.boardState[i][j] = new EmptyPiece(this, i, j);
+        this.clearSquare(i, j);
     }
 
     checkCastling(start: BoardPosition, end: BoardPosition){

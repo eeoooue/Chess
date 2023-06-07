@@ -1,5 +1,5 @@
 
-import { BoardPosition } from '../BoardPosition';
+import { BoardPosition } from '../BoardPosition.js';
 import { ChessGame } from '../chessgame.js';
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './emptypiece.js';
@@ -25,6 +25,8 @@ export class Pawn extends Piece {
     }
 
     override moveTo(position: BoardPosition): void {
+
+        this.game.clearSquare(this.i, this.j);
 
         if (Math.abs(this.i - position.i) == 2){
             this.enPassantTurn = this.game.turncount + 1;

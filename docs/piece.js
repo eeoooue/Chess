@@ -58,6 +58,7 @@ export class Piece {
         }
     }
     moveTo(position) {
+        this.game.clearSquare(this.i, this.j);
         this.hasMoved = true;
         this.i = position.i;
         this.j = position.j;

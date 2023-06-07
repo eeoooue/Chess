@@ -98,6 +98,7 @@ export class Piece implements Observer {
 
     moveTo(position: BoardPosition) {
 
+        this.game.clearSquare(this.i, this.j);
         this.hasMoved = true;
         this.i = position.i;
         this.j = position.j;
