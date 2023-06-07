@@ -1,23 +1,14 @@
-import { BoardPosition } from "./BoardPosition.js";
-import { Pawn } from "./pieces/pawn.js";
 export class PromotionCard {
     constructor(parent, game) {
         this.game = game;
         this.parent = parent;
         this.element = this.deriveEndCard(this.game);
     }
-    getPromotingPawn(i) {
-        for (let j = 0; j < 8; j++) {
-            const piece = this.game.boardState[i][j];
-            if (piece instanceof Pawn) {
-                return new BoardPosition(i, j);
-            }
-        }
-        return new BoardPosition(-1, -1);
-    }
     deriveEndCard(game) {
-        // const position: BoardPosition = this.getPromotingPawn(0);
-        const bigText = "Promoting white pawn.";
+        const position = this.game.getPromotingPawnPosition();
+        const piece = this.game.boardState[position.i][position.j];
+        const colour = (piece.colour == "b") ? "black" : "white";
+        const bigText = `Promoting ${colour} pawn.`;
         const subText = "Which piece should your pawn become?";
         return this.createEndCard(bigText, subText);
     }
@@ -48,6 +39,7 @@ export class PromotionCard {
     }
     submitChoice(text) {
         console.log(`you chose ${text}`);
-        return;
+        this.game.submitPromotionChoice(text);
+        this.element.remove();
     }
 }

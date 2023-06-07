@@ -3,8 +3,6 @@ import { WebChessGame } from "./webchessgame.js";
 import { ChessGame } from "./chessgame.js";
 import { BoardPosition } from "./BoardPosition.js";
 import { Piece } from "./piece.js";
-import { Pawn } from "./pieces/pawn.js";
-
 
 export class PromotionCard {
 
@@ -19,23 +17,15 @@ export class PromotionCard {
         this.element = this.deriveEndCard(this.game);
     }
 
-    getPromotingPawn(i: number) {
-
-        for (let j = 0; j < 8; j++) {
-            const piece: Piece = this.game.boardState[i][j];
-            if (piece instanceof Pawn){
-                return new BoardPosition(i, j);
-            }
-        }
-
-        return new BoardPosition(-1, -1);
-    }
-
     deriveEndCard(game: ChessGame): HTMLDivElement {
 
-        // const position: BoardPosition = this.getPromotingPawn(0);
+        const position: BoardPosition = this.game.getPromotingPawnPosition();
 
-        const bigText = "Promoting white pawn."
+        const piece: Piece = this.game.boardState[position.i][position.j];
+
+        const colour: string = (piece.colour == "b") ? "black" : "white";
+
+        const bigText = `Promoting ${colour} pawn.`
         const subText = "Which piece should your pawn become?"
 
         return this.createEndCard(bigText, subText);
@@ -79,7 +69,7 @@ export class PromotionCard {
     submitChoice(text: string){
 
         console.log(`you chose ${text}`)
-
-        return;
+        this.game.submitPromotionChoice(text);
+        this.element.remove();
     }
 }
