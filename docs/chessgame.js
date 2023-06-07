@@ -16,6 +16,7 @@ export class ChessGame {
         this.observers = [];
         this.possibleMoves = 0;
         this.initializeboardState();
+        this.state = "ongoing";
         this.notify();
     }
     getKingOfColour(colour) {
@@ -162,9 +163,18 @@ export class ChessGame {
         this.checkGameOver();
     }
     checkGameOver() {
-        console.log(`there are ${this.possibleMoves} moves available`);
+        console.log(`there are ${this.possibleMoves} move(s) available`);
         if (this.possibleMoves == 0) {
-            console.log("that's checkmate!");
+            const loser = this.getTurnPlayer();
+            const king = this.getKingOfColour(loser);
+            if (king.threatened) {
+                console.log("that's checkmate!");
+                this.state = "checkmate";
+            }
+            else {
+                console.log("it's a stalemate.");
+                this.state = "stalemate";
+            }
         }
     }
     submitMove(start, end) {

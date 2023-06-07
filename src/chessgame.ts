@@ -21,10 +21,12 @@ export class ChessGame implements Subject {
     public turncount: number = 0;
     private observers: Observer[] = [];
     public possibleMoves: number = 0;
+    public state: string;
 
     constructor() {
 
         this.initializeboardState();
+        this.state = "ongoing";
         this.notify();
     }
 
@@ -219,9 +221,19 @@ export class ChessGame implements Subject {
 
     checkGameOver(): void {
 
-        console.log(`there are ${this.possibleMoves} moves available`)
+        console.log(`there are ${this.possibleMoves} move(s) available`)
         if (this.possibleMoves == 0){
-            console.log("that's checkmate!")
+
+            const loser = this.getTurnPlayer();
+            const king = this.getKingOfColour(loser);
+
+            if (king.threatened){
+                console.log("that's checkmate!")
+                this.state = "checkmate";
+            } else {
+                console.log("it's a stalemate.")
+                this.state = "stalemate";
+            }
         }
     }
 
