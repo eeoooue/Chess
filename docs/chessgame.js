@@ -19,6 +19,44 @@ export class ChessGame {
         this.state = "ongoing";
         this.notify();
     }
+    submitPromotionChoice(choice) {
+        if (this.state != "promotion") {
+            return;
+        }
+        const position = this.getPromotingPawnPosition();
+        this.removePiece(position.i, position.j);
+        const colour = (this.getTurnPlayer() == "b") ? "w" : "b";
+        var newPiece;
+        switch (choice) {
+            case "Bishop":
+                newPiece = new Bishop(this, colour, position.i, position.j);
+                break;
+            case "Knight":
+                newPiece = new Knight(this, colour, position.i, position.j);
+                break;
+            case "Rook":
+                newPiece = new Rook(this, colour, position.i, position.j);
+                break;
+            case "Queen":
+                newPiece = new Queen(this, colour, position.i, position.j);
+                break;
+        }
+        if (newPiece) {
+            this.boardState[position.i][position.j] = newPiece;
+        }
+        this.state = "ongoing";
+        this.notify();
+    }
+    getPromotingPawnPosition() {
+        const i = (this.getTurnPlayer() == "b") ? 0 : 7;
+        for (let j = 0; j < 8; j++) {
+            const piece = this.boardState[i][j];
+            if (piece instanceof Pawn) {
+                return new BoardPosition(i, j);
+            }
+        }
+        return new BoardPosition(-1, -1);
+    }
     getKingOfColour(colour) {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -163,16 +201,13 @@ export class ChessGame {
         this.checkGameOver();
     }
     checkGameOver() {
-        console.log(`there are ${this.possibleMoves} move(s) available`);
         if (this.possibleMoves == 0) {
             const loser = this.getTurnPlayer();
             const king = this.getKingOfColour(loser);
             if (king.threatened) {
-                console.log("that's checkmate!");
                 this.state = "checkmate";
             }
             else {
-                console.log("it's a stalemate.");
                 this.state = "stalemate";
             }
         }
@@ -186,6 +221,11 @@ export class ChessGame {
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
         this.concludeTurn();
+        if (movingPiece instanceof Pawn) {
+            if (end.i == 0 || end.i == 7) {
+                this.state = "promotion";
+            }
+        }
     }
     clearSquare(i, j) {
         this.boardState[i][j] = new EmptyPiece(this, i, j);

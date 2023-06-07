@@ -37,14 +37,6 @@ export class BoardElement implements Observer {
 
     //#endregion
 
-    setValidMove(i: number, j: number): void {
-
-        const tile = this.grid[i][j];
-        if (!tile.classList.contains("validmove")) {
-            this.grid[i][j].classList.add("validmove")
-        }
-    }
-
     findClickedCell(): BoardPosition | null {
 
         for (let i = 0; i < 8; i++) {
@@ -65,7 +57,6 @@ export class BoardElement implements Observer {
     clearHighlights() {
 
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"))
-        document.querySelectorAll(".validmove").forEach(el => el.classList.remove("validmove"))
         document.querySelectorAll(".markerdot").forEach(el => el.remove())
         document.querySelectorAll(".markercircle").forEach(el => el.remove())
     }
@@ -74,7 +65,6 @@ export class BoardElement implements Observer {
 
         const dot = document.createElement("div")
         dot.classList.add("markerdot")
-        this.setValidMove(i, j)
         this.grid[i][j].appendChild(dot)
     }
 
@@ -82,7 +72,6 @@ export class BoardElement implements Observer {
 
         const circle = document.createElement("div")
         circle.classList.add("markercircle")
-        this.setValidMove(i, j)
         this.grid[i][j].appendChild(circle)
     }
 

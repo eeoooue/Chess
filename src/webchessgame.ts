@@ -7,6 +7,7 @@ import { Subject } from "./subject.js";
 
 import { BoardElement } from "./BoardElement.js";
 import { EndCard } from "./EndCard.js";
+import { PromotionCard } from "./PromotionCard.js";
 
 export class WebChessGame implements Observer {
 
@@ -57,10 +58,20 @@ export class WebChessGame implements Observer {
                 this.boardElement.paintMoveOptions(options);                
             }
 
-            if (this.game.state != "ongoing"){
+            if (this.game.state == "checkmate" || this.game.state == "stalemate"){
                 this.showEndCard();
             }
+
+            if (this.game.state == "promotion"){
+                this.askPromotionOption();
+            }
         }
+    }
+
+    askPromotionOption(): void {
+
+        const promotionCard = new PromotionCard(this, this.game);
+        this.boardContainer.appendChild(promotionCard.element);
     }
 
     showEndCard(){
