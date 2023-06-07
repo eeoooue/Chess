@@ -14,8 +14,9 @@ export class ChessGame {
         this.active = false;
         this.turncount = 0;
         this.observers = [];
+        this.possibleMoves = 0;
         this.initializeboardState();
-        // this.resetThreats();
+        this.state = "ongoing";
         this.notify();
     }
     getKingOfColour(colour) {
@@ -55,6 +56,7 @@ export class ChessGame {
     }
     // Notify all observers about an event.
     notify() {
+        this.possibleMoves = 0;
         const n = this.observers.length;
         for (let i = 0; i < n; i++) {
             const observer = this.observers[i];
@@ -158,6 +160,22 @@ export class ChessGame {
         this.turncount += 1;
         this.resetThreats();
         this.notify();
+        this.checkGameOver();
+    }
+    checkGameOver() {
+        console.log(`there are ${this.possibleMoves} move(s) available`);
+        if (this.possibleMoves == 0) {
+            const loser = this.getTurnPlayer();
+            const king = this.getKingOfColour(loser);
+            if (king.threatened) {
+                console.log("that's checkmate!");
+                this.state = "checkmate";
+            }
+            else {
+                console.log("it's a stalemate.");
+                this.state = "stalemate";
+            }
+        }
     }
     submitMove(start, end) {
         const movingPiece = this.boardState[start.i][start.j];
@@ -173,9 +191,11 @@ export class ChessGame {
         this.boardState[i][j] = new EmptyPiece(this, i, j);
     }
     removePiece(i, j) {
-        const piece = this.boardState[i][j];
-        this.detach(piece);
-        this.clearSquare(i, j);
+        if (this.validCoordinates(i, j)) {
+            const piece = this.boardState[i][j];
+            this.detach(piece);
+            this.clearSquare(i, j);
+        }
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {

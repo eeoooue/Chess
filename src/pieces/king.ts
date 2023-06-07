@@ -66,7 +66,6 @@ export class King extends Piece {
                 this.canMove(this.i, this.j - 2);
             }
         }
-
     }
 
     checkCastleRight() {

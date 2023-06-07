@@ -20,11 +20,13 @@ export class ChessGame implements Subject {
     public active: boolean = false;
     public turncount: number = 0;
     private observers: Observer[] = [];
+    public possibleMoves: number = 0;
+    public state: string;
 
     constructor() {
 
         this.initializeboardState();
-        // this.resetThreats();
+        this.state = "ongoing";
         this.notify();
     }
 
@@ -33,8 +35,8 @@ export class ChessGame implements Subject {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 const piece = this.boardState[i][j];
-                if (piece instanceof King){
-                    if (piece.colour == colour){
+                if (piece instanceof King) {
+                    if (piece.colour == colour) {
                         return piece;
                     }
                 }
@@ -77,6 +79,7 @@ export class ChessGame implements Subject {
     // Notify all observers about an event.
     notify(): void {
 
+        this.possibleMoves = 0;
         const n = this.observers.length;
         for (let i = 0; i < n; i++) {
             const observer = this.observers[i];
@@ -200,20 +203,38 @@ export class ChessGame implements Subject {
             const end: BoardPosition | undefined = this.moveTracker.getEndMove();
 
             if (start && end) {
-                this.submitMove(start, end);                
+                this.submitMove(start, end);
                 return;
             }
         }
-        
+
         this.notify();
     }
 
-
-    concludeTurn(){
+    concludeTurn() : void {
 
         this.turncount += 1;
         this.resetThreats();
         this.notify();
+        this.checkGameOver();
+    }
+
+    checkGameOver(): void {
+
+        console.log(`there are ${this.possibleMoves} move(s) available`)
+        if (this.possibleMoves == 0){
+
+            const loser = this.getTurnPlayer();
+            const king = this.getKingOfColour(loser);
+
+            if (king.threatened){
+                console.log("that's checkmate!")
+                this.state = "checkmate";
+            } else {
+                console.log("it's a stalemate.")
+                this.state = "stalemate";
+            }
+        }
     }
 
     submitMove(start: BoardPosition, end: BoardPosition) {
@@ -224,22 +245,24 @@ export class ChessGame implements Subject {
         if (targetPiece.colour != movingPiece.colour) {
             this.removePiece(end.i, end.j);
         }
-        
+
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
         this.concludeTurn();
     }
 
-    clearSquare(i: number, j: number){
+    clearSquare(i: number, j: number) {
 
         this.boardState[i][j] = new EmptyPiece(this, i, j);
     }
 
-    removePiece(i: number, j: number){
+    removePiece(i: number, j: number) {
 
-        const piece: Piece = this.boardState[i][j];
-        this.detach(piece);
-        this.clearSquare(i, j);
+        if (this.validCoordinates(i, j)) {
+            const piece: Piece = this.boardState[i][j];
+            this.detach(piece);
+            this.clearSquare(i, j);
+        }
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
