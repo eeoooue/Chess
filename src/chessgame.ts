@@ -224,9 +224,6 @@ export class ChessGame implements Subject {
         if (targetPiece.colour != movingPiece.colour) {
             this.removePiece(end.i, end.j);
         }
-
-        // castling
-        this.checkCastling(start, end)
         
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
@@ -243,28 +240,6 @@ export class ChessGame implements Subject {
         const piece: Piece = this.boardState[i][j];
         this.detach(piece);
         this.clearSquare(i, j);
-    }
-
-    checkCastling(start: BoardPosition, end: BoardPosition){
-
-        // could move this into King class?
-
-        const movingPiece: Piece = this.boardState[start.i][start.j]
-
-        if (movingPiece instanceof King && Math.abs(start.j - end.j) == 2){
-
-            if (start.j > end.j){
-                const rookPiece = this.boardState[start.i][0];
-                rookPiece.moveTo(new BoardPosition(start.i, end.j + 1));
-                this.boardState[start.i][0] = new EmptyPiece(this, start.i, 0);
-            }
-
-            if (start.j < end.j){
-                const rookPiece = this.boardState[start.i][7];
-                rookPiece.moveTo(new BoardPosition(start.i, end.j - 1));
-                this.boardState[start.i][7] = new EmptyPiece(this, start.i, 7);
-            }
-        }
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
