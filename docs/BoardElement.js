@@ -17,12 +17,6 @@ export class BoardElement {
         this.clearHighlights();
     }
     //#endregion
-    setValidMove(i, j) {
-        const tile = this.grid[i][j];
-        if (!tile.classList.contains("validmove")) {
-            this.grid[i][j].classList.add("validmove");
-        }
-    }
     findClickedCell() {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -39,20 +33,17 @@ export class BoardElement {
     }
     clearHighlights() {
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
-        document.querySelectorAll(".validmove").forEach(el => el.classList.remove("validmove"));
         document.querySelectorAll(".markerdot").forEach(el => el.remove());
         document.querySelectorAll(".markercircle").forEach(el => el.remove());
     }
     addDot(i, j) {
         const dot = document.createElement("div");
         dot.classList.add("markerdot");
-        this.setValidMove(i, j);
         this.grid[i][j].appendChild(dot);
     }
     addCircle(i, j) {
         const circle = document.createElement("div");
         circle.classList.add("markercircle");
-        this.setValidMove(i, j);
         this.grid[i][j].appendChild(circle);
     }
     paintPieces() {
