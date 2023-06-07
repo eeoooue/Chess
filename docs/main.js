@@ -1,5 +1,6 @@
 import { WebChessGame } from './webchessgame.js';
 const boardContainer = document.querySelector(".board-container");
-if (boardContainer) {
-    new WebChessGame(boardContainer);
+const mainContainer = document.querySelector(".main-container");
+if (mainContainer && boardContainer) {
+    new WebChessGame(mainContainer, boardContainer);
 }
