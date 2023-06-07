@@ -263,25 +263,6 @@ export class ChessGame implements Subject {
         }
     }
 
-    checkEnPassantCapture(start: BoardPosition, end: BoardPosition){
-
-        // could move this into Pawn class?
-
-        const movingPiece: Piece = this.boardState[start.i][start.j];
-        var targetPiece: Piece = this.boardState[end.i][end.j];
-
-        // en passant
-        if (movingPiece instanceof Pawn){
-            if (start.j != end.j && targetPiece instanceof EmptyPiece){
-                const victim = this.boardState[start.i][end.j]
-
-                if (victim instanceof Pawn && victim.enPassantTurn == this.turncount){
-                    this.removePiece(start.i, end.j);
-                }
-            }
-        }
-    }
-
     legalPosition(i: number, j: number, colour: string): boolean {
 
         if (this.validCoordinates(i, j)) {

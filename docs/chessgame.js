@@ -192,20 +192,6 @@ export class ChessGame {
             }
         }
     }
-    checkEnPassantCapture(start, end) {
-        // could move this into Pawn class?
-        const movingPiece = this.boardState[start.i][start.j];
-        var targetPiece = this.boardState[end.i][end.j];
-        // en passant
-        if (movingPiece instanceof Pawn) {
-            if (start.j != end.j && targetPiece instanceof EmptyPiece) {
-                const victim = this.boardState[start.i][end.j];
-                if (victim instanceof Pawn && victim.enPassantTurn == this.turncount) {
-                    this.removePiece(start.i, end.j);
-                }
-            }
-        }
-    }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {
             const piece = this.boardState[i][j];
