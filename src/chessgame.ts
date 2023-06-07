@@ -222,28 +222,31 @@ export class ChessGame implements Subject {
         var targetPiece: Piece = this.boardState[end.i][end.j];
 
         if (targetPiece.colour != movingPiece.colour) {
-            targetPiece.destroy();
-            targetPiece = new EmptyPiece(this, end.i, end.j);
-        }
-
-        if (movingPiece instanceof Pawn && Math.abs(start.i - end.i) == 2){
-            const pawn: Pawn = movingPiece as Pawn;
-            pawn.enPassantTurn = this.turncount + 1;
-        }
-
-        // en passant
-        if (movingPiece instanceof Pawn){
-            if (start.j != end.j && targetPiece instanceof EmptyPiece){
-                const victim = this.boardState[start.i][end.j]
-
-                if (victim instanceof Pawn && victim.enPassantTurn == this.turncount){
-                    victim.destroy();
-                    this.boardState[start.i][end.j] = new EmptyPiece(this, start.i, end.j);
-                }
-            }
+            this.removePiece(end.i, end.j);
         }
 
         // castling
+        this.checkCastling(start, end)
+        
+        targetPiece.moveTo(start);
+        movingPiece.moveTo(end);
+        this.concludeTurn();
+    }
+
+
+    removePiece(i: number, j: number){
+
+        const piece: Piece = this.boardState[i][j];
+        this.detach(piece);
+        this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
+
+    checkCastling(start: BoardPosition, end: BoardPosition){
+
+        // could move this into King class?
+
+        const movingPiece: Piece = this.boardState[start.i][start.j]
+
         if (movingPiece instanceof King && Math.abs(start.j - end.j) == 2){
 
             if (start.j > end.j){
@@ -258,10 +261,25 @@ export class ChessGame implements Subject {
                 this.boardState[start.i][7] = new EmptyPiece(this, start.i, 7);
             }
         }
+    }
 
-        targetPiece.moveTo(start);
-        movingPiece.moveTo(end);
-        this.concludeTurn();
+    checkEnPassantCapture(start: BoardPosition, end: BoardPosition){
+
+        // could move this into Pawn class?
+
+        const movingPiece: Piece = this.boardState[start.i][start.j];
+        var targetPiece: Piece = this.boardState[end.i][end.j];
+
+        // en passant
+        if (movingPiece instanceof Pawn){
+            if (start.j != end.j && targetPiece instanceof EmptyPiece){
+                const victim = this.boardState[start.i][end.j]
+
+                if (victim instanceof Pawn && victim.enPassantTurn == this.turncount){
+                    this.removePiece(start.i, end.j);
+                }
+            }
+        }
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {

@@ -48,10 +48,6 @@ export class Piece implements Observer {
         return this.possibleMoves;
     }
 
-    destroy() {
-        this.game.detach(this);
-    }
-
     protected moveOptions(i: number, j: number): void { }
 
     invalidCoordinates(i: number, j: number) {
