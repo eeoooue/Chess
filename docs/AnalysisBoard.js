@@ -102,22 +102,12 @@ export class AnalysisBoard {
     }
     checkForKing(position) {
         const threats = [];
-        const one = this.checkLocation(position.i - 1, position.j);
-        const two = this.checkLocation(position.i + 1, position.j);
-        const three = this.checkLocation(position.i, position.j - 1);
-        const four = this.checkLocation(position.i, position.j + 1);
-        const five = this.checkLocation(position.i - 1, position.j - 1);
-        const six = this.checkLocation(position.i - 1, position.j + 1);
-        const seven = this.checkLocation(position.i + 1, position.j - 1);
-        const eight = this.checkLocation(position.i + 1, position.j + 1);
-        threats.push(one);
-        threats.push(two);
-        threats.push(three);
-        threats.push(four);
-        threats.push(five);
-        threats.push(six);
-        threats.push(seven);
-        threats.push(eight);
+        for (let a = -1; a <= 1; a++) {
+            for (let b = -1; b <= 1; b++) {
+                const threat = this.checkLocation(position.i + a, position.j + b);
+                threats.push(threat);
+            }
+        }
         return this.containsThreat(threats, "king");
     }
     checkForKnight(position) {
