@@ -24,7 +24,6 @@ export class ChessGame implements Subject {
     constructor() {
 
         this.initializeboardState();
-        // this.resetThreats();
         this.notify();
     }
 
@@ -33,8 +32,8 @@ export class ChessGame implements Subject {
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 const piece = this.boardState[i][j];
-                if (piece instanceof King){
-                    if (piece.colour == colour){
+                if (piece instanceof King) {
+                    if (piece.colour == colour) {
                         return piece;
                     }
                 }
@@ -200,16 +199,15 @@ export class ChessGame implements Subject {
             const end: BoardPosition | undefined = this.moveTracker.getEndMove();
 
             if (start && end) {
-                this.submitMove(start, end);                
+                this.submitMove(start, end);
                 return;
             }
         }
-        
+
         this.notify();
     }
 
-
-    concludeTurn(){
+    concludeTurn() {
 
         this.turncount += 1;
         this.resetThreats();
@@ -224,22 +222,24 @@ export class ChessGame implements Subject {
         if (targetPiece.colour != movingPiece.colour) {
             this.removePiece(end.i, end.j);
         }
-        
+
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
         this.concludeTurn();
     }
 
-    clearSquare(i: number, j: number){
+    clearSquare(i: number, j: number) {
 
         this.boardState[i][j] = new EmptyPiece(this, i, j);
     }
 
-    removePiece(i: number, j: number){
+    removePiece(i: number, j: number) {
 
-        const piece: Piece = this.boardState[i][j];
-        this.detach(piece);
-        this.clearSquare(i, j);
+        if (this.validCoordinates(i, j)) {
+            const piece: Piece = this.boardState[i][j];
+            this.detach(piece);
+            this.clearSquare(i, j);
+        }
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {

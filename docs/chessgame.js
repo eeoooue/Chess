@@ -15,7 +15,6 @@ export class ChessGame {
         this.turncount = 0;
         this.observers = [];
         this.initializeboardState();
-        // this.resetThreats();
         this.notify();
     }
     getKingOfColour(colour) {
@@ -173,9 +172,11 @@ export class ChessGame {
         this.boardState[i][j] = new EmptyPiece(this, i, j);
     }
     removePiece(i, j) {
-        const piece = this.boardState[i][j];
-        this.detach(piece);
-        this.clearSquare(i, j);
+        if (this.validCoordinates(i, j)) {
+            const piece = this.boardState[i][j];
+            this.detach(piece);
+            this.clearSquare(i, j);
+        }
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {
