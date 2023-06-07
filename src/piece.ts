@@ -37,6 +37,10 @@ export class Piece implements Observer {
 
         this.possibleMoves = [];
         this.moveOptions(this.i, this.j);
+
+        if (this.colour == this.game.getTurnPlayer()){
+            this.game.possibleMoves += this.possibleMoves.length;
+        }
     }
 
     //#endregion observer pattern

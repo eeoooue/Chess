@@ -20,6 +20,7 @@ export class ChessGame implements Subject {
     public active: boolean = false;
     public turncount: number = 0;
     private observers: Observer[] = [];
+    public possibleMoves: number = 0;
 
     constructor() {
 
@@ -76,6 +77,7 @@ export class ChessGame implements Subject {
     // Notify all observers about an event.
     notify(): void {
 
+        this.possibleMoves = 0;
         const n = this.observers.length;
         for (let i = 0; i < n; i++) {
             const observer = this.observers[i];
@@ -207,11 +209,20 @@ export class ChessGame implements Subject {
         this.notify();
     }
 
-    concludeTurn() {
+    concludeTurn() : void {
 
         this.turncount += 1;
         this.resetThreats();
         this.notify();
+        this.checkGameOver();
+    }
+
+    checkGameOver(): void {
+
+        console.log(`there are ${this.possibleMoves} moves available`)
+        if (this.possibleMoves == 0){
+            console.log("that's checkmate!")
+        }
     }
 
     submitMove(start: BoardPosition, end: BoardPosition) {

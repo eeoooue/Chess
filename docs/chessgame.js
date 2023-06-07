@@ -14,6 +14,7 @@ export class ChessGame {
         this.active = false;
         this.turncount = 0;
         this.observers = [];
+        this.possibleMoves = 0;
         this.initializeboardState();
         this.notify();
     }
@@ -54,6 +55,7 @@ export class ChessGame {
     }
     // Notify all observers about an event.
     notify() {
+        this.possibleMoves = 0;
         const n = this.observers.length;
         for (let i = 0; i < n; i++) {
             const observer = this.observers[i];
@@ -157,6 +159,13 @@ export class ChessGame {
         this.turncount += 1;
         this.resetThreats();
         this.notify();
+        this.checkGameOver();
+    }
+    checkGameOver() {
+        console.log(`there are ${this.possibleMoves} moves available`);
+        if (this.possibleMoves == 0) {
+            console.log("that's checkmate!");
+        }
     }
     submitMove(start, end) {
         const movingPiece = this.boardState[start.i][start.j];
