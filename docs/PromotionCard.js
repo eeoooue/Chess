@@ -38,7 +38,6 @@ export class PromotionCard {
         return card;
     }
     submitChoice(text) {
-        console.log(`you chose ${text}`);
         this.game.submitPromotionChoice(text);
         this.element.remove();
     }

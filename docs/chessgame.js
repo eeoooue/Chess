@@ -201,16 +201,13 @@ export class ChessGame {
         this.checkGameOver();
     }
     checkGameOver() {
-        console.log(`there are ${this.possibleMoves} move(s) available`);
         if (this.possibleMoves == 0) {
             const loser = this.getTurnPlayer();
             const king = this.getKingOfColour(loser);
             if (king.threatened) {
-                console.log("that's checkmate!");
                 this.state = "checkmate";
             }
             else {
-                console.log("it's a stalemate.");
                 this.state = "stalemate";
             }
         }
@@ -227,7 +224,6 @@ export class ChessGame {
         if (movingPiece instanceof Pawn) {
             if (end.i == 0 || end.i == 7) {
                 this.state = "promotion";
-                console.log("its promo time");
             }
         }
     }
