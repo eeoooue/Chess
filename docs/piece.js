@@ -23,9 +23,6 @@ export class Piece {
     getMoveOptions() {
         return this.possibleMoves;
     }
-    destroy() {
-        this.game.detach(this);
-    }
     moveOptions(i, j) { }
     invalidCoordinates(i, j) {
         return !this.game.validCoordinates(i, j);
@@ -61,6 +58,7 @@ export class Piece {
         }
     }
     moveTo(position) {
+        this.game.clearSquare(this.i, this.j);
         this.hasMoved = true;
         this.i = position.i;
         this.j = position.j;

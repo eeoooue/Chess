@@ -163,39 +163,19 @@ export class ChessGame {
         const movingPiece = this.boardState[start.i][start.j];
         var targetPiece = this.boardState[end.i][end.j];
         if (targetPiece.colour != movingPiece.colour) {
-            targetPiece.destroy();
-            targetPiece = new EmptyPiece(this, end.i, end.j);
-        }
-        if (movingPiece instanceof Pawn && Math.abs(start.i - end.i) == 2) {
-            const pawn = movingPiece;
-            pawn.enPassantTurn = this.turncount + 1;
-        }
-        // en passant
-        if (movingPiece instanceof Pawn) {
-            if (start.j != end.j && targetPiece instanceof EmptyPiece) {
-                const victim = this.boardState[start.i][end.j];
-                if (victim instanceof Pawn && victim.enPassantTurn == this.turncount) {
-                    victim.destroy();
-                    this.boardState[start.i][end.j] = new EmptyPiece(this, start.i, end.j);
-                }
-            }
-        }
-        // castling
-        if (movingPiece instanceof King && Math.abs(start.j - end.j) == 2) {
-            if (start.j > end.j) {
-                const rookPiece = this.boardState[start.i][0];
-                rookPiece.moveTo(new BoardPosition(start.i, end.j + 1));
-                this.boardState[start.i][0] = new EmptyPiece(this, start.i, 0);
-            }
-            if (start.j < end.j) {
-                const rookPiece = this.boardState[start.i][7];
-                rookPiece.moveTo(new BoardPosition(start.i, end.j - 1));
-                this.boardState[start.i][7] = new EmptyPiece(this, start.i, 7);
-            }
+            this.removePiece(end.i, end.j);
         }
         targetPiece.moveTo(start);
         movingPiece.moveTo(end);
         this.concludeTurn();
+    }
+    clearSquare(i, j) {
+        this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
+    removePiece(i, j) {
+        const piece = this.boardState[i][j];
+        this.detach(piece);
+        this.clearSquare(i, j);
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {

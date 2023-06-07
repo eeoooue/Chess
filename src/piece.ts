@@ -1,10 +1,8 @@
 
 import { ChessGame } from './chessgame.js';
-import { WebChessGame } from './webchessgame.js';
 import { BoardPosition } from './BoardPosition.js';
 import { Observer } from './observer.js';
 import { Subject } from "./subject.js";
-import { King } from './pieces/king.js';
 import { AnalysisBoard } from './AnalysisBoard.js';
 
 export class Piece implements Observer {
@@ -46,10 +44,6 @@ export class Piece implements Observer {
     getMoveOptions(): BoardPosition[] {
 
         return this.possibleMoves;
-    }
-
-    destroy() {
-        this.game.detach(this);
     }
 
     protected moveOptions(i: number, j: number): void { }
@@ -102,6 +96,7 @@ export class Piece implements Observer {
 
     moveTo(position: BoardPosition) {
 
+        this.game.clearSquare(this.i, this.j);
         this.hasMoved = true;
         this.i = position.i;
         this.j = position.j;

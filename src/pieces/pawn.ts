@@ -1,4 +1,5 @@
 
+import { BoardPosition } from '../BoardPosition.js';
 import { ChessGame } from '../chessgame.js';
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './emptypiece.js';
@@ -20,6 +21,36 @@ export class Pawn extends Piece {
             default:
                 this.whitePawnOptions(i, j);
                 return;
+        }
+    }
+
+    override moveTo(position: BoardPosition): void {
+
+        this.game.clearSquare(this.i, this.j);
+
+        if (Math.abs(this.i - position.i) == 2){
+            this.enPassantTurn = this.game.turncount + 1;
+        }
+
+        this.checkCaptureEnPassant(position);
+
+        this.hasMoved = true;
+        this.i = position.i;
+        this.j = position.j;
+        this.boardState[this.i][this.j] = this;
+    }
+
+    checkCaptureEnPassant(end: BoardPosition){
+
+        var targetPiece: Piece = this.boardState[end.i][end.j];
+
+        // en passant
+        if (this.j != end.j && targetPiece instanceof EmptyPiece){
+            const victim = this.boardState[this.i][end.j]
+
+            if (victim instanceof Pawn && victim.enPassantTurn == this.game.turncount){
+                this.game.removePiece(this.i, end.j);
+            }
         }
     }
 

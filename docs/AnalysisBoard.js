@@ -154,16 +154,15 @@ export class AnalysisBoard {
     }
     checkForPawn(position) {
         const threats = [];
-        var one = "";
-        var two = "";
+        var row = position.i;
         if (this.colour == "b") {
-            one = this.checkLocation(position.i, position.j);
-            two = this.checkLocation(position.i, position.j);
+            row += 1;
         }
         else {
-            one = this.checkLocation(position.i, position.j);
-            two = this.checkLocation(position.i, position.j);
+            row -= 1;
         }
+        const one = this.checkLocation(row, position.j - 1);
+        const two = this.checkLocation(row, position.j + 1);
         threats.push(one);
         threats.push(two);
         return this.containsThreat(threats, "pawn");
