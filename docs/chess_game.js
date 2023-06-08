@@ -121,8 +121,7 @@ export class ChessGame {
             this.state = (king.threatened) ? "checkmate" : "stalemate";
         }
     }
-    makeMove(start, end) {
-        const movingPiece = this.boardState[start.i][start.j];
+    makeMove(movingPiece, end) {
         this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();

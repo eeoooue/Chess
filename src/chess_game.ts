@@ -167,9 +167,8 @@ export class ChessGame implements Subject {
         }
     }
 
-    makeMove(start: BoardPosition, end: BoardPosition) {
+    makeMove(movingPiece: Piece, end: BoardPosition) {
 
-        const movingPiece: Piece = this.boardState[start.i][start.j];
         this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();

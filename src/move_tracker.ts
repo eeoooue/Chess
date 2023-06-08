@@ -1,6 +1,8 @@
 
 import { BoardPosition } from "./board_position.js";
-import { ChessGame } from "./chess_game";
+import { ChessGame } from "./chess_game.js";
+import { Piece } from "./piece.js";
+import { EmptyPiece } from "./pieces/empty_piece.js";
 
 export class MoveTracker {
 
@@ -8,20 +10,12 @@ export class MoveTracker {
     public endMove: undefined | BoardPosition;
     public game: ChessGame;
     public active: boolean = false;
+    public activePiece: Piece;
 
     constructor(game: ChessGame){
 
         this.game = game;
-    }
-
-    public setStartMove(i: number, j: number) : void {
-
-        this.startMove = new BoardPosition(i, j);
-    }
-
-    public setEndMove(i: number, j: number) : void {
-
-        this.endMove = new BoardPosition(i, j);
+        this.activePiece = new EmptyPiece(game, 0, 0);
     }
 
     interpretSelection(move: BoardPosition) {
@@ -40,29 +34,19 @@ export class MoveTracker {
     processStartMove(move: BoardPosition) {
 
         if (this.validStart(move.i, move.j)) {
-            this.activateStart(move.i, move.j);
+            this.startMove = move;
+            this.active = true;
+            this.activePiece = this.game.boardState[move.i][move.j];
         }
-    }
-
-    activateStart(i: number, j: number) {
-
-        this.setStartMove(i, j);
-        this.active = true;
     }
 
     processEndCell(move: BoardPosition) {
 
         if (this.validEnd(move.i, move.j)) {
-            this.setEndMove(move.i, move.j);
+            const endMove = new BoardPosition(move.i, move.j);
             this.active = false;
-
-            const start: BoardPosition | undefined = this.startMove;
-            const end: BoardPosition | undefined = this.endMove;
-
-            if (start && end) {
-                this.game.makeMove(start, end);
-                return;
-            }
+            this.game.makeMove(this.activePiece, endMove);
+            return;
         }
 
         this.game.notify();
@@ -76,11 +60,10 @@ export class MoveTracker {
 
     validEnd(i: number, j: number): boolean {
 
-        const start: BoardPosition | undefined = this.startMove;
+        const piece: Piece | undefined = this.activePiece;
 
-        if (start instanceof BoardPosition) {
+        if (piece) {
 
-            const piece = this.game.boardState[start.i][start.j];
             const possibleMoves = piece.possibleMoves;
 
             const n = possibleMoves.length;
