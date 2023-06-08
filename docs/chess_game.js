@@ -12,13 +12,13 @@ export class ChessGame {
         this.moveTracker = new MoveTracker(this);
         this.boardBuilder = new BoardBuilder(this);
         this.state = "ongoing";
-        this.notify();
+        this.updateState();
     }
     submitPromotionChoice(choice) {
         const pawn = this.getPromotingPawn();
         pawn.promoteTo(choice);
         this.state = "ongoing";
-        this.notify();
+        this.updateState();
     }
     getPromotingPawn() {
         const i = (this.getTurnPlayer() == "b") ? 0 : 7;
@@ -83,6 +83,9 @@ export class ChessGame {
     }
     concludeTurn() {
         this.turncount += 1;
+        this.updateState();
+    }
+    updateState() {
         this.resetThreats();
         this.notify();
         this.checkGameOver();

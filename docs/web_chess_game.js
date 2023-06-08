@@ -17,21 +17,23 @@ export class WebChessGame {
     }
     processMove(i, j) {
         const move = new BoardPosition(i, j);
-        if (move) {
-            this.game.submitSelection(move);
-            if (this.game.moveTracker.active) {
-                const piece = this.game.boardState[move.i][move.j];
-                const tile = this.boardElement.grid[move.i][move.j];
-                tile.classList.add("highlighted");
-                const options = piece.possibleMoves;
-                this.boardElement.paintMoveOptions(options);
-            }
-            if (this.game.state == "checkmate" || this.game.state == "stalemate") {
-                this.showEndCard();
-            }
-            if (this.game.state == "promotion") {
-                this.askPromotionOption();
-            }
+        this.game.submitSelection(move);
+        this.refresh();
+        if (this.game.moveTracker.active) {
+            const piece = this.game.boardState[move.i][move.j];
+            const tile = this.boardElement.grid[move.i][move.j];
+            tile.classList.add("highlighted");
+            const options = piece.possibleMoves;
+            this.boardElement.paintMoveOptions(options);
+        }
+    }
+    refresh() {
+        this.boardElement.repaint();
+        if (this.game.state == "checkmate" || this.game.state == "stalemate") {
+            this.showEndCard();
+        }
+        if (this.game.state == "promotion") {
+            this.askPromotionOption();
         }
     }
     askPromotionOption() {

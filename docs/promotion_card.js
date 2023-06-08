@@ -39,5 +39,6 @@ export class PromotionCard {
     submitChoice(text) {
         this.game.submitPromotionChoice(text);
         this.element.remove();
+        this.parent.refresh();
     }
 }

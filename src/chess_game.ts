@@ -24,7 +24,7 @@ export class ChessGame implements Subject {
         this.moveTracker = new MoveTracker(this);
         this.boardBuilder = new BoardBuilder(this);
         this.state = "ongoing";
-        this.notify();
+        this.updateState();
     }
 
     submitPromotionChoice(choice: string) {
@@ -33,7 +33,7 @@ export class ChessGame implements Subject {
         pawn.promoteTo(choice);
 
         this.state = "ongoing";
-        this.notify();
+        this.updateState();
     }
 
     getPromotingPawn(): Pawn {
@@ -123,6 +123,11 @@ export class ChessGame implements Subject {
     concludeTurn(): void {
 
         this.turncount += 1;
+        this.updateState();
+    }
+
+    updateState(): void {
+
         this.resetThreats();
         this.notify();
         this.checkGameOver();

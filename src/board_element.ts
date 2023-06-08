@@ -5,10 +5,9 @@ import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { King } from "./pieces/king.js";
-import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
 
-export class BoardElement implements Observer {
+export class BoardElement {
 
     public boardContainer: HTMLElement;
     public grid: HTMLElement[][] = [];
@@ -20,13 +19,12 @@ export class BoardElement implements Observer {
         this.parent = parent;
         this.boardContainer = boardContainer;
         this.game = game;
-        this.game.attach(this);
 
         this.paintTiles()
         this.paintPieces(this.game.getPieces())
     }
 
-    update(subject: Subject): void {
+    repaint(): void {
 
         this.clearPreviousBoard()
         this.paintPieces(this.game.getPieces())

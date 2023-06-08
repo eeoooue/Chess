@@ -33,23 +33,28 @@ export class WebChessGame {
 
         const move: BoardPosition = new BoardPosition(i, j);
 
-        if (move) {
-            this.game.submitSelection(move);
-            if (this.game.moveTracker.active){
-                const piece : Piece = this.game.boardState[move.i][move.j]
-                const tile = this.boardElement.grid[move.i][move.j]
-                tile.classList.add("highlighted")
-                const options: BoardPosition[] = piece.possibleMoves;
-                this.boardElement.paintMoveOptions(options);                
-            }
+        this.game.submitSelection(move);
+        this.refresh();
 
-            if (this.game.state == "checkmate" || this.game.state == "stalemate"){
-                this.showEndCard();
-            }
-    
-            if (this.game.state == "promotion"){
-                this.askPromotionOption();
-            }
+        if (this.game.moveTracker.active){
+            const piece : Piece = this.game.boardState[move.i][move.j]
+            const tile = this.boardElement.grid[move.i][move.j]
+            tile.classList.add("highlighted")
+            const options: BoardPosition[] = piece.possibleMoves;
+            this.boardElement.paintMoveOptions(options);                
+        }
+    }
+
+    refresh(): void {
+
+        this.boardElement.repaint();
+
+        if (this.game.state == "checkmate" || this.game.state == "stalemate"){
+            this.showEndCard();
+        }
+
+        if (this.game.state == "promotion"){
+            this.askPromotionOption();
         }
     }
 

@@ -66,5 +66,6 @@ export class PromotionCard {
 
         this.game.submitPromotionChoice(text);
         this.element.remove();
+        this.parent.refresh();
     }
 }
