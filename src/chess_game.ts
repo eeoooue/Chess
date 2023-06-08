@@ -2,12 +2,8 @@
 import { BoardPosition } from "./board_position.js";
 import { MoveTracker } from "./move_tracker.js";
 import { Piece } from "./piece.js";
-import { Bishop } from "./pieces/bishop.js";
-import { Rook } from "./pieces/rook.js";
-import { Knight } from "./pieces/knight.js";
 import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
-import { Queen } from "./pieces/queen.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
@@ -147,15 +143,11 @@ export class ChessGame implements Subject {
         movingPiece.moveTo(end);
         this.concludeTurn();
 
-        console.log(`pawn moving to ${end.i}`)
-
         if (movingPiece instanceof Pawn){
             if (end.i == 0 || end.i == 7){
                 this.state = "promotion";
             }
         }
-
-        console.log(`state is now ${this.state}`)
     }
 
     clearSquare(i: number, j: number){

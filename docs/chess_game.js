@@ -98,13 +98,11 @@ export class ChessGame {
         this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
-        console.log(`pawn moving to ${end.i}`);
         if (movingPiece instanceof Pawn) {
             if (end.i == 0 || end.i == 7) {
                 this.state = "promotion";
             }
         }
-        console.log(`state is now ${this.state}`);
     }
     clearSquare(i, j) {
         this.boardState[i][j] = new EmptyPiece(this, i, j);
