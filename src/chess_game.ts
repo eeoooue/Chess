@@ -191,17 +191,12 @@ export class ChessGame implements Subject {
         }
     }
 
-    clearSquare(i: number, j: number) {
-
-        this.boardState[i][j] = new EmptyPiece(this, i, j);
-    }
-
     removePiece(i: number, j: number) {
 
         if (this.validCoordinates(i, j)) {
             const piece: Piece = this.boardState[i][j];
             this.detach(piece);
-            this.clearSquare(i, j);
+            this.boardState[i][j] = new EmptyPiece(this, i, j);
         }
     }
 

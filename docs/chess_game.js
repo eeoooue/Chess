@@ -138,14 +138,11 @@ export class ChessGame {
             }
         }
     }
-    clearSquare(i, j) {
-        this.boardState[i][j] = new EmptyPiece(this, i, j);
-    }
     removePiece(i, j) {
         if (this.validCoordinates(i, j)) {
             const piece = this.boardState[i][j];
             this.detach(piece);
-            this.clearSquare(i, j);
+            this.boardState[i][j] = new EmptyPiece(this, i, j);
         }
     }
     legalPosition(i, j, colour) {
