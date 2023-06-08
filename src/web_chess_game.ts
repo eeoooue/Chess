@@ -8,14 +8,12 @@ import { PromotionCard } from "./promotion_card.js";
 
 export class WebChessGame {
 
-    public mainContainer: HTMLElement;
     public boardContainer: HTMLElement;
     public game: ChessGame;
     public boardElement: BoardElement;
 
-    constructor(mainContainer: HTMLElement, boardContainer: HTMLElement) {
+    constructor(boardContainer: HTMLElement) {
 
-        this.mainContainer = mainContainer;
         this.boardContainer = boardContainer;
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);

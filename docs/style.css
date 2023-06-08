@@ -21,7 +21,6 @@ body {
     text-align: center;
 }
 
-
 .board-container{
     height: min(80vh, 100vw);
     width: min(80vh, 100vw);

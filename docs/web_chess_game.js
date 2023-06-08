@@ -3,8 +3,7 @@ import { BoardElement } from "./board_element.js";
 import { EndCard } from "./end_card.js";
 import { PromotionCard } from "./promotion_card.js";
 export class WebChessGame {
-    constructor(mainContainer, boardContainer) {
-        this.mainContainer = mainContainer;
+    constructor(boardContainer) {
         this.boardContainer = boardContainer;
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
