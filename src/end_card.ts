@@ -18,25 +18,23 @@ export class EndCard {
 
     deriveEndCard(game: ChessGame): HTMLDivElement {
 
-        var cardText = "The game is ongoing."
-
-        if (game.state == "checkmate"){
-            const loser = game.getTurnPlayer();
-            const winner = (loser == "w") ? "Black" : "White";
-            cardText = `That's checkmate, ${winner} wins!`
-        }
-
-        if (game.state == "stalemate"){
-            cardText = `It's a stalemate.`
-        }
-
-        if (game.state == "repetition-draw"){
-            cardText = `It's a draw by repetition (threefold).`
-        }
-
+        const cardText = this.getGamestateSentence(game);
         const playAgainText = "Would you like to play again?"
-
+        
         return this.createEndCard(cardText, playAgainText);
+    }
+
+    getGamestateSentence(game: ChessGame){
+
+        switch (game.state){
+            case "checkmate":
+                const loser = game.getTurnPlayer();
+                const winner = (loser == "w") ? "Black" : "White";
+                return `That's checkmate, ${winner} wins!`;
+
+            default:
+                return `It's a stalemate.`;
+        }
     }
 
     createEndCard(cardText: string, playAgainText: string): HTMLDivElement {
