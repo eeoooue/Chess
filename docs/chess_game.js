@@ -165,7 +165,7 @@ export class ChessGame {
         const start = this.moveTracker.startMove;
         if (start instanceof BoardPosition) {
             const piece = this.boardState[start.i][start.j];
-            const possibleMoves = piece.getMoveOptions();
+            const possibleMoves = piece.possibleMoves;
             const n = possibleMoves.length;
             for (let ind = 0; ind < n; ind++) {
                 const move = possibleMoves[ind];

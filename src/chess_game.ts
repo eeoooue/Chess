@@ -223,7 +223,7 @@ export class ChessGame implements Subject {
         if (start instanceof BoardPosition) {
 
             const piece = this.boardState[start.i][start.j];
-            const possibleMoves = piece.getMoveOptions();
+            const possibleMoves = piece.possibleMoves;
 
             const n = possibleMoves.length;
             for (let ind = 0; ind < n; ind++) {
