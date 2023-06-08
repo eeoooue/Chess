@@ -55,11 +55,11 @@ export class BoardElement {
         }
     }
     paintPosition(position, piece) {
-        const tile = this.grid[position.i][position.j];
-        tile.innerHTML = "";
         if (piece instanceof EmptyPiece) {
             return;
         }
+        const tile = this.grid[position.i][position.j];
+        tile.innerHTML = "";
         var img_name = `${piece.name}_${piece.colour}`;
         if (piece instanceof King) {
             const kingPiece = piece;
@@ -68,6 +68,7 @@ export class BoardElement {
             }
         }
         const img = document.createElement("img");
+        img.classList.add("chess-piece");
         img.src = `assets\\${img_name}.png`;
         img.style.margin = "5px 5px";
         tile.appendChild(img);
