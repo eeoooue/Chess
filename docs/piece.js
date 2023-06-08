@@ -1,5 +1,5 @@
-import { BoardPosition } from './BoardPosition.js';
-import { AnalysisBoard } from './AnalysisBoard.js';
+import { BoardPosition } from './board_position.js';
+import { AnalysisBoard } from './analysis_board.js';
 export class Piece {
     constructor(game, colour, name, i, j) {
         this.possibleMoves = [];
@@ -13,18 +13,12 @@ export class Piece {
         this.threatened = false;
         game.attach(this);
     }
-    //#region observer pattern
-    // Receive update from subject.
     update(subject) {
         this.possibleMoves = [];
         this.moveOptions(this.i, this.j);
         if (this.colour == this.game.getTurnPlayer()) {
             this.game.possibleMoves += this.possibleMoves.length;
         }
-    }
-    //#endregion observer pattern
-    getMoveOptions() {
-        return this.possibleMoves;
     }
     moveOptions(i, j) { }
     invalidCoordinates(i, j) {

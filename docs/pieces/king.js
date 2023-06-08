@@ -1,6 +1,6 @@
 import { Piece } from "../piece.js";
 import { Rook } from './rook.js';
-import { BoardPosition } from '../BoardPosition.js';
+import { BoardPosition } from '../board_position.js';
 export class King extends Piece {
     constructor(game, colour, i, j) {
         super(game, colour, "king", i, j);

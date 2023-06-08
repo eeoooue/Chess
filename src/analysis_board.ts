@@ -1,5 +1,5 @@
 
-import { BoardPosition } from "./BoardPosition.js";
+import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 
 export class AnalysisBoard {
@@ -36,11 +36,8 @@ export class AnalysisBoard {
 
     submitMove(start: BoardPosition, end: BoardPosition): void {
 
-        const a = this.board[start.i][start.j];
-        const b = this.board[end.i][end.j];
-
+        this.board[end.i][end.j] = this.board[start.i][start.j];
         this.board[start.i][start.j] = "empty";
-        this.board[end.i][end.j] = a;
     }
 
     getKingPosition(): BoardPosition {

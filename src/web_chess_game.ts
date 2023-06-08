@@ -1,13 +1,13 @@
 
-import { ChessGame } from "./chessgame.js";
-import { BoardPosition } from "./BoardPosition.js";
+import { ChessGame } from "./chess_game.js";
+import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
 
-import { BoardElement } from "./BoardElement.js";
-import { EndCard } from "./EndCard.js";
-import { PromotionCard } from "./PromotionCard.js";
+import { BoardElement } from "./board_element.js";
+import { EndCard } from "./end_card.js";
+import { PromotionCard } from "./promotion_card.js";
 
 export class WebChessGame implements Observer {
 
@@ -33,35 +33,26 @@ export class WebChessGame implements Observer {
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
 
-    //#region observer pattern
+    update(subject: Subject): void { }
 
-    update(subject: Subject): void {
+    public processMove(i: number, j: number) : void {
 
-        
-    }
-
-    //#endregion
-
-    public checkClickEvent(): void {
-
-        const move: BoardPosition | null = this.boardElement.findClickedCell();
+        const move: BoardPosition = new BoardPosition(i, j);
 
         if (move) {
-            this.game.interpretSelection(move);
-            if (this.game.active){
+            this.game.submitSelection(move);
+            if (this.game.moveTracker.active){
                 const piece : Piece = this.game.boardState[move.i][move.j]
-
                 const tile = this.boardElement.grid[move.i][move.j]
                 tile.classList.add("highlighted")
-
-                const options: BoardPosition[] = piece.getMoveOptions();
+                const options: BoardPosition[] = piece.possibleMoves;
                 this.boardElement.paintMoveOptions(options);                
             }
 
             if (this.game.state == "checkmate" || this.game.state == "stalemate"){
                 this.showEndCard();
             }
-
+    
             if (this.game.state == "promotion"){
                 this.askPromotionOption();
             }

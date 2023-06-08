@@ -1,9 +1,9 @@
 
-import { ChessGame } from './chessgame.js';
-import { BoardPosition } from './BoardPosition.js';
+import { ChessGame } from './chess_game.js';
+import { BoardPosition } from './board_position.js';
 import { Observer } from './observer.js';
 import { Subject } from "./subject.js";
-import { AnalysisBoard } from './AnalysisBoard.js';
+import { AnalysisBoard } from './analysis_board.js';
 
 export class Piece implements Observer {
 
@@ -29,10 +29,6 @@ export class Piece implements Observer {
         game.attach(this);
     }
 
-    //#region observer pattern
-
-
-    // Receive update from subject.
     update(subject: Subject): void {
 
         this.possibleMoves = [];
@@ -41,13 +37,6 @@ export class Piece implements Observer {
         if (this.colour == this.game.getTurnPlayer()){
             this.game.possibleMoves += this.possibleMoves.length;
         }
-    }
-
-    //#endregion observer pattern
-
-    getMoveOptions(): BoardPosition[] {
-
-        return this.possibleMoves;
     }
 
     protected moveOptions(i: number, j: number): void { }
