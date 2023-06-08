@@ -218,7 +218,7 @@ export class ChessGame implements Subject {
 
     validEnd(i: number, j: number): boolean {
 
-        const start: BoardPosition | undefined = this.moveTracker.getStartMove();
+        const start: BoardPosition | undefined = this.moveTracker.startMove;
 
         if (start instanceof BoardPosition) {
 
@@ -256,8 +256,8 @@ export class ChessGame implements Subject {
             this.moveTracker.setEndMove(move.i, move.j);
             this.active = false;
 
-            const start: BoardPosition | undefined = this.moveTracker.getStartMove();
-            const end: BoardPosition | undefined = this.moveTracker.getEndMove();
+            const start: BoardPosition | undefined = this.moveTracker.startMove;
+            const end: BoardPosition | undefined = this.moveTracker.endMove;
 
             if (start && end) {
                 this.submitMove(start, end);

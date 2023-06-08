@@ -162,7 +162,7 @@ export class ChessGame {
         return piece.colour == this.getTurnPlayer();
     }
     validEnd(i, j) {
-        const start = this.moveTracker.getStartMove();
+        const start = this.moveTracker.startMove;
         if (start instanceof BoardPosition) {
             const piece = this.boardState[start.i][start.j];
             const possibleMoves = piece.getMoveOptions();
@@ -189,8 +189,8 @@ export class ChessGame {
         if (this.validEnd(move.i, move.j)) {
             this.moveTracker.setEndMove(move.i, move.j);
             this.active = false;
-            const start = this.moveTracker.getStartMove();
-            const end = this.moveTracker.getEndMove();
+            const start = this.moveTracker.startMove;
+            const end = this.moveTracker.endMove;
             if (start && end) {
                 this.submitMove(start, end);
                 return;

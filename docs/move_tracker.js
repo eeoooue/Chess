@@ -6,10 +6,4 @@ export class MoveTracker {
     setEndMove(i, j) {
         this.endMove = new BoardPosition(i, j);
     }
-    getStartMove() {
-        return this.startMove;
-    }
-    getEndMove() {
-        return this.endMove;
-    }
 }
