@@ -23,9 +23,6 @@ export class Piece {
         }
     }
     //#endregion observer pattern
-    getMoveOptions() {
-        return this.possibleMoves;
-    }
     moveOptions(i, j) { }
     invalidCoordinates(i, j) {
         return !this.game.validCoordinates(i, j);

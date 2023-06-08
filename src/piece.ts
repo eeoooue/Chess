@@ -45,11 +45,6 @@ export class Piece implements Observer {
 
     //#endregion observer pattern
 
-    getMoveOptions(): BoardPosition[] {
-
-        return this.possibleMoves;
-    }
-
     protected moveOptions(i: number, j: number): void { }
 
     invalidCoordinates(i: number, j: number) {

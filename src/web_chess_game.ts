@@ -52,7 +52,7 @@ export class WebChessGame implements Observer {
                 const tile = this.boardElement.grid[move.i][move.j]
                 tile.classList.add("highlighted")
 
-                const options: BoardPosition[] = piece.getMoveOptions();
+                const options: BoardPosition[] = piece.possibleMoves;
                 this.boardElement.paintMoveOptions(options);                
             }
 

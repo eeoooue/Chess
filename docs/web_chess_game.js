@@ -27,7 +27,7 @@ export class WebChessGame {
                 const piece = this.game.boardState[move.i][move.j];
                 const tile = this.boardElement.grid[move.i][move.j];
                 tile.classList.add("highlighted");
-                const options = piece.getMoveOptions();
+                const options = piece.possibleMoves;
                 this.boardElement.paintMoveOptions(options);
             }
             if (this.game.state == "checkmate" || this.game.state == "stalemate") {
