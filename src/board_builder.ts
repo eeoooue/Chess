@@ -1,9 +1,6 @@
 
 
-import { BoardPosition } from "./board_position.js";
-import { MoveTracker } from "./move_tracker.js";
 import { Piece } from "./piece.js";
-
 import { Bishop } from "./pieces/bishop.js";
 import { Rook } from "./pieces/rook.js";
 import { Knight } from "./pieces/knight.js";
@@ -11,8 +8,6 @@ import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
 import { Queen } from "./pieces/queen.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
-import { Observer } from "./observer.js";
-import { Subject } from "./subject.js";
 import { ChessGame } from "./chess_game.js";
 
 export class BoardBuilder{
