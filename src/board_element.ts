@@ -5,7 +5,6 @@ import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { King } from "./pieces/king.js";
-import { Subject } from "./subject.js";
 
 export class BoardElement {
 
@@ -19,9 +18,8 @@ export class BoardElement {
         this.parent = parent;
         this.boardContainer = boardContainer;
         this.game = game;
-
-        this.paintTiles()
-        this.paintPieces(this.game.getPieces())
+        this.paintTiles();
+        this.repaint();
     }
 
     repaint(): void {
@@ -36,20 +34,6 @@ export class BoardElement {
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"))
         document.querySelectorAll(".markerdot").forEach(el => el.remove())
         document.querySelectorAll(".markercircle").forEach(el => el.remove())
-    }
-
-    addDot(i: number, j: number) {
-
-        const dot = document.createElement("div")
-        dot.classList.add("markerdot")
-        this.grid[i][j].appendChild(dot)
-    }
-
-    addCircle(i: number, j: number) {
-
-        const circle = document.createElement("div")
-        circle.classList.add("markercircle")
-        this.grid[i][j].appendChild(circle)
     }
 
     paintPieces(pieces: Piece[]) {
@@ -113,7 +97,8 @@ export class BoardElement {
 
         const tile = this.createTile(paint);
         tile.addEventListener("click", () => {
-            this.parent.processMove(i, j);
+            const position = new BoardPosition(i, j);
+            this.parent.processSelection(position);
         })
 
         list.push(tile)
@@ -127,6 +112,13 @@ export class BoardElement {
         tile.classList.add(paint)
 
         return tile;
+    }
+
+    highlightActivePiece(piece: Piece){
+
+        const tile = this.grid[piece.i][piece.j]
+        tile.classList.add("highlighted")
+        this.paintMoveOptions(piece.possibleMoves);
     }
 
     paintMoveOptions(options: BoardPosition[]) {
@@ -144,5 +136,19 @@ export class BoardElement {
         } else {
             this.addCircle(position.i, position.j)
         }
+    }
+
+    addDot(i: number, j: number) {
+
+        const dot = document.createElement("div")
+        dot.classList.add("markerdot")
+        this.grid[i][j].appendChild(dot)
+    }
+
+    addCircle(i: number, j: number) {
+
+        const circle = document.createElement("div")
+        circle.classList.add("markercircle")
+        this.grid[i][j].appendChild(circle)
     }
 }

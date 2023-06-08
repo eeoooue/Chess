@@ -27,7 +27,7 @@ export class ChessGame implements Subject {
         this.updateState();
     }
 
-    submitPromotionChoice(choice: string) {
+    submitPromotionChoice(choice: string) : void {
 
         const pawn: Pawn = this.getPromotingPawn();
         pawn.promoteTo(choice);
@@ -78,7 +78,7 @@ export class ChessGame implements Subject {
         return new EmptyPiece(this, 0, 0);
     }
 
-    resetThreats() {
+    resetThreats() : void {
 
         const pieces = this.getPieces();
         pieces.forEach((piece) => {
@@ -110,9 +110,10 @@ export class ChessGame implements Subject {
         })
     }
 
-    submitSelection(move: BoardPosition){
+    submitSelection(move: BoardPosition) : Piece {
 
         this.moveTracker.interpretSelection(move);
+        return this.boardState[move.i][move.j];
     }
 
     getTurnPlayer(): string {
@@ -162,11 +163,9 @@ export class ChessGame implements Subject {
 
     removePiece(i: number, j: number) {
 
-        if (this.validCoordinates(i, j)) {
-            const piece: Piece = this.boardState[i][j];
-            this.detach(piece);
-            this.clearSquare(i, j);
-        }
+        const piece: Piece = this.boardState[i][j];
+        this.detach(piece);
+        this.clearSquare(i, j);
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {

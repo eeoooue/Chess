@@ -1,11 +1,9 @@
 import { ChessGame } from "./chess_game.js";
-import { BoardPosition } from "./board_position.js";
 import { BoardElement } from "./board_element.js";
 import { EndCard } from "./end_card.js";
 import { PromotionCard } from "./promotion_card.js";
 export class WebChessGame {
-    constructor(mainContainer, boardContainer) {
-        this.mainContainer = mainContainer;
+    constructor(boardContainer) {
         this.boardContainer = boardContainer;
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
@@ -15,16 +13,11 @@ export class WebChessGame {
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
-    processMove(i, j) {
-        const move = new BoardPosition(i, j);
-        this.game.submitSelection(move);
+    processSelection(position) {
+        const piece = this.game.submitSelection(position);
         this.refresh();
         if (this.game.moveTracker.active) {
-            const piece = this.game.boardState[move.i][move.j];
-            const tile = this.boardElement.grid[move.i][move.j];
-            tile.classList.add("highlighted");
-            const options = piece.possibleMoves;
-            this.boardElement.paintMoveOptions(options);
+            this.boardElement.highlightActivePiece(piece);
         }
     }
     refresh() {

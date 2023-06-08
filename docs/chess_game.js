@@ -77,6 +77,7 @@ export class ChessGame {
     }
     submitSelection(move) {
         this.moveTracker.interpretSelection(move);
+        return this.boardState[move.i][move.j];
     }
     getTurnPlayer() {
         return (this.turncount % 2 == 0) ? "w" : "b";
@@ -111,11 +112,9 @@ export class ChessGame {
         this.boardState[i][j] = new EmptyPiece(this, i, j);
     }
     removePiece(i, j) {
-        if (this.validCoordinates(i, j)) {
-            const piece = this.boardState[i][j];
-            this.detach(piece);
-            this.clearSquare(i, j);
-        }
+        const piece = this.boardState[i][j];
+        this.detach(piece);
+        this.clearSquare(i, j);
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {
