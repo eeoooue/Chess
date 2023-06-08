@@ -79,21 +79,22 @@ export class BoardElement {
         return img_name;
     }
     paintTiles() {
-        const painting = ["whitebg", "blackbg"];
-        var paint = 0;
+        const paints = ["whitebg", "blackbg"];
         for (let i = 0; i < 8; i++) {
-            this.grid.push([]);
+            const line = [];
             for (let j = 0; j < 8; j++) {
-                const tile = this.createTile(painting[paint]);
-                tile.addEventListener("click", () => {
-                    this.parent.processMove(i, j);
-                });
-                this.grid[i].push(tile);
-                this.boardContainer.appendChild(tile);
-                paint = (paint + 1) % 2;
+                this.paintTile(line, i, j, paints[(i + j) % 2]);
             }
-            paint = (paint + 1) % 2;
+            this.grid.push(line);
         }
+    }
+    paintTile(list, i, j, paint) {
+        const tile = this.createTile(paint);
+        tile.addEventListener("click", () => {
+            this.parent.processMove(i, j);
+        });
+        list.push(tile);
+        this.boardContainer.appendChild(tile);
     }
     createTile(paint) {
         const tile = document.createElement("div");

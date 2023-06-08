@@ -122,22 +122,26 @@ export class BoardElement implements Observer {
 
     paintTiles(): void {
 
-        const painting = ["whitebg", "blackbg"]
+        const paints = ["whitebg", "blackbg"]
 
-        var paint: number = 0;
         for (let i = 0; i < 8; i++) {
-            this.grid.push([])
+            const line: HTMLElement[] = [];
             for (let j = 0; j < 8; j++) {
-                const tile = this.createTile(painting[paint]);
-                tile.addEventListener("click", () => {
-                    this.parent.processMove(i, j);
-                })
-                this.grid[i].push(tile)
-                this.boardContainer.appendChild(tile)
-                paint = (paint + 1) % 2
+                this.paintTile(line, i, j, paints[(i + j) % 2]);
             }
-            paint = (paint + 1) % 2
+            this.grid.push(line);
         }
+    }
+
+    paintTile(list: HTMLElement[], i: number, j: number, paint: string){
+
+        const tile = this.createTile(paint);
+        tile.addEventListener("click", () => {
+            this.parent.processMove(i, j);
+        })
+
+        list.push(tile)
+        this.boardContainer.appendChild(tile)
     }
 
     createTile(paint: string): HTMLElement {
