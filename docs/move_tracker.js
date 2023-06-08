@@ -7,32 +7,29 @@ export class MoveTracker {
         this.activePiece = new EmptyPiece(game, 0, 0);
     }
     interpretSelection(move) {
-        if (!this.active) {
-            this.processStartMove(move);
-        }
-        else if (this.active) {
+        if (this.active) {
             this.processEndCell(move);
-            if (this.active) {
-                this.active = false;
-                this.processStartMove(move);
-            }
+        }
+        else {
+            this.processStartMove(move);
         }
     }
     processStartMove(move) {
         if (this.validStart(move.i, move.j)) {
-            this.startMove = move;
             this.active = true;
             this.activePiece = this.game.boardState[move.i][move.j];
         }
     }
     processEndCell(move) {
+        this.active = false;
         if (this.validEnd(move.i, move.j)) {
             const endMove = new BoardPosition(move.i, move.j);
-            this.active = false;
             this.game.makeMove(this.activePiece, endMove);
-            return;
         }
-        this.game.notify();
+        else {
+            this.game.notify();
+            this.processStartMove(move);
+        }
     }
     validStart(i, j) {
         const piece = this.game.boardState[i][j];
@@ -40,14 +37,11 @@ export class MoveTracker {
     }
     validEnd(i, j) {
         const piece = this.activePiece;
-        if (piece) {
-            const possibleMoves = piece.possibleMoves;
-            const n = possibleMoves.length;
-            for (let ind = 0; ind < n; ind++) {
-                const move = possibleMoves[ind];
-                if (move.i == i && move.j == j) {
-                    return true;
-                }
+        const moves = piece.possibleMoves;
+        for (let k = 0; k < moves.length; k++) {
+            const move = moves[k];
+            if (move.i == i && move.j == j) {
+                return true;
             }
         }
         return false;
