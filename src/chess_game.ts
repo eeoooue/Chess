@@ -138,11 +138,9 @@ export class ChessGame implements Subject {
     notify(): void {
 
         this.possibleMoves = 0;
-        const n = this.observers.length;
-        for (let i = 0; i < n; i++) {
-            const observer = this.observers[i];
+        this.observers.forEach((observer) => {
             observer.update(this);
-        }
+        })
     }
 
     //#endregion observer pattern
