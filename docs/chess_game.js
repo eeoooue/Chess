@@ -7,6 +7,7 @@ import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
 import { Queen } from "./pieces/queen.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
+import { BoardBuilder } from "./board_builder.js";
 export class ChessGame {
     constructor() {
         this.boardState = new Array(8);
@@ -15,7 +16,7 @@ export class ChessGame {
         this.turncount = 0;
         this.observers = [];
         this.possibleMoves = 0;
-        this.initializeboardState();
+        this.boardBuilder = new BoardBuilder(this);
         this.state = "ongoing";
         this.notify();
     }
@@ -106,42 +107,6 @@ export class ChessGame {
         });
     }
     //#endregion observer pattern
-    initializeboardState() {
-        for (let i = 0; i < 8; i++) {
-            this.boardState[i] = new Array(8);
-            for (let j = 0; j < 8; j++) {
-                this.boardState[i][j] = new EmptyPiece(this, i, j);
-            }
-        }
-        this.placeBlackPieces();
-        this.placeWhitePieces();
-    }
-    placeBlackPieces() {
-        for (let j = 0; j < 8; j++) {
-            this.boardState[1][j] = new Pawn(this, "b", 1, j);
-        }
-        this.boardState[0][0] = new Rook(this, "b", 0, 0);
-        this.boardState[0][1] = new Knight(this, "b", 0, 1);
-        this.boardState[0][2] = new Bishop(this, "b", 0, 2);
-        this.boardState[0][3] = new Queen(this, "b", 0, 3);
-        this.boardState[0][4] = new King(this, "b", 0, 4);
-        this.boardState[0][5] = new Bishop(this, "b", 0, 5);
-        this.boardState[0][6] = new Knight(this, "b", 0, 6);
-        this.boardState[0][7] = new Rook(this, "b", 0, 7);
-    }
-    placeWhitePieces() {
-        for (let j = 0; j < 8; j++) {
-            this.boardState[6][j] = new Pawn(this, "w", 6, j);
-        }
-        this.boardState[7][0] = new Rook(this, "w", 7, 0);
-        this.boardState[7][1] = new Knight(this, "w", 7, 1);
-        this.boardState[7][2] = new Bishop(this, "w", 7, 2);
-        this.boardState[7][3] = new Queen(this, "w", 7, 3);
-        this.boardState[7][4] = new King(this, "w", 7, 4);
-        this.boardState[7][5] = new Bishop(this, "w", 7, 5);
-        this.boardState[7][6] = new Knight(this, "w", 7, 6);
-        this.boardState[7][7] = new Rook(this, "w", 7, 7);
-    }
     interpretSelection(move) {
         if (!this.active) {
             this.processStartMove(move);
