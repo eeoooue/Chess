@@ -8,7 +8,6 @@ export class WebChessGame {
         this.mainContainer = mainContainer;
         this.boardContainer = boardContainer;
         this.game = new ChessGame();
-        this.game.attach(this);
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
     newGame() {
@@ -16,7 +15,6 @@ export class WebChessGame {
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
-    update(subject) { }
     processMove(i, j) {
         const move = new BoardPosition(i, j);
         if (move) {

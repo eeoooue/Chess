@@ -5,8 +5,7 @@ export class PromotionCard {
         this.element = this.deriveEndCard(this.game);
     }
     deriveEndCard(game) {
-        const position = this.game.getPromotingPawnPosition();
-        const piece = this.game.boardState[position.i][position.j];
+        const piece = game.getPromotingPawn();
         const colour = (piece.colour == "b") ? "black" : "white";
         const bigText = `Promoting ${colour} pawn.`;
         const subText = "Which piece should your pawn become?";

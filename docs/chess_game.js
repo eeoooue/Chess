@@ -1,11 +1,6 @@
-import { BoardPosition } from "./board_position.js";
 import { MoveTracker } from "./move_tracker.js";
-import { Bishop } from "./pieces/bishop.js";
-import { Rook } from "./pieces/rook.js";
-import { Knight } from "./pieces/knight.js";
 import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
-import { Queen } from "./pieces/queen.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { BoardBuilder } from "./board_builder.js";
 export class ChessGame {
@@ -20,42 +15,20 @@ export class ChessGame {
         this.notify();
     }
     submitPromotionChoice(choice) {
-        if (this.state != "promotion") {
-            return;
-        }
-        const position = this.getPromotingPawnPosition();
-        this.removePiece(position.i, position.j);
-        const colour = (this.getTurnPlayer() == "b") ? "w" : "b";
-        var newPiece;
-        switch (choice) {
-            case "Bishop":
-                newPiece = new Bishop(this, colour, position.i, position.j);
-                break;
-            case "Knight":
-                newPiece = new Knight(this, colour, position.i, position.j);
-                break;
-            case "Rook":
-                newPiece = new Rook(this, colour, position.i, position.j);
-                break;
-            case "Queen":
-                newPiece = new Queen(this, colour, position.i, position.j);
-                break;
-        }
-        if (newPiece) {
-            this.boardState[position.i][position.j] = newPiece;
-        }
+        const pawn = this.getPromotingPawn();
+        pawn.promoteTo(choice);
         this.state = "ongoing";
         this.notify();
     }
-    getPromotingPawnPosition() {
+    getPromotingPawn() {
         const i = (this.getTurnPlayer() == "b") ? 0 : 7;
         for (let j = 0; j < 8; j++) {
             const piece = this.boardState[i][j];
             if (piece instanceof Pawn) {
-                return new BoardPosition(i, j);
+                return piece;
             }
         }
-        return new BoardPosition(-1, -1);
+        return new Pawn(this, "w", 0, 0);
     }
     getPieces() {
         const pieces = [];
@@ -121,8 +94,7 @@ export class ChessGame {
             this.state = (king.threatened) ? "checkmate" : "stalemate";
         }
     }
-    makeMove(start, end) {
-        const movingPiece = this.boardState[start.i][start.j];
+    makeMove(movingPiece, end) {
         this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();

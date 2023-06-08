@@ -1,64 +1,47 @@
 import { BoardPosition } from "./board_position.js";
+import { EmptyPiece } from "./pieces/empty_piece.js";
 export class MoveTracker {
     constructor(game) {
         this.active = false;
         this.game = game;
-    }
-    setStartMove(i, j) {
-        this.startMove = new BoardPosition(i, j);
-    }
-    setEndMove(i, j) {
-        this.endMove = new BoardPosition(i, j);
+        this.activePiece = new EmptyPiece(game, 0, 0);
     }
     interpretSelection(move) {
-        if (!this.active) {
-            this.processStartMove(move);
-        }
-        else if (this.active) {
+        if (this.active) {
             this.processEndCell(move);
-            if (this.active) {
-                this.active = false;
-                this.processStartMove(move);
-            }
+        }
+        else {
+            this.processStartMove(move);
         }
     }
     processStartMove(move) {
         if (this.validStart(move.i, move.j)) {
-            this.activateStart(move.i, move.j);
+            this.active = true;
+            this.activePiece = this.game.boardState[move.i][move.j];
         }
-    }
-    activateStart(i, j) {
-        this.setStartMove(i, j);
-        this.active = true;
     }
     processEndCell(move) {
+        this.active = false;
         if (this.validEnd(move.i, move.j)) {
-            this.setEndMove(move.i, move.j);
-            this.active = false;
-            const start = this.startMove;
-            const end = this.endMove;
-            if (start && end) {
-                this.game.makeMove(start, end);
-                return;
-            }
+            const endMove = new BoardPosition(move.i, move.j);
+            this.game.makeMove(this.activePiece, endMove);
         }
-        this.game.notify();
+        else {
+            this.game.notify();
+            this.processStartMove(move);
+        }
     }
     validStart(i, j) {
         const piece = this.game.boardState[i][j];
         return piece.colour == this.game.getTurnPlayer();
     }
     validEnd(i, j) {
-        const start = this.startMove;
-        if (start instanceof BoardPosition) {
-            const piece = this.game.boardState[start.i][start.j];
-            const possibleMoves = piece.possibleMoves;
-            const n = possibleMoves.length;
-            for (let ind = 0; ind < n; ind++) {
-                const move = possibleMoves[ind];
-                if (move.i == i && move.j == j) {
-                    return true;
-                }
+        const piece = this.activePiece;
+        const moves = piece.possibleMoves;
+        for (let k = 0; k < moves.length; k++) {
+            const move = moves[k];
+            if (move.i == i && move.j == j) {
+                return true;
             }
         }
         return false;
