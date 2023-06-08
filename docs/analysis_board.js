@@ -25,10 +25,8 @@ export class AnalysisBoard {
         }
     }
     submitMove(start, end) {
-        const a = this.board[start.i][start.j];
-        const b = this.board[end.i][end.j];
+        this.board[end.i][end.j] = this.board[start.i][start.j];
         this.board[start.i][start.j] = "empty";
-        this.board[end.i][end.j] = a;
     }
     getKingPosition() {
         for (let i = 0; i < 8; i++) {
