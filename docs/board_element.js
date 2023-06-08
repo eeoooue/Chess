@@ -85,6 +85,9 @@ export class BoardElement {
             this.grid.push([]);
             for (let j = 0; j < 8; j++) {
                 const tile = this.createTile(painting[paint]);
+                tile.addEventListener("click", () => {
+                    this.parent.processMove(i, j);
+                });
                 this.grid[i].push(tile);
                 this.boardContainer.appendChild(tile);
                 paint = (paint + 1) % 2;
@@ -96,10 +99,6 @@ export class BoardElement {
         const tile = document.createElement("div");
         tile.classList.add("boardtile");
         tile.classList.add(paint);
-        tile.addEventListener("click", () => {
-            tile.classList.toggle("clicked");
-            this.parent.checkClickEvent();
-        });
         return tile;
     }
     paintMoveOptions(options) {

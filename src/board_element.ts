@@ -16,7 +16,7 @@ export class BoardElement implements Observer {
     public game: ChessGame;
     public parent: WebChessGame;
 
-    constructor(parent: WebChessGame, boardContainer: HTMLElement, game: ChessGame){
+    constructor(parent: WebChessGame, boardContainer: HTMLElement, game: ChessGame) {
 
         this.parent = parent;
         this.boardContainer = boardContainer;
@@ -83,7 +83,7 @@ export class BoardElement implements Observer {
         })
     }
 
-    paintPiece(piece: Piece) {        
+    paintPiece(piece: Piece) {
 
         if (piece instanceof EmptyPiece) {
             return;
@@ -94,7 +94,7 @@ export class BoardElement implements Observer {
         tile.appendChild(img)
     }
 
-    createImageElement(piece: Piece) : HTMLImageElement {
+    createImageElement(piece: Piece): HTMLImageElement {
 
         const img_name = this.getImageFilename(piece);
 
@@ -106,13 +106,13 @@ export class BoardElement implements Observer {
         return img;
     }
 
-    getImageFilename(piece: Piece){
+    getImageFilename(piece: Piece) {
 
         var img_name = `${piece.name}_${piece.colour}`;
 
-        if (piece instanceof King){
+        if (piece instanceof King) {
             const kingPiece = piece as King;
-            if (kingPiece.threatened){
+            if (kingPiece.threatened) {
                 img_name += `_check`
             }
         }
@@ -129,6 +129,9 @@ export class BoardElement implements Observer {
             this.grid.push([])
             for (let j = 0; j < 8; j++) {
                 const tile = this.createTile(painting[paint]);
+                tile.addEventListener("click", () => {
+                    this.parent.processMove(i, j);
+                })
                 this.grid[i].push(tile)
                 this.boardContainer.appendChild(tile)
                 paint = (paint + 1) % 2
@@ -143,23 +146,18 @@ export class BoardElement implements Observer {
         tile.classList.add("boardtile")
         tile.classList.add(paint)
 
-        tile.addEventListener("click", () => {
-            tile.classList.toggle("clicked")
-            this.parent.checkClickEvent()
-        })
-
         return tile;
     }
 
-    paintMoveOptions(options: BoardPosition[]){
+    paintMoveOptions(options: BoardPosition[]) {
 
         const n: number = options.length;
 
-        for(let i=0; i<n; i++){
+        for (let i = 0; i < n; i++) {
             const move = options[i];
             const piece: Piece = this.game.boardState[move.i][move.j]
 
-            if (piece instanceof EmptyPiece){
+            if (piece instanceof EmptyPiece) {
                 this.addDot(move.i, move.j)
             } else {
                 this.addCircle(move.i, move.j)

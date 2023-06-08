@@ -35,16 +35,14 @@ export class WebChessGame implements Observer {
 
     //#region observer pattern
 
-    update(subject: Subject): void {
-
-        
-    }
+    update(subject: Subject): void { }
 
     //#endregion
 
-    public checkClickEvent(): void {
 
-        const move: BoardPosition | null = this.boardElement.findClickedCell();
+    public processMove(i: number, j: number) : void {
+
+        const move: BoardPosition = new BoardPosition(i, j);
 
         if (move) {
             this.game.interpretSelection(move);
@@ -61,7 +59,7 @@ export class WebChessGame implements Observer {
             if (this.game.state == "checkmate" || this.game.state == "stalemate"){
                 this.showEndCard();
             }
-
+    
             if (this.game.state == "promotion"){
                 this.askPromotionOption();
             }

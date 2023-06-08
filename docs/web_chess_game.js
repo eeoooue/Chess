@@ -1,4 +1,5 @@
 import { ChessGame } from "./chess_game.js";
+import { BoardPosition } from "./board_position.js";
 import { BoardElement } from "./board_element.js";
 import { EndCard } from "./end_card.js";
 import { PromotionCard } from "./promotion_card.js";
@@ -16,11 +17,10 @@ export class WebChessGame {
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
     //#region observer pattern
-    update(subject) {
-    }
+    update(subject) { }
     //#endregion
-    checkClickEvent() {
-        const move = this.boardElement.findClickedCell();
+    processMove(i, j) {
+        const move = new BoardPosition(i, j);
         if (move) {
             this.game.interpretSelection(move);
             if (this.game.active) {
