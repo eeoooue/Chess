@@ -9,6 +9,12 @@ export class BoardElement {
         this.paintTiles();
         this.paintPieces(this.game.getPieces());
     }
+    highlightActivePiece(piece) {
+        const tile = this.grid[piece.i][piece.j];
+        tile.classList.add("highlighted");
+        const options = piece.possibleMoves;
+        this.paintMoveOptions(options);
+    }
     repaint() {
         this.clearPreviousBoard();
         this.paintPieces(this.game.getPieces());
@@ -73,7 +79,7 @@ export class BoardElement {
     paintTile(list, i, j, paint) {
         const tile = this.createTile(paint);
         tile.addEventListener("click", () => {
-            this.parent.processMove(i, j);
+            this.parent.processSelection(i, j);
         });
         list.push(tile);
         this.boardContainer.appendChild(tile);

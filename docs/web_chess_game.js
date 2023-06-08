@@ -15,16 +15,12 @@ export class WebChessGame {
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
-    processMove(i, j) {
+    processSelection(i, j) {
         const move = new BoardPosition(i, j);
-        this.game.submitSelection(move);
+        const piece = this.game.submitSelection(move);
         this.refresh();
         if (this.game.moveTracker.active) {
-            const piece = this.game.boardState[move.i][move.j];
-            const tile = this.boardElement.grid[move.i][move.j];
-            tile.classList.add("highlighted");
-            const options = piece.possibleMoves;
-            this.boardElement.paintMoveOptions(options);
+            this.boardElement.highlightActivePiece(piece);
         }
     }
     refresh() {

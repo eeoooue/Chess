@@ -5,7 +5,6 @@ import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { King } from "./pieces/king.js";
-import { Subject } from "./subject.js";
 
 export class BoardElement {
 
@@ -22,6 +21,14 @@ export class BoardElement {
 
         this.paintTiles()
         this.paintPieces(this.game.getPieces())
+    }
+
+    highlightActivePiece(piece: Piece){
+
+        const tile = this.grid[piece.i][piece.j]
+        tile.classList.add("highlighted")
+        const options: BoardPosition[] = piece.possibleMoves;
+        this.paintMoveOptions(options);
     }
 
     repaint(): void {
@@ -113,7 +120,7 @@ export class BoardElement {
 
         const tile = this.createTile(paint);
         tile.addEventListener("click", () => {
-            this.parent.processMove(i, j);
+            this.parent.processSelection(i, j);
         })
 
         list.push(tile)

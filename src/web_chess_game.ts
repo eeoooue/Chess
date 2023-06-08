@@ -29,19 +29,14 @@ export class WebChessGame {
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
 
-    public processMove(i: number, j: number) : void {
+    public processSelection(i: number, j: number) : void {
 
         const move: BoardPosition = new BoardPosition(i, j);
-
-        this.game.submitSelection(move);
+        const piece: Piece = this.game.submitSelection(move);
         this.refresh();
 
         if (this.game.moveTracker.active){
-            const piece : Piece = this.game.boardState[move.i][move.j]
-            const tile = this.boardElement.grid[move.i][move.j]
-            tile.classList.add("highlighted")
-            const options: BoardPosition[] = piece.possibleMoves;
-            this.boardElement.paintMoveOptions(options);                
+            this.boardElement.highlightActivePiece(piece);
         }
     }
 
