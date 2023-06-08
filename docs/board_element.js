@@ -6,11 +6,10 @@ export class BoardElement {
         this.parent = parent;
         this.boardContainer = boardContainer;
         this.game = game;
-        this.game.attach(this);
         this.paintTiles();
         this.paintPieces(this.game.getPieces());
     }
-    update(subject) {
+    repaint() {
         this.clearPreviousBoard();
         this.paintPieces(this.game.getPieces());
     }

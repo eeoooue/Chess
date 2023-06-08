@@ -35,6 +35,8 @@ export class WebChessGame {
 
         if (move) {
             this.game.submitSelection(move);
+            this.refresh();
+
             if (this.game.moveTracker.active){
                 const piece : Piece = this.game.boardState[move.i][move.j]
                 const tile = this.boardElement.grid[move.i][move.j]
@@ -51,6 +53,11 @@ export class WebChessGame {
                 this.askPromotionOption();
             }
         }
+    }
+
+    refresh(): void {
+
+        this.boardElement.repaint();
     }
 
     askPromotionOption(): void {

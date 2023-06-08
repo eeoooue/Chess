@@ -19,6 +19,7 @@ export class WebChessGame {
         const move = new BoardPosition(i, j);
         if (move) {
             this.game.submitSelection(move);
+            this.refresh();
             if (this.game.moveTracker.active) {
                 const piece = this.game.boardState[move.i][move.j];
                 const tile = this.boardElement.grid[move.i][move.j];
@@ -33,6 +34,9 @@ export class WebChessGame {
                 this.askPromotionOption();
             }
         }
+    }
+    refresh() {
+        this.boardElement.repaint();
     }
     askPromotionOption() {
         const promotionCard = new PromotionCard(this, this.game);
