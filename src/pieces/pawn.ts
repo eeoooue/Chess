@@ -4,6 +4,11 @@ import { ChessGame } from '../chess_game.js';
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './empty_piece.js';
 
+import { Bishop } from './bishop.js';
+import { Knight } from './knight.js';
+import { Rook } from './rook.js';
+import { Queen } from './queen.js';
+
 export class Pawn extends Piece {
 
     public enPassantTurn: number = -1;
@@ -128,5 +133,26 @@ export class Pawn extends Piece {
         // en passant
         this.checkEnPassant(i, j + 1);
         this.checkEnPassant(i, j - 1);
+    }
+
+    promoteTo(choice: string){
+
+        const newPiece = this.getPromotionPiece(choice);
+        this.game.removePiece(this.i, this.j);
+        this.boardState[this.i][this.j] = newPiece;
+    }
+
+    getPromotionPiece(choice: string): Piece {
+
+        switch (choice) {
+            case "Bishop":
+                return new Bishop(this.game, this.colour, this.i, this.j);
+            case "Knight":
+                return new Knight(this.game, this.colour, this.i, this.j);
+            case "Rook":
+                return new Rook(this.game, this.colour, this.i, this.j);
+            default:
+                return new Queen(this.game, this.colour, this.i, this.j);
+        }
     }
 }

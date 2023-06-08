@@ -33,51 +33,25 @@ export class ChessGame implements Subject {
 
     submitPromotionChoice(choice: string) {
 
-        if (this.state != "promotion") {
-            return;
-        }
-
-        const position: BoardPosition = this.getPromotingPawnPosition();
-        this.removePiece(position.i,position.j)
-
-        const colour = (this.getTurnPlayer() == "b") ? "w" : "b";
-
-        var newPiece;
-        switch (choice) {
-            case "Bishop":
-                newPiece = new Bishop(this, colour, position.i, position.j);
-                break;
-            case "Knight":
-                newPiece = new Knight(this, colour, position.i, position.j);
-                break;
-            case "Rook":
-                newPiece = new Rook(this, colour, position.i, position.j);
-                break;
-            case "Queen":
-                newPiece = new Queen(this, colour, position.i, position.j);
-                break;
-        }
-
-        if (newPiece){
-            this.boardState[position.i][position.j] = newPiece;
-        }
+        const pawn: Pawn = this.getPromotingPawn();
+        pawn.promoteTo(choice);
 
         this.state = "ongoing";
         this.notify();
     }
 
-    getPromotingPawnPosition(): BoardPosition {
+    getPromotingPawn(): Pawn {
 
         const i = (this.getTurnPlayer() == "b") ? 0 : 7;
 
         for (let j = 0; j < 8; j++) {
             const piece: Piece = this.boardState[i][j];
             if (piece instanceof Pawn) {
-                return new BoardPosition(i, j);
+                return piece;
             }
         }
 
-        return new BoardPosition(-1, -1);
+        return new Pawn(this, "w", 0, 0);
     }
 
     getPieces() : Piece[] {
@@ -173,11 +147,15 @@ export class ChessGame implements Subject {
         movingPiece.moveTo(end);
         this.concludeTurn();
 
+        console.log(`pawn moving to ${end.i}`)
+
         if (movingPiece instanceof Pawn){
             if (end.i == 0 || end.i == 7){
                 this.state = "promotion";
             }
         }
+
+        console.log(`state is now ${this.state}`)
     }
 
     clearSquare(i: number, j: number){

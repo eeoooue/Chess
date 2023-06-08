@@ -1,8 +1,7 @@
 
 import { WebChessGame } from "./web_chess_game.js";
 import { ChessGame } from "./chess_game.js";
-import { BoardPosition } from "./board_position.js";
-import { Piece } from "./piece.js";
+import { Pawn } from "./pieces/pawn.js";
 
 export class PromotionCard {
 
@@ -19,9 +18,7 @@ export class PromotionCard {
 
     deriveEndCard(game: ChessGame): HTMLDivElement {
 
-        const position: BoardPosition = this.game.getPromotingPawnPosition();
-
-        const piece: Piece = this.game.boardState[position.i][position.j];
+        const piece: Pawn = game.getPromotingPawn();
         const colour: string = (piece.colour == "b") ? "black" : "white";
 
         const bigText = `Promoting ${colour} pawn.`
