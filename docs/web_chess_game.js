@@ -23,7 +23,7 @@ export class WebChessGame {
         const move = new BoardPosition(i, j);
         if (move) {
             this.game.submitSelection(move);
-            if (this.game.active) {
+            if (this.game.moveTracker.active) {
                 const piece = this.game.boardState[move.i][move.j];
                 const tile = this.boardElement.grid[move.i][move.j];
                 tile.classList.add("highlighted");

@@ -11,7 +11,6 @@ import { BoardBuilder } from "./board_builder.js";
 export class ChessGame {
     constructor() {
         this.boardState = new Array(8);
-        this.active = false;
         this.turncount = 0;
         this.observers = [];
         this.possibleMoves = 0;
@@ -119,12 +118,7 @@ export class ChessGame {
         if (this.possibleMoves == 0) {
             const loser = this.getTurnPlayer();
             const king = this.getKingOfColour(loser);
-            if (king.threatened) {
-                this.state = "checkmate";
-            }
-            else {
-                this.state = "stalemate";
-            }
+            this.state = (king.threatened) ? "checkmate" : "stalemate";
         }
     }
     makeMove(start, end) {
@@ -138,11 +132,14 @@ export class ChessGame {
             }
         }
     }
+    clearSquare(i, j) {
+        this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
     removePiece(i, j) {
         if (this.validCoordinates(i, j)) {
             const piece = this.boardState[i][j];
             this.detach(piece);
-            this.boardState[i][j] = new EmptyPiece(this, i, j);
+            this.clearSquare(i, j);
         }
     }
     legalPosition(i, j, colour) {

@@ -46,12 +46,10 @@ export class WebChessGame implements Observer {
 
         if (move) {
             this.game.submitSelection(move);
-            if (this.game.active){
+            if (this.game.moveTracker.active){
                 const piece : Piece = this.game.boardState[move.i][move.j]
-
                 const tile = this.boardElement.grid[move.i][move.j]
                 tile.classList.add("highlighted")
-
                 const options: BoardPosition[] = piece.possibleMoves;
                 this.boardElement.paintMoveOptions(options);                
             }

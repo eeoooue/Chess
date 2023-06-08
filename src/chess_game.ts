@@ -2,7 +2,6 @@
 import { BoardPosition } from "./board_position.js";
 import { MoveTracker } from "./move_tracker.js";
 import { Piece } from "./piece.js";
-
 import { Bishop } from "./pieces/bishop.js";
 import { Rook } from "./pieces/rook.js";
 import { Knight } from "./pieces/knight.js";
@@ -12,7 +11,6 @@ import { Queen } from "./pieces/queen.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
-
 import { BoardBuilder } from "./board_builder.js";
 
 
@@ -20,7 +18,6 @@ export class ChessGame implements Subject {
 
     public boardState: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker;
-    public active: boolean = false;
     public turncount: number = 0;
     private observers: Observer[] = [];
     public possibleMoves: number = 0;
@@ -165,15 +162,9 @@ export class ChessGame implements Subject {
     checkGameOver(): void {
 
         if (this.possibleMoves == 0) {
-
             const loser = this.getTurnPlayer();
             const king = this.getKingOfColour(loser);
-
-            if (king.threatened) {
-                this.state = "checkmate";
-            } else {
-                this.state = "stalemate";
-            }
+            this.state = (king.threatened) ? "checkmate" : "stalemate";
         }
     }
 
@@ -191,12 +182,17 @@ export class ChessGame implements Subject {
         }
     }
 
+    clearSquare(i: number, j: number){
+
+        this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
+
     removePiece(i: number, j: number) {
 
         if (this.validCoordinates(i, j)) {
             const piece: Piece = this.boardState[i][j];
             this.detach(piece);
-            this.boardState[i][j] = new EmptyPiece(this, i, j);
+            this.clearSquare(i, j);
         }
     }
 

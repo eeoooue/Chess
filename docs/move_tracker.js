@@ -1,6 +1,7 @@
 import { BoardPosition } from "./board_position.js";
 export class MoveTracker {
     constructor(game) {
+        this.active = false;
         this.game = game;
     }
     setStartMove(i, j) {
@@ -10,13 +11,13 @@ export class MoveTracker {
         this.endMove = new BoardPosition(i, j);
     }
     interpretSelection(move) {
-        if (!this.game.active) {
+        if (!this.active) {
             this.processStartMove(move);
         }
-        else if (this.game.active) {
+        else if (this.active) {
             this.processEndCell(move);
-            if (this.game.active) {
-                this.game.active = false;
+            if (this.active) {
+                this.active = false;
                 this.processStartMove(move);
             }
         }
@@ -28,12 +29,12 @@ export class MoveTracker {
     }
     activateStart(i, j) {
         this.setStartMove(i, j);
-        this.game.active = true;
+        this.active = true;
     }
     processEndCell(move) {
         if (this.validEnd(move.i, move.j)) {
             this.setEndMove(move.i, move.j);
-            this.game.active = false;
+            this.active = false;
             const start = this.startMove;
             const end = this.endMove;
             if (start && end) {

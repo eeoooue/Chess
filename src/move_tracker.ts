@@ -7,6 +7,7 @@ export class MoveTracker {
     public startMove: undefined | BoardPosition;
     public endMove: undefined | BoardPosition;
     public game: ChessGame;
+    public active: boolean = false;
 
     constructor(game: ChessGame){
 
@@ -25,12 +26,12 @@ export class MoveTracker {
 
     interpretSelection(move: BoardPosition) {
 
-        if (!this.game.active) {
+        if (!this.active) {
             this.processStartMove(move);
-        } else if (this.game.active) {
+        } else if (this.active) {
             this.processEndCell(move)
-            if (this.game.active) {
-                this.game.active = false;
+            if (this.active) {
+                this.active = false;
                 this.processStartMove(move);
             }
         }
@@ -46,14 +47,14 @@ export class MoveTracker {
     activateStart(i: number, j: number) {
 
         this.setStartMove(i, j);
-        this.game.active = true;
+        this.active = true;
     }
 
     processEndCell(move: BoardPosition) {
 
         if (this.validEnd(move.i, move.j)) {
             this.setEndMove(move.i, move.j);
-            this.game.active = false;
+            this.active = false;
 
             const start: BoardPosition | undefined = this.startMove;
             const end: BoardPosition | undefined = this.endMove;
