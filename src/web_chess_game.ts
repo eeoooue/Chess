@@ -18,7 +18,6 @@ export class WebChessGame {
         this.mainContainer = mainContainer;
         this.boardContainer = boardContainer;
         this.game = new ChessGame();
-
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
 
@@ -29,10 +28,9 @@ export class WebChessGame {
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
 
-    public processSelection(i: number, j: number) : void {
+    public processSelection(position: BoardPosition) : void {
 
-        const move: BoardPosition = new BoardPosition(i, j);
-        const piece: Piece = this.game.submitSelection(move);
+        const piece: Piece = this.game.submitSelection(position);
         this.refresh();
 
         if (this.game.moveTracker.active){

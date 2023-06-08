@@ -1,5 +1,4 @@
 import { ChessGame } from "./chess_game.js";
-import { BoardPosition } from "./board_position.js";
 import { BoardElement } from "./board_element.js";
 import { EndCard } from "./end_card.js";
 import { PromotionCard } from "./promotion_card.js";
@@ -15,9 +14,8 @@ export class WebChessGame {
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
-    processSelection(i, j) {
-        const move = new BoardPosition(i, j);
-        const piece = this.game.submitSelection(move);
+    processSelection(position) {
+        const piece = this.game.submitSelection(position);
         this.refresh();
         if (this.game.moveTracker.active) {
             this.boardElement.highlightActivePiece(piece);

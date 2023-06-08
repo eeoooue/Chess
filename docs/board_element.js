@@ -1,3 +1,4 @@
+import { BoardPosition } from "./board_position.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { King } from "./pieces/king.js";
 export class BoardElement {
@@ -7,13 +8,7 @@ export class BoardElement {
         this.boardContainer = boardContainer;
         this.game = game;
         this.paintTiles();
-        this.paintPieces(this.game.getPieces());
-    }
-    highlightActivePiece(piece) {
-        const tile = this.grid[piece.i][piece.j];
-        tile.classList.add("highlighted");
-        const options = piece.possibleMoves;
-        this.paintMoveOptions(options);
+        this.repaint();
     }
     repaint() {
         this.clearPreviousBoard();
@@ -24,16 +19,6 @@ export class BoardElement {
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
         document.querySelectorAll(".markerdot").forEach(el => el.remove());
         document.querySelectorAll(".markercircle").forEach(el => el.remove());
-    }
-    addDot(i, j) {
-        const dot = document.createElement("div");
-        dot.classList.add("markerdot");
-        this.grid[i][j].appendChild(dot);
-    }
-    addCircle(i, j) {
-        const circle = document.createElement("div");
-        circle.classList.add("markercircle");
-        this.grid[i][j].appendChild(circle);
     }
     paintPieces(pieces) {
         pieces.forEach((piece) => {
@@ -79,7 +64,8 @@ export class BoardElement {
     paintTile(list, i, j, paint) {
         const tile = this.createTile(paint);
         tile.addEventListener("click", () => {
-            this.parent.processSelection(i, j);
+            const position = new BoardPosition(i, j);
+            this.parent.processSelection(position);
         });
         list.push(tile);
         this.boardContainer.appendChild(tile);
@@ -89,6 +75,11 @@ export class BoardElement {
         tile.classList.add("boardtile");
         tile.classList.add(paint);
         return tile;
+    }
+    highlightActivePiece(piece) {
+        const tile = this.grid[piece.i][piece.j];
+        tile.classList.add("highlighted");
+        this.paintMoveOptions(piece.possibleMoves);
     }
     paintMoveOptions(options) {
         options.forEach((position) => {
@@ -103,5 +94,15 @@ export class BoardElement {
         else {
             this.addCircle(position.i, position.j);
         }
+    }
+    addDot(i, j) {
+        const dot = document.createElement("div");
+        dot.classList.add("markerdot");
+        this.grid[i][j].appendChild(dot);
+    }
+    addCircle(i, j) {
+        const circle = document.createElement("div");
+        circle.classList.add("markercircle");
+        this.grid[i][j].appendChild(circle);
     }
 }
