@@ -31,8 +31,8 @@ export class BoardElement implements Observer {
 
     update(subject: Subject): void {
 
+        this.clearPreviousBoard()
         this.paintPieces()
-        this.clearHighlights()
     }
 
     //#endregion
@@ -54,8 +54,9 @@ export class BoardElement implements Observer {
         return null;
     }
 
-    clearHighlights() {
+    clearPreviousBoard() {
 
+        document.querySelectorAll(".chess-piece").forEach(el => el.remove())
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"))
         document.querySelectorAll(".markerdot").forEach(el => el.remove())
         document.querySelectorAll(".markercircle").forEach(el => el.remove())
@@ -78,7 +79,6 @@ export class BoardElement implements Observer {
     paintPieces() {
 
         const boardstate = this.game.boardState;
-        document.querySelectorAll(".chess-piece").forEach(el => el.remove())
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {

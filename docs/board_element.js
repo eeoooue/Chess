@@ -13,8 +13,8 @@ export class BoardElement {
     }
     //#region observer pattern
     update(subject) {
+        this.clearPreviousBoard();
         this.paintPieces();
-        this.clearHighlights();
     }
     //#endregion
     findClickedCell() {
@@ -31,7 +31,8 @@ export class BoardElement {
         }
         return null;
     }
-    clearHighlights() {
+    clearPreviousBoard() {
+        document.querySelectorAll(".chess-piece").forEach(el => el.remove());
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
         document.querySelectorAll(".markerdot").forEach(el => el.remove());
         document.querySelectorAll(".markercircle").forEach(el => el.remove());
@@ -48,7 +49,6 @@ export class BoardElement {
     }
     paintPieces() {
         const boardstate = this.game.boardState;
-        document.querySelectorAll(".chess-piece").forEach(el => el.remove());
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 this.paintPiece(boardstate[i][j]);
