@@ -37,23 +37,6 @@ export class BoardElement implements Observer {
 
     //#endregion
 
-    findClickedCell(): BoardPosition | null {
-
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                const tile = this.grid[i][j]
-                if (tile instanceof HTMLElement) {
-                    if (tile.classList.contains("clicked")) {
-                        tile.classList.remove("clicked")
-                        return new BoardPosition(i, j);
-                    }
-                }
-            }
-        }
-
-        return null;
-    }
-
     clearPreviousBoard() {
 
         document.querySelectorAll(".chess-piece").forEach(el => el.remove())

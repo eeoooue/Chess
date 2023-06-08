@@ -1,4 +1,3 @@
-import { BoardPosition } from "./board_position.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
 import { King } from "./pieces/king.js";
 export class BoardElement {
@@ -17,20 +16,6 @@ export class BoardElement {
         this.paintPieces(this.game.getPieces());
     }
     //#endregion
-    findClickedCell() {
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                const tile = this.grid[i][j];
-                if (tile instanceof HTMLElement) {
-                    if (tile.classList.contains("clicked")) {
-                        tile.classList.remove("clicked");
-                        return new BoardPosition(i, j);
-                    }
-                }
-            }
-        }
-        return null;
-    }
     clearPreviousBoard() {
         document.querySelectorAll(".chess-piece").forEach(el => el.remove());
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));
