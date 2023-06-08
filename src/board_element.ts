@@ -28,6 +28,11 @@ export class BoardElement implements Observer {
 
     update(subject: Subject): void {
 
+        this.refresh();
+    }
+
+    refresh(): void {
+
         this.clearPreviousBoard()
         this.paintPieces(this.game.getPieces())
     }
@@ -111,7 +116,7 @@ export class BoardElement implements Observer {
         }
     }
 
-    paintTile(list: HTMLElement[], i: number, j: number, paint: string){
+    paintTile(list: HTMLElement[], i: number, j: number, paint: string) {
 
         const tile = this.createTile(paint);
         tile.addEventListener("click", () => {
@@ -138,7 +143,7 @@ export class BoardElement implements Observer {
         })
     }
 
-    illustrateMoveOption(position: BoardPosition){
+    illustrateMoveOption(position: BoardPosition) {
 
         const piece: Piece = this.game.boardState[position.i][position.j]
         if (piece instanceof EmptyPiece) {

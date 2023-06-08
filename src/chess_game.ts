@@ -24,7 +24,7 @@ export class ChessGame implements Subject {
         this.moveTracker = new MoveTracker(this);
         this.boardBuilder = new BoardBuilder(this);
         this.state = "ongoing";
-        this.notify();
+        this.updateState();
     }
 
     submitPromotionChoice(choice: string) {
@@ -33,7 +33,7 @@ export class ChessGame implements Subject {
         pawn.promoteTo(choice);
 
         this.state = "ongoing";
-        this.notify();
+        this.updateState();
     }
 
     getPromotingPawn(): Pawn {
@@ -86,6 +86,16 @@ export class ChessGame implements Subject {
         })
     }
 
+    rebuildMoveOptions(){
+
+        const pieces = this.getPieces();
+        this.possibleMoves = 0;
+
+        pieces.forEach((piece) => {
+            piece.populateMoveOptions();
+        })
+    }
+
     attach(observer: Observer): void {
 
         this.observers.push(observer);
@@ -104,7 +114,6 @@ export class ChessGame implements Subject {
 
     notify(): void {
 
-        this.possibleMoves = 0;
         this.observers.forEach((observer) => {
             observer.update(this);
         })
@@ -123,7 +132,13 @@ export class ChessGame implements Subject {
     concludeTurn(): void {
 
         this.turncount += 1;
+        this.updateState();
+    }
+
+    updateState(){
+
         this.resetThreats();
+        this.rebuildMoveOptions();
         this.notify();
         this.checkGameOver();
     }
@@ -139,7 +154,7 @@ export class ChessGame implements Subject {
 
     makeMove(movingPiece: Piece, end: BoardPosition) {
 
-        this.removePiece(end.i, end.j);
+        this.clearSquare(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
 
@@ -153,15 +168,6 @@ export class ChessGame implements Subject {
     clearSquare(i: number, j: number){
 
         this.boardState[i][j] = new EmptyPiece(this, i, j);
-    }
-
-    removePiece(i: number, j: number) {
-
-        if (this.validCoordinates(i, j)) {
-            const piece: Piece = this.boardState[i][j];
-            this.detach(piece);
-            this.clearSquare(i, j);
-        }
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {

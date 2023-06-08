@@ -11,6 +11,9 @@ export class BoardElement {
         this.paintPieces(this.game.getPieces());
     }
     update(subject) {
+        this.refresh();
+    }
+    refresh() {
         this.clearPreviousBoard();
         this.paintPieces(this.game.getPieces());
     }

@@ -35,6 +35,8 @@ export class WebChessGame {
 
         if (move) {
             this.game.submitSelection(move);
+            // this.boardElement.refresh();
+
             if (this.game.moveTracker.active){
                 const piece : Piece = this.game.boardState[move.i][move.j]
                 const tile = this.boardElement.grid[move.i][move.j]
@@ -42,6 +44,7 @@ export class WebChessGame {
                 const options: BoardPosition[] = piece.possibleMoves;
                 this.boardElement.paintMoveOptions(options);                
             }
+            
 
             if (this.game.state == "checkmate" || this.game.state == "stalemate"){
                 this.showEndCard();

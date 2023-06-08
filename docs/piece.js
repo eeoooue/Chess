@@ -11,9 +11,8 @@ export class Piece {
         this.i = i;
         this.j = j;
         this.threatened = false;
-        game.attach(this);
     }
-    update(subject) {
+    populateMoveOptions() {
         this.possibleMoves = [];
         this.moveOptions(this.i, this.j);
         if (this.colour == this.game.getTurnPlayer()) {
