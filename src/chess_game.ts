@@ -294,13 +294,7 @@ export class ChessGame implements Subject {
     submitMove(start: BoardPosition, end: BoardPosition) {
 
         const movingPiece: Piece = this.boardState[start.i][start.j];
-        var targetPiece: Piece = this.boardState[end.i][end.j];
-
-        if (targetPiece.colour != movingPiece.colour) {
-            this.removePiece(end.i, end.j);
-        }
-
-        targetPiece.moveTo(start);
+        this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
 

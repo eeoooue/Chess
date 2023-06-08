@@ -218,11 +218,7 @@ export class ChessGame {
     }
     submitMove(start, end) {
         const movingPiece = this.boardState[start.i][start.j];
-        var targetPiece = this.boardState[end.i][end.j];
-        if (targetPiece.colour != movingPiece.colour) {
-            this.removePiece(end.i, end.j);
-        }
-        targetPiece.moveTo(start);
+        this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
         if (movingPiece instanceof Pawn) {
