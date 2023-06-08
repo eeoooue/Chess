@@ -1,5 +1,5 @@
 import { Piece } from "../piece.js";
-import { EmptyPiece } from './emptypiece.js';
+import { EmptyPiece } from './empty_piece.js';
 export class Pawn extends Piece {
     constructor(game, colour, i, j) {
         super(game, colour, "pawn", i, j);

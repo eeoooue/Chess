@@ -1,9 +1,9 @@
 
-import { ChessGame } from './chessgame.js';
-import { BoardPosition } from './BoardPosition.js';
+import { ChessGame } from './chess_game.js';
+import { BoardPosition } from './board_position.js';
 import { Observer } from './observer.js';
 import { Subject } from "./subject.js";
-import { AnalysisBoard } from './AnalysisBoard.js';
+import { AnalysisBoard } from './analysis_board.js';
 
 export class Piece implements Observer {
 

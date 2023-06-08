@@ -1,5 +1,5 @@
-import { BoardPosition } from "./BoardPosition.js";
-import { EmptyPiece } from "./pieces/emptypiece.js";
+import { BoardPosition } from "./board_position.js";
+import { EmptyPiece } from "./pieces/empty_piece.js";
 import { King } from "./pieces/king.js";
 export class BoardElement {
     constructor(parent, boardContainer, game) {

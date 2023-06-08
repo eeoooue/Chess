@@ -1,5 +1,5 @@
 import { Piece } from "../piece.js";
-import { BoardPosition } from '../BoardPosition.js';
+import { BoardPosition } from '../board_position.js';
 export class Bishop extends Piece {
     constructor(game, colour, i, j) {
         super(game, colour, "bishop", i, j);

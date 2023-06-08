@@ -1,8 +1,8 @@
 
-import { BoardPosition } from '../BoardPosition.js';
-import { ChessGame } from '../chessgame.js';
+import { BoardPosition } from '../board_position.js';
+import { ChessGame } from '../chess_game.js';
 import { Piece } from "../piece.js";
-import { EmptyPiece } from './emptypiece.js';
+import { EmptyPiece } from './empty_piece.js';
 
 export class Pawn extends Piece {
 

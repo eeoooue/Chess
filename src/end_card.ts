@@ -1,6 +1,6 @@
 
-import { WebChessGame } from "./webchessgame.js";
-import { ChessGame } from "./chessgame.js";
+import { WebChessGame } from "./web_chess_game.js";
+import { ChessGame } from "./chess_game.js";
 
 
 export class EndCard {

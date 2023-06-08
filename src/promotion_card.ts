@@ -1,7 +1,7 @@
 
-import { WebChessGame } from "./webchessgame.js";
-import { ChessGame } from "./chessgame.js";
-import { BoardPosition } from "./BoardPosition.js";
+import { WebChessGame } from "./web_chess_game.js";
+import { ChessGame } from "./chess_game.js";
+import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 
 export class PromotionCard {

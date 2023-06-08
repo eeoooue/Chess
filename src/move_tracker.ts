@@ -1,5 +1,5 @@
 
-import { BoardPosition } from "./BoardPosition.js";
+import { BoardPosition } from "./board_position.js";
 
 export class MoveTracker {
 

@@ -1,7 +1,7 @@
-import { ChessGame } from "./chessgame.js";
-import { BoardElement } from "./BoardElement.js";
-import { EndCard } from "./EndCard.js";
-import { PromotionCard } from "./PromotionCard.js";
+import { ChessGame } from "./chess_game.js";
+import { BoardElement } from "./board_element.js";
+import { EndCard } from "./end_card.js";
+import { PromotionCard } from "./promotion_card.js";
 export class WebChessGame {
     constructor(mainContainer, boardContainer) {
         this.mainContainer = mainContainer;

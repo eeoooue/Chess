@@ -1,5 +1,5 @@
-import { BoardPosition } from './BoardPosition.js';
-import { AnalysisBoard } from './AnalysisBoard.js';
+import { BoardPosition } from './board_position.js';
+import { AnalysisBoard } from './analysis_board.js';
 export class Piece {
     constructor(game, colour, name, i, j) {
         this.possibleMoves = [];

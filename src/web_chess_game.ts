@@ -1,13 +1,13 @@
 
-import { ChessGame } from "./chessgame.js";
-import { BoardPosition } from "./BoardPosition.js";
+import { ChessGame } from "./chess_game.js";
+import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
 
-import { BoardElement } from "./BoardElement.js";
-import { EndCard } from "./EndCard.js";
-import { PromotionCard } from "./PromotionCard.js";
+import { BoardElement } from "./board_element.js";
+import { EndCard } from "./end_card.js";
+import { PromotionCard } from "./promotion_card.js";
 
 export class WebChessGame implements Observer {
 

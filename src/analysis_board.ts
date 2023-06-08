@@ -1,5 +1,5 @@
 
-import { BoardPosition } from "./BoardPosition.js";
+import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
 
 export class AnalysisBoard {

@@ -1,9 +1,9 @@
 
-import { WebChessGame } from "./webchessgame.js";
-import { ChessGame } from "./chessgame.js";
-import { BoardPosition } from "./BoardPosition.js";
+import { WebChessGame } from "./web_chess_game.js";
+import { ChessGame } from "./chess_game.js";
+import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
-import { EmptyPiece } from "./pieces/emptypiece.js";
+import { EmptyPiece } from "./pieces/empty_piece.js";
 import { King } from "./pieces/king.js";
 import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
