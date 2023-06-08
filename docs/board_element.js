@@ -50,16 +50,16 @@ export class BoardElement {
         const boardstate = this.game.boardState;
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
-                this.paintPosition(new BoardPosition(i, j), boardstate[i][j]);
+                this.paintPiece(boardstate[i][j]);
             }
         }
     }
-    paintPosition(position, piece) {
+    paintPiece(piece) {
+        const tile = this.grid[piece.i][piece.j];
+        tile.innerHTML = "";
         if (piece instanceof EmptyPiece) {
             return;
         }
-        const tile = this.grid[position.i][position.j];
-        tile.innerHTML = "";
         var img_name = `${piece.name}_${piece.colour}`;
         if (piece instanceof King) {
             const kingPiece = piece;
