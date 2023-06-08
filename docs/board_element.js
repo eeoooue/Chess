@@ -102,16 +102,17 @@ export class BoardElement {
         return tile;
     }
     paintMoveOptions(options) {
-        const n = options.length;
-        for (let i = 0; i < n; i++) {
-            const move = options[i];
-            const piece = this.game.boardState[move.i][move.j];
-            if (piece instanceof EmptyPiece) {
-                this.addDot(move.i, move.j);
-            }
-            else {
-                this.addCircle(move.i, move.j);
-            }
+        options.forEach((position) => {
+            this.illustrateMoveOption(position);
+        });
+    }
+    illustrateMoveOption(position) {
+        const piece = this.game.boardState[position.i][position.j];
+        if (piece instanceof EmptyPiece) {
+            this.addDot(position.i, position.j);
+        }
+        else {
+            this.addCircle(position.i, position.j);
         }
     }
 }

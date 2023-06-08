@@ -151,17 +151,18 @@ export class BoardElement implements Observer {
 
     paintMoveOptions(options: BoardPosition[]) {
 
-        const n: number = options.length;
+        options.forEach((position) => {
+            this.illustrateMoveOption(position);
+        })
+    }
 
-        for (let i = 0; i < n; i++) {
-            const move = options[i];
-            const piece: Piece = this.game.boardState[move.i][move.j]
+    illustrateMoveOption(position: BoardPosition){
 
-            if (piece instanceof EmptyPiece) {
-                this.addDot(move.i, move.j)
-            } else {
-                this.addCircle(move.i, move.j)
-            }
+        const piece: Piece = this.game.boardState[position.i][position.j]
+        if (piece instanceof EmptyPiece) {
+            this.addDot(position.i, position.j)
+        } else {
+            this.addCircle(position.i, position.j)
         }
     }
 }
