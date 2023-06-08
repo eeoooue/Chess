@@ -11,11 +11,11 @@ import { BoardBuilder } from "./board_builder.js";
 export class ChessGame {
     constructor() {
         this.boardState = new Array(8);
-        this.moveTracker = new MoveTracker();
         this.active = false;
         this.turncount = 0;
         this.observers = [];
         this.possibleMoves = 0;
+        this.moveTracker = new MoveTracker(this);
         this.boardBuilder = new BoardBuilder(this);
         this.state = "ongoing";
         this.notify();
@@ -85,11 +85,9 @@ export class ChessGame {
             piece.threatened = false;
         });
     }
-    //#region observer pattern
     attach(observer) {
         this.observers.push(observer);
     }
-    // Detach an observer from the subject.
     detach(observer) {
         const n = this.observers.length;
         for (let i = 0; i < n; i++) {
@@ -99,69 +97,17 @@ export class ChessGame {
             }
         }
     }
-    // Notify all observers about an event.
     notify() {
         this.possibleMoves = 0;
         this.observers.forEach((observer) => {
             observer.update(this);
         });
     }
-    //#endregion observer pattern
-    interpretSelection(move) {
-        if (!this.active) {
-            this.processStartMove(move);
-        }
-        else if (this.active) {
-            this.processEndCell(move);
-            if (this.active) {
-                this.active = false;
-                this.processStartMove(move);
-            }
-        }
+    submitSelection(move) {
+        this.moveTracker.interpretSelection(move);
     }
     getTurnPlayer() {
         return (this.turncount % 2 == 0) ? "w" : "b";
-    }
-    validStart(i, j) {
-        const piece = this.boardState[i][j];
-        return piece.colour == this.getTurnPlayer();
-    }
-    validEnd(i, j) {
-        const start = this.moveTracker.startMove;
-        if (start instanceof BoardPosition) {
-            const piece = this.boardState[start.i][start.j];
-            const possibleMoves = piece.possibleMoves;
-            const n = possibleMoves.length;
-            for (let ind = 0; ind < n; ind++) {
-                const move = possibleMoves[ind];
-                if (move.i == i && move.j == j) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-    processStartMove(move) {
-        if (this.validStart(move.i, move.j)) {
-            this.activateStart(move.i, move.j);
-        }
-    }
-    activateStart(i, j) {
-        this.moveTracker.setStartMove(i, j);
-        this.active = true;
-    }
-    processEndCell(move) {
-        if (this.validEnd(move.i, move.j)) {
-            this.moveTracker.setEndMove(move.i, move.j);
-            this.active = false;
-            const start = this.moveTracker.startMove;
-            const end = this.moveTracker.endMove;
-            if (start && end) {
-                this.submitMove(start, end);
-                return;
-            }
-        }
-        this.notify();
     }
     concludeTurn() {
         this.turncount += 1;
@@ -181,7 +127,7 @@ export class ChessGame {
             }
         }
     }
-    submitMove(start, end) {
+    makeMove(start, end) {
         const movingPiece = this.boardState[start.i][start.j];
         this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);

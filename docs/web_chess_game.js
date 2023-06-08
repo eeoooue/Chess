@@ -22,7 +22,7 @@ export class WebChessGame {
     processMove(i, j) {
         const move = new BoardPosition(i, j);
         if (move) {
-            this.game.interpretSelection(move);
+            this.game.submitSelection(move);
             if (this.game.active) {
                 const piece = this.game.boardState[move.i][move.j];
                 const tile = this.boardElement.grid[move.i][move.j];

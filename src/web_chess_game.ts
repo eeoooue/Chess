@@ -45,7 +45,7 @@ export class WebChessGame implements Observer {
         const move: BoardPosition = new BoardPosition(i, j);
 
         if (move) {
-            this.game.interpretSelection(move);
+            this.game.submitSelection(move);
             if (this.game.active){
                 const piece : Piece = this.game.boardState[move.i][move.j]
 

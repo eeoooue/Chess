@@ -19,7 +19,7 @@ import { BoardBuilder } from "./board_builder.js";
 export class ChessGame implements Subject {
 
     public boardState: Piece[][] = new Array<Array<Piece>>(8);
-    public moveTracker = new MoveTracker();
+    public moveTracker;
     public active: boolean = false;
     public turncount: number = 0;
     private observers: Observer[] = [];
@@ -29,6 +29,7 @@ export class ChessGame implements Subject {
 
     constructor() {
 
+        this.moveTracker = new MoveTracker(this);
         this.boardBuilder = new BoardBuilder(this);
         this.state = "ongoing";
         this.notify();
@@ -119,14 +120,11 @@ export class ChessGame implements Subject {
         })
     }
 
-    //#region observer pattern
-
     attach(observer: Observer): void {
 
         this.observers.push(observer);
     }
 
-    // Detach an observer from the subject.
     detach(observer: Observer): void {
 
         const n = this.observers.length;
@@ -138,7 +136,6 @@ export class ChessGame implements Subject {
         }
     }
 
-    // Notify all observers about an event.
     notify(): void {
 
         this.possibleMoves = 0;
@@ -147,84 +144,14 @@ export class ChessGame implements Subject {
         })
     }
 
-    //#endregion observer pattern
+    submitSelection(move: BoardPosition){
 
-    
-
-    interpretSelection(move: BoardPosition) {
-
-        if (!this.active) {
-            this.processStartMove(move);
-        } else if (this.active) {
-            this.processEndCell(move)
-            if (this.active) {
-                this.active = false;
-                this.processStartMove(move);
-            }
-        }
+        this.moveTracker.interpretSelection(move);
     }
 
     getTurnPlayer(): string {
 
         return (this.turncount % 2 == 0) ? "w" : "b";
-    }
-
-    validStart(i: number, j: number): boolean {
-
-        const piece = this.boardState[i][j];
-        return piece.colour == this.getTurnPlayer();
-    }
-
-    validEnd(i: number, j: number): boolean {
-
-        const start: BoardPosition | undefined = this.moveTracker.startMove;
-
-        if (start instanceof BoardPosition) {
-
-            const piece = this.boardState[start.i][start.j];
-            const possibleMoves = piece.possibleMoves;
-
-            const n = possibleMoves.length;
-            for (let ind = 0; ind < n; ind++) {
-                const move: BoardPosition = possibleMoves[ind];
-                if (move.i == i && move.j == j) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    processStartMove(move: BoardPosition) {
-
-        if (this.validStart(move.i, move.j)) {
-            this.activateStart(move.i, move.j);
-        }
-    }
-
-    activateStart(i: number, j: number) {
-
-        this.moveTracker.setStartMove(i, j);
-        this.active = true;
-    }
-
-    processEndCell(move: BoardPosition) {
-
-        if (this.validEnd(move.i, move.j)) {
-            this.moveTracker.setEndMove(move.i, move.j);
-            this.active = false;
-
-            const start: BoardPosition | undefined = this.moveTracker.startMove;
-            const end: BoardPosition | undefined = this.moveTracker.endMove;
-
-            if (start && end) {
-                this.submitMove(start, end);
-                return;
-            }
-        }
-
-        this.notify();
     }
 
     concludeTurn(): void {
@@ -250,7 +177,7 @@ export class ChessGame implements Subject {
         }
     }
 
-    submitMove(start: BoardPosition, end: BoardPosition) {
+    makeMove(start: BoardPosition, end: BoardPosition) {
 
         const movingPiece: Piece = this.boardState[start.i][start.j];
         this.removePiece(end.i, end.j);
