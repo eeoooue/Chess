@@ -78,6 +78,7 @@ export class BoardElement implements Observer {
     paintPieces() {
 
         const boardstate = this.game.boardState;
+        document.querySelectorAll(".chess-piece").forEach(el => el.remove())
 
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
@@ -88,12 +89,28 @@ export class BoardElement implements Observer {
 
     paintPiece(piece: Piece) {        
 
-        const tile = this.grid[piece.i][piece.j]
-        tile.innerHTML = ""
-
         if (piece instanceof EmptyPiece) {
             return;
         }
+
+        const tile = this.grid[piece.i][piece.j]
+        const img = this.createImageElement(piece);
+        tile.appendChild(img)
+    }
+
+    createImageElement(piece: Piece) : HTMLImageElement {
+
+        const img_name = this.getImageFilename(piece);
+
+        const img = document.createElement("img")
+        img.classList.add("chess-piece")
+        img.src = `assets\\${img_name}.png`
+        img.style.margin = "5px 5px"
+
+        return img;
+    }
+
+    getImageFilename(piece: Piece){
 
         var img_name = `${piece.name}_${piece.colour}`;
 
@@ -104,12 +121,7 @@ export class BoardElement implements Observer {
             }
         }
 
-        const img = document.createElement("img")
-        img.classList.add("chess-piece")
-        img.src = `assets\\${img_name}.png`
-        img.style.margin = "5px 5px"
-
-        tile.appendChild(img)
+        return img_name;
     }
 
     paintTiles(): void {

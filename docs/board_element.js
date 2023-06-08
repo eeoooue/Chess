@@ -48,6 +48,7 @@ export class BoardElement {
     }
     paintPieces() {
         const boardstate = this.game.boardState;
+        document.querySelectorAll(".chess-piece").forEach(el => el.remove());
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 this.paintPiece(boardstate[i][j]);
@@ -55,11 +56,22 @@ export class BoardElement {
         }
     }
     paintPiece(piece) {
-        const tile = this.grid[piece.i][piece.j];
-        tile.innerHTML = "";
         if (piece instanceof EmptyPiece) {
             return;
         }
+        const tile = this.grid[piece.i][piece.j];
+        const img = this.createImageElement(piece);
+        tile.appendChild(img);
+    }
+    createImageElement(piece) {
+        const img_name = this.getImageFilename(piece);
+        const img = document.createElement("img");
+        img.classList.add("chess-piece");
+        img.src = `assets\\${img_name}.png`;
+        img.style.margin = "5px 5px";
+        return img;
+    }
+    getImageFilename(piece) {
         var img_name = `${piece.name}_${piece.colour}`;
         if (piece instanceof King) {
             const kingPiece = piece;
@@ -67,11 +79,7 @@ export class BoardElement {
                 img_name += `_check`;
             }
         }
-        const img = document.createElement("img");
-        img.classList.add("chess-piece");
-        img.src = `assets\\${img_name}.png`;
-        img.style.margin = "5px 5px";
-        tile.appendChild(img);
+        return img_name;
     }
     paintTiles() {
         const painting = ["whitebg", "blackbg"];
