@@ -69,13 +69,13 @@ export class ChessGame {
     }
     getKingOfColour(colour) {
         const pieces = this.getPieces();
-        pieces.forEach((piece) => {
-            if (piece instanceof King) {
-                if (piece.colour == colour) {
-                    return piece;
+        for (let i = 0; i < pieces.length; i++) {
+            if (pieces[i] instanceof King) {
+                if (pieces[i].colour == colour) {
+                    return pieces[i];
                 }
             }
-        });
+        }
         return new EmptyPiece(this, 0, 0);
     }
     resetThreats() {

@@ -95,13 +95,14 @@ export class ChessGame implements Subject {
     getKingOfColour(colour: string): Piece {
 
         const pieces = this.getPieces();
-        pieces.forEach((piece) => {
-            if (piece instanceof King){
-                if (piece.colour == colour) {
-                    return piece;
+
+        for(let i=0; i<pieces.length; i++){
+            if (pieces[i] instanceof King){
+                if (pieces[i].colour == colour) {
+                    return pieces[i];
                 }
             }
-        })
+        }
 
         return new EmptyPiece(this, 0, 0);
     }
@@ -125,7 +126,6 @@ export class ChessGame implements Subject {
     detach(observer: Observer): void {
 
         const n = this.observers.length;
-
         for (let i = 0; i < n; i++) {
             if (this.observers[i] == observer) {
                 this.observers.splice(i, 1);
@@ -224,6 +224,7 @@ export class ChessGame implements Subject {
 
             const piece = this.boardState[start.i][start.j];
             const possibleMoves = piece.getMoveOptions();
+
             const n = possibleMoves.length;
             for (let ind = 0; ind < n; ind++) {
                 const move: BoardPosition = possibleMoves[ind];
