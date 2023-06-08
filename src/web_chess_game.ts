@@ -2,14 +2,11 @@
 import { ChessGame } from "./chess_game.js";
 import { BoardPosition } from "./board_position.js";
 import { Piece } from "./piece.js";
-import { Observer } from "./observer.js";
-import { Subject } from "./subject.js";
-
 import { BoardElement } from "./board_element.js";
 import { EndCard } from "./end_card.js";
 import { PromotionCard } from "./promotion_card.js";
 
-export class WebChessGame implements Observer {
+export class WebChessGame {
 
     public mainContainer: HTMLElement;
     public boardContainer: HTMLElement;
@@ -21,7 +18,6 @@ export class WebChessGame implements Observer {
         this.mainContainer = mainContainer;
         this.boardContainer = boardContainer;
         this.game = new ChessGame();
-        this.game.attach(this)
 
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
@@ -32,8 +28,6 @@ export class WebChessGame implements Observer {
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
-
-    update(subject: Subject): void { }
 
     public processMove(i: number, j: number) : void {
 
