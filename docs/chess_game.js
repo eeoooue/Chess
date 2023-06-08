@@ -57,26 +57,32 @@ export class ChessGame {
         }
         return new BoardPosition(-1, -1);
     }
-    getKingOfColour(colour) {
+    getPieces() {
+        const pieces = [];
         for (let i = 0; i < 8; i++) {
             for (let j = 0; j < 8; j++) {
                 const piece = this.boardState[i][j];
-                if (piece instanceof King) {
-                    if (piece.colour == colour) {
-                        return piece;
-                    }
-                }
+                pieces.push(piece);
             }
         }
+        return pieces;
+    }
+    getKingOfColour(colour) {
+        const pieces = this.getPieces();
+        pieces.forEach((piece) => {
+            if (piece instanceof King) {
+                if (piece.colour == colour) {
+                    return piece;
+                }
+            }
+        });
         return new EmptyPiece(this, 0, 0);
     }
     resetThreats() {
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                const piece = this.boardState[i][j];
-                piece.threatened = false;
-            }
-        }
+        const pieces = this.getPieces();
+        pieces.forEach((piece) => {
+            piece.threatened = false;
+        });
     }
     //#region observer pattern
     attach(observer) {
