@@ -9,12 +9,12 @@ export class BoardElement {
         this.game = game;
         this.game.attach(this);
         this.paintTiles();
-        this.paintPieces();
+        this.paintPieces(this.game.getPieces());
     }
     //#region observer pattern
     update(subject) {
         this.clearPreviousBoard();
-        this.paintPieces();
+        this.paintPieces(this.game.getPieces());
     }
     //#endregion
     findClickedCell() {
@@ -47,13 +47,10 @@ export class BoardElement {
         circle.classList.add("markercircle");
         this.grid[i][j].appendChild(circle);
     }
-    paintPieces() {
-        const boardstate = this.game.boardState;
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                this.paintPiece(boardstate[i][j]);
-            }
-        }
+    paintPieces(pieces) {
+        pieces.forEach((piece) => {
+            this.paintPiece(piece);
+        });
     }
     paintPiece(piece) {
         if (piece instanceof EmptyPiece) {

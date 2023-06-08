@@ -24,7 +24,7 @@ export class BoardElement implements Observer {
         this.game.attach(this);
 
         this.paintTiles()
-        this.paintPieces()
+        this.paintPieces(this.game.getPieces())
     }
 
     //#region observer pattern
@@ -32,7 +32,7 @@ export class BoardElement implements Observer {
     update(subject: Subject): void {
 
         this.clearPreviousBoard()
-        this.paintPieces()
+        this.paintPieces(this.game.getPieces())
     }
 
     //#endregion
@@ -76,15 +76,11 @@ export class BoardElement implements Observer {
         this.grid[i][j].appendChild(circle)
     }
 
-    paintPieces() {
+    paintPieces(pieces: Piece[]) {
 
-        const boardstate = this.game.boardState;
-
-        for (let i = 0; i < 8; i++) {
-            for (let j = 0; j < 8; j++) {
-                this.paintPiece(boardstate[i][j])
-            }
-        }
+        pieces.forEach((piece) => {
+            this.paintPiece(piece);
+        })
     }
 
     paintPiece(piece: Piece) {        
