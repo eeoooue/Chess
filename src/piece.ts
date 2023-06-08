@@ -1,9 +1,11 @@
 
 import { ChessGame } from './chess_game.js';
 import { BoardPosition } from './board_position.js';
+import { Observer } from './observer.js';
+import { Subject } from "./subject.js";
 import { AnalysisBoard } from './analysis_board.js';
 
-export class Piece {
+export class Piece implements Observer {
 
     public boardState: Piece[][];
     public game: ChessGame;
@@ -24,9 +26,10 @@ export class Piece {
         this.i = i;
         this.j = j;
         this.threatened = false;
+        game.attach(this);
     }
 
-    populateMoveOptions(): void {
+    update(subject: Subject): void {
 
         this.possibleMoves = [];
         this.moveOptions(this.i, this.j);

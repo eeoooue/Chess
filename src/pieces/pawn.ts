@@ -3,6 +3,7 @@ import { BoardPosition } from '../board_position.js';
 import { ChessGame } from '../chess_game.js';
 import { Piece } from "../piece.js";
 import { EmptyPiece } from './empty_piece.js';
+
 import { Bishop } from './bishop.js';
 import { Knight } from './knight.js';
 import { Rook } from './rook.js';
@@ -53,7 +54,7 @@ export class Pawn extends Piece {
             const victim = this.boardState[this.i][end.j]
 
             if (victim instanceof Pawn && victim.enPassantTurn == this.game.turncount){
-                this.game.clearSquare(this.i, end.j);
+                this.game.removePiece(this.i, end.j);
             }
         }
     }
@@ -137,7 +138,7 @@ export class Pawn extends Piece {
     promoteTo(choice: string){
 
         const newPiece = this.getPromotionPiece(choice);
-        this.game.clearSquare(this.i, this.j);
+        this.game.removePiece(this.i, this.j);
         this.boardState[this.i][this.j] = newPiece;
     }
 

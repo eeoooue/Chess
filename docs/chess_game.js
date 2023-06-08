@@ -12,13 +12,13 @@ export class ChessGame {
         this.moveTracker = new MoveTracker(this);
         this.boardBuilder = new BoardBuilder(this);
         this.state = "ongoing";
-        this.updateState();
+        this.notify();
     }
     submitPromotionChoice(choice) {
         const pawn = this.getPromotingPawn();
         pawn.promoteTo(choice);
         this.state = "ongoing";
-        this.updateState();
+        this.notify();
     }
     getPromotingPawn() {
         const i = (this.getTurnPlayer() == "b") ? 0 : 7;
@@ -57,13 +57,6 @@ export class ChessGame {
             piece.threatened = false;
         });
     }
-    rebuildMoveOptions() {
-        const pieces = this.getPieces();
-        this.possibleMoves = 0;
-        pieces.forEach((piece) => {
-            piece.populateMoveOptions();
-        });
-    }
     attach(observer) {
         this.observers.push(observer);
     }
@@ -77,6 +70,7 @@ export class ChessGame {
         }
     }
     notify() {
+        this.possibleMoves = 0;
         this.observers.forEach((observer) => {
             observer.update(this);
         });
@@ -89,11 +83,7 @@ export class ChessGame {
     }
     concludeTurn() {
         this.turncount += 1;
-        this.updateState();
-    }
-    updateState() {
         this.resetThreats();
-        this.rebuildMoveOptions();
         this.notify();
         this.checkGameOver();
     }
@@ -105,7 +95,7 @@ export class ChessGame {
         }
     }
     makeMove(movingPiece, end) {
-        this.clearSquare(end.i, end.j);
+        this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
         if (movingPiece instanceof Pawn) {
@@ -116,6 +106,13 @@ export class ChessGame {
     }
     clearSquare(i, j) {
         this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
+    removePiece(i, j) {
+        if (this.validCoordinates(i, j)) {
+            const piece = this.boardState[i][j];
+            this.detach(piece);
+            this.clearSquare(i, j);
+        }
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {
