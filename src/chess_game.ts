@@ -13,7 +13,6 @@ import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
 import { BoardBuilder } from "./board_builder.js";
 
-
 export class ChessGame implements Subject {
 
     public boardState: Piece[][] = new Array<Array<Piece>>(8);

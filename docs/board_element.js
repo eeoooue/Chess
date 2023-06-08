@@ -10,12 +10,10 @@ export class BoardElement {
         this.paintTiles();
         this.paintPieces(this.game.getPieces());
     }
-    //#region observer pattern
     update(subject) {
         this.clearPreviousBoard();
         this.paintPieces(this.game.getPieces());
     }
-    //#endregion
     clearPreviousBoard() {
         document.querySelectorAll(".chess-piece").forEach(el => el.remove());
         document.querySelectorAll(".highlighted").forEach(el => el.classList.remove("highlighted"));

@@ -33,12 +33,7 @@ export class WebChessGame implements Observer {
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
 
-    //#region observer pattern
-
     update(subject: Subject): void { }
-
-    //#endregion
-
 
     public processMove(i: number, j: number) : void {
 

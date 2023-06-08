@@ -8,7 +8,6 @@ import { King } from "./pieces/king.js";
 import { Observer } from "./observer.js";
 import { Subject } from "./subject.js";
 
-
 export class BoardElement implements Observer {
 
     public boardContainer: HTMLElement;
@@ -27,15 +26,11 @@ export class BoardElement implements Observer {
         this.paintPieces(this.game.getPieces())
     }
 
-    //#region observer pattern
-
     update(subject: Subject): void {
 
         this.clearPreviousBoard()
         this.paintPieces(this.game.getPieces())
     }
-
-    //#endregion
 
     clearPreviousBoard() {
 

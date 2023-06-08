@@ -29,10 +29,6 @@ export class Piece implements Observer {
         game.attach(this);
     }
 
-    //#region observer pattern
-
-
-    // Receive update from subject.
     update(subject: Subject): void {
 
         this.possibleMoves = [];
@@ -42,8 +38,6 @@ export class Piece implements Observer {
             this.game.possibleMoves += this.possibleMoves.length;
         }
     }
-
-    //#endregion observer pattern
 
     protected moveOptions(i: number, j: number): void { }
 

@@ -13,8 +13,6 @@ export class Piece {
         this.threatened = false;
         game.attach(this);
     }
-    //#region observer pattern
-    // Receive update from subject.
     update(subject) {
         this.possibleMoves = [];
         this.moveOptions(this.i, this.j);
@@ -22,7 +20,6 @@ export class Piece {
             this.game.possibleMoves += this.possibleMoves.length;
         }
     }
-    //#endregion observer pattern
     moveOptions(i, j) { }
     invalidCoordinates(i, j) {
         return !this.game.validCoordinates(i, j);

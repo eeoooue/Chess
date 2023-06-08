@@ -22,7 +22,6 @@ export class PromotionCard {
         const position: BoardPosition = this.game.getPromotingPawnPosition();
 
         const piece: Piece = this.game.boardState[position.i][position.j];
-
         const colour: string = (piece.colour == "b") ? "black" : "white";
 
         const bigText = `Promoting ${colour} pawn.`

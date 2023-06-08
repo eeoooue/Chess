@@ -16,9 +16,7 @@ export class WebChessGame {
         this.game = new ChessGame();
         this.boardElement = new BoardElement(this, this.boardContainer, this.game);
     }
-    //#region observer pattern
     update(subject) { }
-    //#endregion
     processMove(i, j) {
         const move = new BoardPosition(i, j);
         if (move) {
