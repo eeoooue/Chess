@@ -38,7 +38,6 @@ export class BoardElement {
         const img = document.createElement("img");
         img.classList.add("chess-piece");
         img.src = `assets\\${img_name}.png`;
-        img.style.margin = "5px 5px";
         return img;
     }
     getImageFilename(piece) {
