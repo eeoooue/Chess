@@ -7,7 +7,6 @@ export class ChessGame {
     constructor() {
         this.boardState = new Array(8);
         this.turncount = 0;
-        this.observers = [];
         this.possibleMoves = 0;
         this.moveTracker = new MoveTracker(this);
         this.boardBuilder = new BoardBuilder(this);
@@ -57,22 +56,10 @@ export class ChessGame {
             piece.threatened = false;
         });
     }
-    attach(observer) {
-        this.observers.push(observer);
-    }
-    detach(observer) {
-        const n = this.observers.length;
-        for (let i = 0; i < n; i++) {
-            if (this.observers[i] == observer) {
-                this.observers.splice(i, 1);
-                return;
-            }
-        }
-    }
-    notify() {
-        this.possibleMoves = 0;
-        this.observers.forEach((observer) => {
-            observer.update(this);
+    updatePieces() {
+        const pieces = this.getPieces();
+        pieces.forEach((piece) => {
+            piece.update(this);
         });
     }
     submitSelection(move) {
@@ -88,7 +75,7 @@ export class ChessGame {
     }
     updateState() {
         this.resetThreats();
-        this.notify();
+        this.updatePieces();
         this.checkGameOver();
     }
     checkGameOver() {
@@ -99,7 +86,7 @@ export class ChessGame {
         }
     }
     makeMove(movingPiece, end) {
-        this.removePiece(end.i, end.j);
+        this.clearSquare(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
         if (movingPiece instanceof Pawn) {
@@ -110,11 +97,6 @@ export class ChessGame {
     }
     clearSquare(i, j) {
         this.boardState[i][j] = new EmptyPiece(this, i, j);
-    }
-    removePiece(i, j) {
-        const piece = this.boardState[i][j];
-        this.detach(piece);
-        this.clearSquare(i, j);
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {

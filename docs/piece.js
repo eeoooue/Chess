@@ -11,7 +11,6 @@ export class Piece {
         this.i = i;
         this.j = j;
         this.threatened = false;
-        game.attach(this);
     }
     update(subject) {
         this.possibleMoves = [];

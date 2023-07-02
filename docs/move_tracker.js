@@ -27,7 +27,7 @@ export class MoveTracker {
             this.game.makeMove(this.activePiece, endMove);
         }
         else {
-            this.game.notify();
+            this.game.updatePieces();
             this.processStartMove(move);
         }
     }
