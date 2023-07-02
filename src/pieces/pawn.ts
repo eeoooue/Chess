@@ -54,7 +54,7 @@ export class Pawn extends Piece {
             const victim = this.boardState[this.i][end.j]
 
             if (victim instanceof Pawn && victim.enPassantTurn == this.game.turncount){
-                this.game.clearSquare(this.i, end.j);
+                this.game.removePiece(this.i, end.j);
             }
         }
     }
@@ -138,7 +138,7 @@ export class Pawn extends Piece {
     promoteTo(choice: string){
 
         const newPiece = this.getPromotionPiece(choice);
-        this.game.clearSquare(this.i, this.j);
+        this.game.removePiece(this.i, this.j);
         this.boardState[this.i][this.j] = newPiece;
     }
 
