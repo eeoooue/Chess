@@ -5,16 +5,13 @@ import { Piece } from "./piece.js";
 import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
-import { Observer } from "./observer.js";
-import { Subject } from "./subject.js";
 import { BoardBuilder } from "./board_builder.js";
 
-export class ChessGame implements Subject {
+export class ChessGame {
 
     public boardState: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker;
     public turncount: number = 0;
-    private observers: Observer[] = [];
     public possibleMoves: number = 0;
     public state: string;
     public boardBuilder: BoardBuilder;
@@ -86,27 +83,11 @@ export class ChessGame implements Subject {
         })
     }
 
-    attach(observer: Observer): void {
+    updatePieces(): void {
 
-        this.observers.push(observer);
-    }
-
-    detach(observer: Observer): void {
-
-        const n = this.observers.length;
-        for (let i = 0; i < n; i++) {
-            if (this.observers[i] == observer) {
-                this.observers.splice(i, 1);
-                return;
-            }
-        }
-    }
-
-    notify(): void {
-
-        this.possibleMoves = 0;
-        this.observers.forEach((observer) => {
-            observer.update(this);
+        const pieces = this.getPieces();
+        pieces.forEach((piece) => {
+            piece.update(this);
         })
     }
 
@@ -130,7 +111,7 @@ export class ChessGame implements Subject {
     updateState(): void {
 
         this.resetThreats();
-        this.notify();
+        this.updatePieces();
         this.checkGameOver();
     }
 
@@ -164,7 +145,6 @@ export class ChessGame implements Subject {
     removePiece(i: number, j: number) {
 
         const piece: Piece = this.boardState[i][j];
-        this.detach(piece);
         this.clearSquare(i, j);
     }
 
