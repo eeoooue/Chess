@@ -86,7 +86,7 @@ export class ChessGame {
         }
     }
     makeMove(movingPiece, end) {
-        this.removePiece(end.i, end.j);
+        this.clearSquare(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
         if (movingPiece instanceof Pawn) {
@@ -97,10 +97,6 @@ export class ChessGame {
     }
     clearSquare(i, j) {
         this.boardState[i][j] = new EmptyPiece(this, i, j);
-    }
-    removePiece(i, j) {
-        const piece = this.boardState[i][j];
-        this.clearSquare(i, j);
     }
     legalPosition(i, j, colour) {
         if (this.validCoordinates(i, j)) {

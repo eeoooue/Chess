@@ -126,7 +126,7 @@ export class ChessGame {
 
     makeMove(movingPiece: Piece, end: BoardPosition) {
 
-        this.removePiece(end.i, end.j);
+        this.clearSquare(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
 
@@ -140,12 +140,6 @@ export class ChessGame {
     clearSquare(i: number, j: number){
 
         this.boardState[i][j] = new EmptyPiece(this, i, j);
-    }
-
-    removePiece(i: number, j: number) {
-
-        const piece: Piece = this.boardState[i][j];
-        this.clearSquare(i, j);
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
