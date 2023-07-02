@@ -5,13 +5,16 @@ import { Piece } from "./piece.js";
 import { King } from "./pieces/king.js";
 import { Pawn } from "./pieces/pawn.js";
 import { EmptyPiece } from "./pieces/empty_piece.js";
+import { Observer } from "./observer.js";
+import { Subject } from "./subject.js";
 import { BoardBuilder } from "./board_builder.js";
 
-export class ChessGame {
+export class ChessGame implements Subject {
 
     public boardState: Piece[][] = new Array<Array<Piece>>(8);
     public moveTracker;
     public turncount: number = 0;
+    private observers: Observer[] = [];
     public possibleMoves: number = 0;
     public state: string;
     public boardBuilder: BoardBuilder;
@@ -83,11 +86,27 @@ export class ChessGame {
         })
     }
 
-    updatePieces(): void {
+    attach(observer: Observer): void {
 
-        const pieces = this.getPieces();
-        pieces.forEach((piece) => {
-            piece.update(this);
+        this.observers.push(observer);
+    }
+
+    detach(observer: Observer): void {
+
+        const n = this.observers.length;
+        for (let i = 0; i < n; i++) {
+            if (this.observers[i] == observer) {
+                this.observers.splice(i, 1);
+                return;
+            }
+        }
+    }
+
+    notify(): void {
+
+        this.possibleMoves = 0;
+        this.observers.forEach((observer) => {
+            observer.update(this);
         })
     }
 
@@ -111,7 +130,7 @@ export class ChessGame {
     updateState(): void {
 
         this.resetThreats();
-        this.updatePieces();
+        this.notify();
         this.checkGameOver();
     }
 
@@ -126,7 +145,7 @@ export class ChessGame {
 
     makeMove(movingPiece: Piece, end: BoardPosition) {
 
-        this.clearSquare(end.i, end.j);
+        this.removePiece(end.i, end.j);
         movingPiece.moveTo(end);
         this.concludeTurn();
 
@@ -140,6 +159,13 @@ export class ChessGame {
     clearSquare(i: number, j: number){
 
         this.boardState[i][j] = new EmptyPiece(this, i, j);
+    }
+
+    removePiece(i: number, j: number) {
+
+        const piece: Piece = this.boardState[i][j];
+        this.detach(piece);
+        this.clearSquare(i, j);
     }
 
     legalPosition(i: number, j: number, colour: string): boolean {
